@@ -1,0 +1,8 @@
+[package]
+name = "zstd-cat-rust"
+version = "0.1.0"
+authors = ["Benno Fünfstück <benno.fuenfstueck@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+zstd = "0.4.24+zstd.1.4.0"

@@ -1,0 +1,10 @@
+[package]
+name = "zstd-dict-object-compression"
+version = "0.1.0"
+authors = ["Benno Fünfstück <benno.fuenfstueck@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+zstd = "0.4.24+zstd.1.4.0"
+clap = "2.33.0"
+log = "0.4.6"
