@@ -11,3 +11,6 @@ rootProject.name = 'experiments'
 
 include 'wdtk-simple-export'
 includeBuild '/code/Wikidata-Toolkit'
+include 'zstd-process-lines-java'
+include 'tokenize-json'
+

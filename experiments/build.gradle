@@ -25,6 +25,7 @@ subprojects {
         implementation 'org.wikidata.wdtk:wdtk-rdf:0.9.0'
 
         implementation 'com.github.luben:zstd-jni:1.4.0-1'
+        runtimeOnly 'org.slf4j:slf4j-simple:1.7.26'
 
         // Use JUnit test framework
         testImplementation 'junit:junit:4.12'

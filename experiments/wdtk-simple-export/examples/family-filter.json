@@ -1,0 +1,15 @@
+{
+  "extractEntities":  [
+    { "properties": {} },
+    { "properties": {} },
+    { "properties": {} },
+    { "properties": {} },
+    { "properties": {} },
+    { "properties": {} }
+  ],
+  "extractProperties": [],
+  "extractLanguages": ["en"]
+  "truthy": false,
+  "references": true,
+  "qualifiers": true,
+}
