@@ -1,0 +1,4 @@
+auto/
+latex.out/
+_region_.*
+*.log

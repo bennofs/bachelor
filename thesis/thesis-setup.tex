@@ -1,0 +1,70 @@
+% **************************************** 
+% Information
+% **************************************** 
+\newcommand{\thesisTitle}{Generierung angepasster RDF-Dumps von Wikidata}
+\newcommand{\thesisName}{Benno Fünfstück}
+\newcommand{\thesisSubject}{Bachelorarbeit}
+\newcommand{\thesisDate}{June 21, 2016}
+\newcommand{\thesisVersion}{My First Draft}
+
+\newcommand{\thesisFirstReviewer}{Prof. Markus Kroetzsch}
+\newcommand{\thesisFirstReviewerUniversity}{\protect{Technische Universität Dresden}}
+\newcommand{\thesisFirstReviewerDepartment}{Fakultät Informatik}
+
+\newcommand{\thesisSecondReviewer}{Prof. Sebastian Rudolph}
+\newcommand{\thesisSecondReviewerUniversity}{\protect{Technische Universität Dresden}}
+\newcommand{\thesisSecondReviewerDepartment}{\protect{Informatik}}
+
+\newcommand{\thesisFirstSupervisor}{Prof. Markus Kroetzsch}
+\newcommand{\thesisSecondSupervisor}{Prof. Sebastian Rudolph}
+
+\newcommand{\thesisUniversity}{\protect{Technische Universität Dresden}}
+\newcommand{\thesisUniversityDepartment}{Fakultät Informatik}
+\newcommand{\thesisUniversityInstitute}{Institut für Theoretische Informatik}
+\newcommand{\thesisUniversityGroup}{Professur für Wissensbasierte Systeme}
+\newcommand{\thesisUniversityCity}{Dresden}
+\newcommand{\thesisUniversityStreetAddress}{}
+\newcommand{\thesisUniversityPostalCode}{01062}
+
+% **************************************** 
+% Load and Configure packages 
+% **************************************** 
+
+% setup german for XeLaTeX
+\usepackage{polyglossia}
+\setmainlanguage[spelling=new,babelshorthands=true]{german}
+\usepackage{fontspec}
+
+\PassOptionsToPackage{% setup clean thesis style
+  figuresep=colon,%
+  hangfigurecaption=false,%
+  hangsection=true,%
+  hangsubsection=true,%
+  sansserif=false,%
+  configurelistings=true,%
+  colorize=full,%
+  colortheme=bluemagenta,%
+  configurebiblatex=true,%
+  bibsys=biber,%
+  bibfile=bib-refs,%
+  bibstyle=alphabetic,%
+  bibsorting=nty,%
+}{cleanthesis}
+\usepackage{cleanthesis}
+
+\hypersetup{% setup the hyperref-package options
+  pdftitle={\thesisTitle},    %   - title (PDF meta)
+  pdfsubject={\thesisSubject},%   - subject (PDF meta)
+  pdfauthor={\thesisName},    %   - author (PDF meta)
+  plainpages=false,           %   -
+  colorlinks=false,           %   - colorize links?
+  pdfborder={0 0 0},          %   -
+  breaklinks=true,            %   - allow line break inside links
+  bookmarksnumbered=true,     %
+  bookmarksopen=true          %
+}
+
+\usepackage{cleveref}
+
+% avoid large space before paragraphs with title
+\RedeclareSectionCommand[beforeskip=0pt]{paragraph}
