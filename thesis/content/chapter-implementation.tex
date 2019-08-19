@@ -17,11 +17,9 @@ Das zentrale Element ist der Dump, welcher alle Metadaten zu einem Auftrag speic
 Neben ein paar einfachen Daten wie Titel (\verb|title|) und Zeitpunkt der Erstellung des Auftrags (\verb|created_at|) bzw. Fertigstellung (\verb|finished_at|) ist jeder Dump durch eine JSON-Spezifikation (\verb|spec|) charakterisiert. Zusätzlich hat der Dump auch Felder für Statistiken, wie die Anzahl der Entitäten (\verb|entity_count|) und Dateigröße (\verb|compressed_size|).
 
 Für jeden Durchlauf des Backends wird ein \verb|Run| angelegt.
-Jeder Durchlauf verarbeitet dazu mehrere Aufträge.
+Die von diesem Durchlauf verarbeiteten Aufträge verweisen dann auf den \verb|Run|.
 Damit der aktuelle Fortschritt ermittelt werden kann, wird die Anzahl der bereits verarbeiteten Entitäten in dem Attribut \verb|count| gespeichert.
 Da die Anzahl von Entitäten in dem vollem Wikidata-Dump bekannt ist, lässt sich daraus der Fortschritt errechnen.
-
-\TODO{describe spec}
 
 \section{Backend}
 Für die Implementierung des Backends wird das Wikidata-Toolkit verwendet.
