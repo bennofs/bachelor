@@ -1,17 +1,20 @@
 \chapter{Design}
+\label{chap:design}
+
 In diesem Kapitel werden wir nun die Anforderungen präzisieren und ein Design für die Umsetzung erarbeiten.
 Dazu sind mehrere Aspekte relevant: zum einen die technische Umsetzung der Filterung und Generierung von Dumps (Architektur und unterstützte Filterkriterien), aber auch das User-Interface und welche externen Dienste genutzt werden können (z.B. für die Archivierung der erzeugten Dumps).
 Diese bedingen sich gegenseitig: es nützt wenig, wenn die Architektur sehr komplexe Filterkriterien unterstützt, dass user-Interface diese aber gar nicht abbilden kann (oder umgekehrt).
 
 \section{Architektur}
-Für die Architektur der Anwendung gibt es mehrere Möglichkeiten.
-Zuerst stellt sich die Frage, wie die Arbeit zwischen Server und Client verteilt werden soll.
+Für die Architektur der Anwendung stellt sich zuerst die Frage, wie die Arbeit zwischen Server und Client verteilt werden soll.
 Auf der einen Seite steht die Variante, einen schlauen Client zu entwickeln welcher direkt mit der Wikidata API und dem SPARQL-Endpunkt spricht bzw. den Dump als Stream verarbeitet.
 Der Client kann dann von jedem Nutzer lokal auf seinem eigenen System ausgeführt werden.
 Der Vorteil dieser Variante ist klar: es ist der Server müsste in diesem Fall keine eigenen Dumps erzeugen, sondern maximal Metadaten zu generierten Dumps speichern.
 Allerdings bringt diese Variante auch mehrere Probleme: erstens muss der Client vom Nutzer selbst ausgeführt werden, was problematisch wird wenn die Erzeugung der Dumps einen längeren Zeitraum in Anspruch nimmt da dann das System des Nutzers die gesamte Zeit online sein muss, und zweitens müsste für die Archivierung der Nutzer die Dumps selbst hochladen.
-Die Generierung auf einem Server hat diese Nachteile nicht. Der Nutzer muss während der Generierung nicht online sein, sondern kann den Dump einfach herunterladen sobald dieser fertig ist.
+Die Generierung auf einem Server hat diese Nachteile nicht.
+Der Nutzer muss während der Generierung nicht online sein, sondern kann den Dump einfach herunterladen sobald dieser fertig ist.
 Außerdem kann die Archivierung vom Server übernommen werden.
+Die Anwendung implementiert die Logik zur Generierung der Dumps daher auf dem Server.
 
 Die nächste Frage ist nun, wie der Server die Dumps generieren soll. Dafür sind drei Varianten denkbar:
 \begin{enumerate}[label=\alph*) ]
