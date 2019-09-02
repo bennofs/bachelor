@@ -636,13 +636,14 @@
             {\color{ctcolorchapternum}\fontsize{60}{60}\selectfont#1}%
         }%
     \end{minipage}%
+    {\parfillskip=0pt \par}
 }
 \newcommand{\ctchaptertitle}[1]{%
     \usekomafont{chapter}%
     \begin{minipage}[t]{0.7\textwidth}%
         \vspace*{5.85em}%
         \raggedright%
-        #1%
+        \hspace{-0.05em}#1%
     \end{minipage}%
 }
 %
@@ -660,6 +661,9 @@
         {\color{ctcolorblack}\thesection\hspace*{10pt}}%
     }
 \fi
+\renewcommand{\sectionlinesformat}[4]{%
+  \@hangfrom{\hskip #2#3}{\hspace{-0.05em}#4}%
+}
 %
 % ---------------------------
 % > formats: \subsection

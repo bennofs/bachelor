@@ -3,14 +3,14 @@
 
 In diesem Kapitel werden wir nun die Anforderungen präzisieren und ein Design für die Umsetzung erarbeiten.
 Dazu sind mehrere Aspekte relevant: zum einen die technische Umsetzung der Filterung und Generierung von Dumps (Architektur und unterstützte Filterkriterien), aber auch das User-Interface und welche externen Dienste genutzt werden können (z.B. für die Archivierung der erzeugten Dumps).
-Diese bedingen sich gegenseitig: es nützt wenig, wenn die Architektur sehr komplexe Filterkriterien unterstützt, dass user-Interface diese aber gar nicht abbilden kann (oder umgekehrt).
+Diese bedingen sich gegenseitig: es nützt wenig, wenn die Architektur sehr komplexe Filterkriterien unterstützt, dass User-Interface diese aber gar nicht abbilden kann (oder umgekehrt).
 
 \section{Architektur}
 Für die Architektur der Anwendung stellt sich zuerst die Frage, wie die Arbeit zwischen Server und Client verteilt werden soll.
 Auf der einen Seite steht die Variante, einen schlauen Client zu entwickeln welcher direkt mit der Wikidata API und dem SPARQL-Endpunkt spricht bzw. den Dump als Stream verarbeitet.
 Der Client kann dann von jedem Nutzer lokal auf seinem eigenen System ausgeführt werden.
-Der Vorteil dieser Variante ist klar: es ist der Server müsste in diesem Fall keine eigenen Dumps erzeugen, sondern maximal Metadaten zu generierten Dumps speichern.
-Allerdings bringt diese Variante auch mehrere Probleme: erstens muss der Client vom Nutzer selbst ausgeführt werden, was problematisch wird wenn die Erzeugung der Dumps einen längeren Zeitraum in Anspruch nimmt da dann das System des Nutzers die gesamte Zeit online sein muss, und zweitens müsste für die Archivierung der Nutzer die Dumps selbst hochladen.
+Der Vorteil dieser Variante ist klar: der Server müsste in diesem Fall keine eigenen Dumps erzeugen, sondern maximal Metadaten zu generierten Dumps speichern.
+Allerdings bringt diese Variante auch mehrere Probleme: erstens muss der Client vom Nutzer selbst ausgeführt werden, was problematisch wird wenn die Erzeugung der Dumps einen längeren Zeitraum in Anspruch nimmt, da dann das System des Nutzers die gesamte Zeit online sein muss. Zweitens müsste für die Archivierung der Nutzer die Dumps selbst hochladen.
 Die Generierung auf einem Server hat diese Nachteile nicht.
 Der Nutzer muss während der Generierung nicht online sein, sondern kann den Dump einfach herunterladen sobald dieser fertig ist.
 Außerdem kann die Archivierung vom Server übernommen werden.
@@ -51,7 +51,7 @@ Im Gegensatz zu Variante b) müssen die Filterkriterien nicht als SPARQL formuli
 Dafür sind komplexe, graph-basierte Filter die das Betrachten von mehr als einer Entität auf einmal erfordern, nicht so einfach umsetzbar.
 
 Die Auswahl der Architektur ist auch davon abhängig, welche Kriterien zur Filterung unterstützt werden sollen.
-Ein paar Beispiele von Kriterien, anch denen andere Arbeiten die Exporte von Wissensgraphen wie Wikidata gefiltert haben, sind:
+Ein paar Beispiele von Kriterien, nach denen andere Arbeiten die Exporte von Wissensgraphen wie Wikidata gefiltert haben, sind:
 \begin{enumerate}[label=\arabic*)]
   \item nur ``truthy'' Statements mit Entities als Objekt, Labels/Beschreibungen nur in Englisch und Spanisch\cite{usage-grafa}
   \item nur truthy simple Statements, wobei sowohl Subjekt als auch Objekt ein Wikidata-Item sind\cite{usage-wembedder}
@@ -74,7 +74,7 @@ Auch Sampling kann in dem sequentiellen Ansatz einfach implementiert werden.
 
 Insgesamt bietet der sequentielle Ansatz die meiste Flexibilität und ist einfach in der Implementierung.
 Variante a) ist komplizierter und weniger flexibel, da ein Index nur bestimmte Filter effizient unterstützt.
-Variante b) funktioniert nur für kleiner Dumps, bei größeren Dumps das Problem des Timeouts auftritt.
+Variante b) funktioniert nur für kleinere Dumps, bei größeren Dumps das Problem des Timeouts auftritt.
 Die Einfachheit der Variante c) erlaubt es, schnell neue Arten von Filtern zu implementieren.
 In dieser Arbeit wurde sich deshalb für diese Variant entschieden, auch da zu erwarten ist dass das System am Anfang noch keine Nutzung in so großem Ausmaß haben wird, um die Komplexität und den zusätzlichen Speicherbedarf eines Index zu rechtfertigen.
 
@@ -86,7 +86,7 @@ Die Anwendungsfälle für das Filtern von Wikidata sind verschieden.
 Ein typisches Szenario ist die Extraktion von Daten einer bestimmten Thematik, z.B. nur Daten von Personen oder Städten.
 In diesem Fall geschieht die Filterung auf Entitätenebene, mit eventuell zusätzlichen Einschränkung der zu exportierende Statements und Sprachen.
 Ein anderes Szenario orientiert sich mehr an der Struktur der Statements.
-Beispiele hierfür sind die Analyse nur von Statements mit Referenzen, die Extraktion aller Statements für eine bestimmte Property oder alle Statements mit deprecrated Rank.
+Beispiele hierfür sind die Analyse von lediglich Statements mit Referenzen, die Extraktion aller Statements für eine bestimmte Property oder alle Statements mit deprecrated Rank.
 Das dritte Szenario verwendet Filterung, um die Daten für Benchmarks auf eine kleinere Menge zu reduzieren.
 In diesem Fall sind statistische Filter interessant, um z.B. nur jedes zehnte Statement oder nur jede zehnte Entität zu exportieren.
 
@@ -129,7 +129,7 @@ Hier kann eingestellt werden, ob Labels, Beschreibungen, Aliase bzw. sitelinks f
 Zudem findet sich hier die Option für die zu exportierenden Sprachen.
 Man kann entweder keine Filterung der Sprachen vornehmen (alle Sprachen exportieren) oder eine Liste von Sprachen angeben.
 
-An allen Stellen wo sinnvoll bietet das Interface automatische Vervollständigung an.
+An allen Stellen wo dies sinnvoll ist bietet das Interface automatische Vervollständigung an.
 Das trifft auf alle Eingabefelder für Entitäten zu, wobei Entitäten hier über ihr Label vervollständigt werden.
 Außerdem wird eine Vervollständigung bei der Angabe von Sprache angeboten, wobei eine feste Liste der möglichen Sprachen verwendet wird.
 
@@ -150,7 +150,7 @@ Damit wird die Anforderung an Langzeitarchivierung erfüllt.
 
 Die Integration mit Zenodo funktioniert so, dass abgeschlossene Dumps als Datensatz zu Zenodo hochgeladen werden.
 Dabei stellt sich die Frage, welcher Account für den Upload verwendet wird.
-Zenodo bietet auch einen OAuth-Schnittstelle an, sodass es möglich wäre, dass die Dumps direkt zu einem Account des Nutzers hochgeladen werden. 
+Zenodo bietet auch einen OAuth-Schnittstelle an, sodass es möglich wäre, die Dumps direkt zu einem Account des Nutzers hochzuladen.
 Das erfordert es allerdings, dass Nutzer bereits einen Zenodo-Account besitzen.
 Da die Implementierung von OAuth zudem zusätzliche Komplexität verursacht, verwendet die erste Version der Anwendung einen eigenen Account, der speziell dafür erstellt wurde.
-Damit ist es mit einem Klick möglich, einen Dump zu Zenodo hochzuladen und den Dump dann über die DOI zu referenzieren.
+Damit ist es mit einem Klick möglich, einen Dump zu Zenodo hochzuladen und den Dump dann über die DOI zu referenzieren, ohne das Nutzer selbst einen Account bei Zenodo benötigen.
