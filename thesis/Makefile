@@ -1,3 +1,6 @@
+pics/%.pdf: pics/%.svg
+	rsvg-convert -f pdf $< > $@
+
 .PHONY: FORCE
 thesis.pdf: FORCE
 	latexmk -pdfxe --synctex=1 -output-directory=latex.out -interaction=nonstopmode -file-line-error thesis.tex | sed -re '0,/CONTENT START NOW/d'
