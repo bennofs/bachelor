@@ -1,2 +1,186 @@
 \chapter{Evaluation}
 \label{chap:evaluation}
+Zur Evaluation der Anwendung werden wir in diesem Kapitel bewerten, ob Wikidata-Toolkit eine geeignete Wahl zum Erzeugen der RDF-Dumps ist.
+Dazu werden wir das von Wikidata-Toolkit erzeugte RDF mit den offizielen Wikidata RDF-Exporten vergleichen, um die Korrektheit und Vollständigkeit zu überprüfen.
+% Anschließend werden wir die Performance von Wikidata-Toolkit in dieser Anwendung analysieren, um mögliche Verbesserung zu identifizieren.
+
+\section{Vorgehen}
+
+
+\section{Ergebnis} 
+
+Differences:
+% 
+% owl#sameAs entities missing in generated:
+%     <https://www.wikidata.org/wiki/Special:EntityData/Q6825> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Dataset> .
+%     <https://www.wikidata.org/wiki/Special:EntityData/Q6825> <http://schema.org/about> <http://www.wikidata.org/entity/Q6825> .
+%     <https://www.wikidata.org/wiki/Special:EntityData/Q6825> <http://schema.org/version> "942411738"^^<http://www.w3.org/2001/XMLSchema#integer> .
+%     <https://www.wikidata.org/wiki/Special:EntityData/Q6825> <http://schema.org/dateModified> "2019-05-15T10:13:36Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+%     <http://www.wikidata.org/entity/Q6825> <http://www.w3.org/2002/07/owl#sameAs> <http://www.wikidata.org/entity/Q26709563> .
+% 
+% IRI not correctly escaped in generated:
+%     <http://www.wikidata.org/entity/Q8479> <http://www.wikidata.org/prop/direct/P94> <http://commons.wikimedia.org/wiki/File:Imperial_Monogram_of_Tsar_Peter_I_\"The_Great\"_of_Russia,_Variant_2.svg> .
+% 
+% In official dumps, some statement IDs are lowercase (not all though):
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/P349> <http://www.wikidata.org/entity/statement/Q31-C3BA4AF9-CC89-4B2D-B9ED-2211228CEF09> .
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/P38> <http://www.wikidata.org/entity/statement/q31-2AD587B8-A440-438E-A7E0-3F992600D36D> .
+% 
+% Official dumps use different coordinate order:
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P5140> "Point(4.6681 50.6411)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> [offical]
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P5140> "Point(50.641111111111 4.6680555555556)"^^<http://www.opengis.net/ont/geosparql#wktLiteral>) [generated]]
+% 
+% Value normalization (+ normalized value, normalized reference value, normalized quantity value, normalized qualifier value):
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P6897> "+99"^^<http://www.w3.org/2001/XMLSchema#decimal> . [official]
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P6897> "99"^^<http://www.w3.org/2001/XMLSchema#decimal> . [gen]
+% 
+% Wrong serialization of decimals:
+%     <http://www.wikidata.org/entity/Q2294> <http://www.wikidata.org/prop/direct/P2069> "0.000000000000000000000000014106067"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+%     <http://www.wikidata.org/entity/Q2294> <http://www.wikidata.org/prop/direct/P2200> "0.00000000000000000016021766208"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+%     ----
+%     <http://www.wikidata.org/entity/Q2294> <http://www.wikidata.org/prop/direct/P2200> "1.6021766208E-19"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+%     <http://www.wikidata.org/entity/Q2294> <http://www.wikidata.org/prop/direct/P2069> "1.4106067E-26"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+% 
+% Language tags are different:
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Belçika"@crh .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Belgien"@ksh .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Bélgica"@cbk-zam .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Belgique"@nrm .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Bèlge"@roa-tara .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Belgija"@sr-el .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Белгија"@sr-ec .
+%     <https://eml.wikipedia.org/wiki/B%C3%A9lgi> <http://schema.org/inLanguage> "egl" .
+%     ---
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Belgien"@mis-x-rip .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Bélgica"@cbk-x-zam .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Belgique"@fr-x-nrm .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Bèlge"@it-x-tara .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Belgija"@sr-Latn .
+%     <http://www.wikidata.org/entity/Q31> <http://www.w3.org/2000/01/rdf-schema#label> "Белгија"@sr-Cyrl .
+%     <https://eml.wikipedia.org/wiki/B%C3%A9lgi> <http://schema.org/inLanguage> "eml" .
+% 
+% File URIs are different:
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P41> <http://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Belgium%20%28civil%29.svg> .
+%     ---
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P41> <http://commons.wikimedia.org/wiki/File:Flag_of_Belgium_%28civil%29.svg> .
+% 
+% Official dump has blank node for some-value statements:
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P1589> _:genid0-0-1 .
+%     ---
+% 
+% EntityData is missing
+% 
+% Time value problems
+%     <http://www.wikidata.org/entity/Q45> <http://www.wikidata.org/prop/direct/P571> "1143-10-12T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+%     ---
+%     <http://www.wikidata.org/entity/Q45> <http://www.wikidata.org/prop/direct/P571> "1143-10-05T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+% 
+%     calendar, formatting, year 0
+% 
+% WDTK is right, official is wrong:
+%     <http://www.wikidata.org/entity/Q1183> <http://www.wikidata.org/prop/direct/P3896> <http://commons.wikimedia.org/data/main/Data:Puerto+Rico.map> .
+%     ---
+%     <http://www.wikidata.org/entity/Q1183> <http://www.wikidata.org/prop/direct/P3896> <http://commons.wikimedia.org/data/main/Data:Puerto_Rico.map> .
+% 
+% Qualifier with no-value on statements: wrong prefix (novalue vs noqualifiervalue)
+%     <http://www.wikidata.org/entity/statement/Q133308-142F7486-FF03-45FB-8F26-8BB40461CEE0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.wikidata.org/prop/novalue/P1366> 
+%     ---
+%     <http://www.wikidata.org/entity/statement/Q133308-142F7486-FF03-45FB-8F26-8BB40461CEE0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.wikidata.org/prop/noqualifiervalue/P1366> .
+% 
+% SomeValue is simple only
+% 
+% OWL missing in official dumps?
+% 
+% Language tags: upper cs lower case? -> RDF says lower case is OK
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P1549> "比利时"@zh-cn .
+%     --
+%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P1549> "比利时"@zh-CN .
+% 
+% Some metadata about wikilinks is missing:
+%     <https://sc.wikipedia.org/wiki/B%C3%A8lgiu> <http://schema.org/isPartOf> <https://sc.wikipedia.org/> .
+%     <https://sc.wikipedia.org/wiki/B%C3%A8lgiu> <http://schema.org/name> "B\u00E8lgiu"@sc .
+%     <https://sc.wikipedia.org/> <http://wikiba.se/ontology#wikiGroup> "wikipedia" .
+%     --
+% 
+% Hash for time value did not include precision
+% 
+% xsd#integer vs xsd#int
+% 
+% Misspelling in type
+% _:_ <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://wikiba.se/ontology#GlobecoordinateValue> .
+% ---
+% _:_ <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://wikiba.se/ontology#GlobeCoordinatesValue> .
+% 
+% Snaks order for reference dedupe
+% 
+% GeoAutoPrecision
+% _:_ <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://wikiba.se/ontology#GeoAutoPrecision> .
+% ---
+% 
+% WTF
+% <http://www.wikidata.org/entity/Q2651> <http://www.wikidata.org/prop/direct/P2534> "<math xmlns="http://www.w3.org/1998/Math/MathML" display="block" alttext="{\displaystyle \sum -\log _{2}(p_{i})=-\log _{2}(0.6)-\log _{2}(0.1)-\log _{2}(0.1)=7.381{\text{ bits}}}">
+%   <semantics>
+%     <mrow class="MJX-TeXAtom-ORD">
+%       <mstyle displaystyle="true" scriptlevel="0">
+%         <mo>&#x2211;<!-- ∑ --></mo>
+%         <mo>&#x2212;<!-- − --></mo>
+%         <msub>
+%           <mi>log</mi>
+%           <mrow class="MJX-TeXAtom-ORD">
+%             <mn>2</mn>
+%           </mrow>
+%         </msub>
+%         <mo>&#x2061;<!-- ⁡ --></mo>
+%         <mo stretchy="false">(</mo>
+%         <msub>
+%           <mi>p</mi>
+%           <mrow class="MJX-TeXAtom-ORD">
+%             <mi>i</mi>
+%           </mrow>
+%         </msub>
+%         <mo stretchy="false">)</mo>
+%         <mo>=</mo>
+%         <mo>&#x2212;<!-- − --></mo>
+%         <msub>
+%           <mi>log</mi>
+%           <mrow class="MJX-TeXAtom-ORD">
+%             <mn>2</mn>
+%           </mrow>
+%         </msub>
+%         <mo>&#x2061;<!-- ⁡ --></mo>
+%         <mo stretchy="false">(</mo>
+%         <mn>0.6</mn>
+%         <mo stretchy="false">)</mo>
+%         <mo>&#x2212;<!-- − --></mo>
+%         <msub>
+%           <mi>log</mi>
+%           <mrow class="MJX-TeXAtom-ORD">
+%             <mn>2</mn>
+%           </mrow>
+%         </msub>
+%         <mo>&#x2061;<!-- ⁡ --></mo>
+%         <mo stretchy="false">(</mo>
+%         <mn>0.1</mn>
+%         <mo stretchy="false">)</mo>
+%         <mo>&#x2212;<!-- − --></mo>
+%         <msub>
+%           <mi>log</mi>
+%           <mrow class="MJX-TeXAtom-ORD">
+%             <mn>2</mn>
+%           </mrow>
+%         </msub>
+%         <mo>&#x2061;<!-- ⁡ --></mo>
+%         <mo stretchy="false">(</mo>
+%         <mn>0.1</mn>
+%         <mo stretchy="false">)</mo>
+%         <mo>=</mo>
+%         <mn>7.381</mn>
+%         <mrow class="MJX-TeXAtom-ORD">
+%           <mtext>&#xA0;bits</mtext>
+%         </mrow>
+%       </mstyle>
+%     </mrow>
+%     <annotation encoding="application/x-tex">{\displaystyle \sum -\log _{2}(p_{i})=-\log _{2}(0.6)-\log _{2}(0.1)-\log _{2}(0.1)=7.381{\text{ bits}}}</annotation>
+%   </semantics>
+% </math>"^^<http://www.w3.org/1998/Math/MathML> .
+% ----
+% <http://www.wikidata.org/entity/Q2651> <http://www.wikidata.org/prop/direct/P2534> "\sum -\log_2(p_i) = -\log_2(0.6) - \log_2(0.1) - \log_2(0.1) = 7.381 \text{ bits}" .
