@@ -33,11 +33,33 @@ Neben den Anforderungen an die Funktion des Systems existieren auch eine Reihe v
 \end{description}
 
 \section{Verwandte Arbeiten}
- 
-SPARQL query service
-Linked Data Fragments
-Dbpedia Topical Dumps
-Wikidata REST API
-Wikidata Toolkit
-petscan/catscan
-DBPedia Wikidata Extraction
+Zu den verwandten Projekten gehört sicherlich der Wikidata Query Service\cite{wd-sparql}, welcher bereits einen gezielten Zugriff auf die Daten gewährt.
+Die Daten des Query Services entsprechen bis auf wenige Minuten Verzögerung der neusten Wikidata Version.
+Da der Query Service allerdings beliebige SPARQL-Abfragen erlaubt, ist ein Timeout von einer Minute notwendig um zu großen Ressourcenverbrauch abzufangen, denn bei SPARQL-Abfragen kann die Termination nicht sichergestellt werden.
+Für die Erzeugung von großen Dumps ist der Query Service damit ungeeignet.
+
+Zwei weitere existierende APIs, der Linked Data Export von Wikidata und die Wikidata API, skalieren ebenso nicht für größere Abfragen.
+Mit dem Linked Data Export können die RDF und JSON Daten einzelner Items über HTTP abgerufen werden.
+Die API erlaubt das Abrufen der JSON Daten von bis zu 50 Items in einer Anfrage.
+Beide Varianten sind daher nur für den Abruf einer kleinen Menge an Items geeignet.
+
+Ein Mittelweg zwischen Abfragekomplexität für den Server und Anzahl an Abfragen an der Server beschreibt die Linked Data Fragments\cite{ldf} Spezifikation.
+Allerdings führt dies zu hohen Abfragekosten auf dem Client, da die Joins auf dem Client ausgewertet werden.
+Die Implementierung für Wikidata basiert außerdem auf der selben RDF-Datenbank wie auch der Wikidata Query Service.
+Im Kontext von Wikidata haben Linked Data Fragments daher keinen Vorteil gegenüber dem Query Service.
+
+Eine Variante zur Reduzierung der Größe von RDF-Dumps ist HDT\cite{hdt}, einem Binärformat für RDF-Daten.
+Es verwendet eine optimierte, komprimierte Kodierung zur Speicherung der Dumps.
+Auf diesem Format lassen sich sogar einfache SPARQL-Abfragen effizient ausführen\cite{hdt-query}.
+Leider erfordert die Erstellung von HDT-Dumps viel Arbeitsspeicher und Rechenzeit, besonders bei einer so großen Datenmenge wie Wikidata.
+Durch die komprimierte Kodierung ist eine inkrementelle Aktualisierung von HDT-Dumps nicht möglich, sodass der komplette Dump regelmäßig neu erstellt werden müsste.
+
+DBpedia\cite{dbpedia} teilt die seine Dumps in mehrere, kleinere Dumps auf.
+Auch einige aus Wikidata abgeleitete Dumps sind verfügbar\footnote{\url{https://databus.dbpedia.org/dbpedia/wikidata/}}.
+Durch das fest definierte Schema ist eine solche Trennung der Datensätze bei DBpedia möglich.
+Für Wikidata ist dieser Ansatz deutlich schwieriger, da das Datenschema so flexibel ist.
+Es gibt in Wikidata damit einzelnen Aspekt, nach dem diese Trennung erfolgen könnte.
+
+Ein mächtiges Tool zum Erstellen von Listen von Wikidata Items ist PetScan\footnote{\url{https://petscan.wmflabs.org/}}.
+Dieses Tool bietet ein User-Interface mit einer Vielzahl an Optionen, um Listen von Wikipedia bzw. Wikidata-Seiten zu erstellen.
+Wikidata ist nicht der Hauptanwendungszweck dieses Tools, dennoch ist es eine interessante Quelle von Filtern.

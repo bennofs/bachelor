@@ -49,6 +49,7 @@ Zur Vereinfachung der Analyse werden folgende Tripel von dem Vergleich ausgenomm
     Language Tags & Unterschiedliche Language Tags \\
     simple value (Referenz) & Bei Referenzen werden nur komplexe Werte angegeben \\
     complex value (SomeValue) & SomeValue Snaks wird auch ein BNode für den komplexen Wert generiert \\
+    Sitelinks Siteinfo & bei Sitelinks fehlen Tripel für \verb|schema:name|, \verb|schema:isPartOf|, \verb|wikibase:wikiGroup| \\
     \\
     invalide IRIs & URL-Werte mit \verb|"| erzeugen invalides RDF \\
     Koordinaten & Längen- und Breitengrad in Koordinatenwerten vertauscht \\
@@ -68,7 +69,7 @@ Zur Vereinfachung der Analyse werden folgende Tripel von dem Vergleich ausgenomm
 \end{table}
 
 Eine Übersicht über das Ergebnis des Vergleichs gibt \cref{tab:wdtk-diff}.
-Die meisten Differenzen lassen sich einfach beheben, oft sind nur wenige Veränderungen an Wikidata-Toolkit notwendig. Dazu zählen: Statement ID, invalide IRIs, simple value (Referenz), complex value (SomeValue), Koordinaten, Dezimalzahlen, Commons Link, Formeln, falsche Literaltypen, Datumdeduplizierung und Referenzdeduplizierung.
+Die meisten Differenzen lassen sich einfach beheben, oft sind nur wenige Veränderungen an Wikidata-Toolkit notwendig. Dazu zählen: Statement ID, Sitelinks Siteinfo, invalide IRIs, simple value (Referenz), complex value (SomeValue), Koordinaten, Dezimalzahlen, Commons Link, Formeln, falsche Literaltypen, Datumdeduplizierung und Referenzdeduplizierung.
 Diese Korrekturen werden auch dem Wikidata-Toolkit Projekt beigetragen.
 Ein Großteil der Differenzen treten bei komplexen Literalwerten, wie Zeitdaten oder Geokoordinaten auf.
 Während die meisten Differenzen relativ harmlose Formfehler sind (wie das Verwenden falscher Literaltypen), sind auch drei inhaltliche Fehler aufgefallen.
@@ -122,7 +123,7 @@ Dennoch sollte sich am Ende für eine einheitliche Variante entschieden werden.
 Die Verwendung der Wikimedia Language Codes, die sich auch an BCP47 orientieren, stellt hier die einfachste Lösung da.
 
 Insgesamt zeigt dieser Vergleich, dass das komplexe Datenmodell von Wikidata auch einige Tücken hat.
-Viele der gefundenen Differenzen sind subtil und wären ohne explizites Suchen nach Differenzen vermutlich schwer zu finden.
+Viele der gefundenen Differenzen sind subtil und wären ohne explizites Suchen danach vermutlich schwer zu finden.
 Durch die Verbesserung von Wikidata-Toolkit können diese Differenzen reduziert werden.
 % 
 % owl#sameAs entities missing in generated:
