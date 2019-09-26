@@ -1,15 +1,129 @@
 \chapter{Evaluation}
 \label{chap:evaluation}
-Zur Evaluation der Anwendung werden wir in diesem Kapitel bewerten, ob Wikidata-Toolkit eine geeignete Wahl zum Erzeugen der RDF-Dumps ist.
-Dazu werden wir das von Wikidata-Toolkit erzeugte RDF mit den offizielen Wikidata RDF-Exporten vergleichen, um die Korrektheit und Vollständigkeit zu überprüfen.
-% Anschließend werden wir die Performance von Wikidata-Toolkit in dieser Anwendung analysieren, um mögliche Verbesserung zu identifizieren.
+Zur Evaluation der Anwendung wird diesem Kapitel bewertet, ob Wikidata-Toolkit eine geeignete Wahl zum Erzeugen der RDF-Dumps ist.
+Dazu wird das von Wikidata-Toolkit erzeugte RDF mit den offizielen Wikidata RDF-Exporten verglichen, um die Korrektheit und Vollständigkeit zu überprüfen.
 
 \section{Vorgehen}
+Für den Vergleich werden die JSON- und RDF-Exporte von Wikidata vom 26. August 2019 verwendet \TODO{cite}.
+Da sich die Daten während der Generierung des Exporten verändern, beschreiben die JSON- und RDF-Exporte nicht exakt die selben Daten.
+Deswegen werden für den Vergleich zusätzlich noch die Wikidata incremental Dumps verwendet.
+Diese enthalten die JSON-Version aller in einem Zeitraum geänderten Wikidata Dokumente, zusammen mit Revisionsnummer und Datum der Revision. 
+Damit können Dokumente des JSON-Dumps, deren Revisionsnummer nicht identisch zu dem entsprechenden Dokument in dem RDF-Export ist, durch die aktualisierte Version ersetzt werden.
+Um die Revisionsnummer eines Dokuments des RDF-Exports zu bestimmen wird das mit dem Prädikat \verb|schema:dateModified| angegebene Änderungsdatum verwendet.
 
+Nachdem beide Exporte so auf die selbe Version gebracht wurden, wird mit der Anwendung aus dem JSON-Export RDF erzeugt.
+Dazu werden keine Filter verwendet, entsprechend sollte die Anwendung in diesem Fall den RDF-Export komplett reproduzieren.
+Praktisch ist dabei, dass die Dokumente sowohl in dem JSON-Export als auch in dem RDF-Export in der selben Reihenfolge gespeichert sind.
+Damit kann der Vergleich für jedes Paar von Dokumenten separat erfolgen.
+
+Ein Problem für den Vergleich stellen die Value Nodes dar.
+Die IRI für Value Nodes enthält im RDF-Export von Wikidata einen Hash, der auf dem internen Datenmodell basiert und daher schwer zu reproduzieren ist.
+Aus diesem Grund stimmen die von Wikidata-Toolkit generierten Tripel nicht eins-zu-eins mit denen des RDF-Exports überein, da die IRIs von Values Nodes einen anderen Hash benutzen.
+Um dieses Problem zu lösen, muss zur Bestimmung der Differenzen eine Abbildung der IRIs aus dem Export zu den IRIs der generierten Daten bestimmt werden.
+Das ist allerdings nicht sonderlich schwer, da Value Nodes immer nur von Nodes mit festen IRIs referenziert werden (Referenz und Statement Nodes).
+Die Value Nodes können deswegen über ihre Verbindungen zu diesen Knoten identifiziert und abgeglichen werden.
+Diese Lösung funktioniert auch zum Abgleich der im Export vorkommenden Blank Nodes.
+
+Nach diesem Abgleich werden die Tripel verglichen.
+Die Differenzen sind die Tripel, die entweder nur im Export oder nur in dem generierten RDF vorkommen.
+Einige Differenzen sind schon vorher bekannt, die bspw. aufgrund von fehlenden Funktionen in Wikidata-Toolkit entstehen.
+Zur Vereinfachung der Analyse werden folgende Tripel von dem Vergleich ausgenommen:
+\begin{enumerate}
+  \item Tripel, deren Subjekt das Prefix \verb|wdata:| besitzt. Diese Tripel gehören zu den Data Nodes, welche aktuell von Wikidata-Toolkit nicht generiert werden. Die Data Nodes enthalten Metainformation zu dem Entity, wie \verb|schema:dateModified|.
+  \item Einige Entites sind nur im RDF-Export oder nur im JSON-Export enthalten. Das liegt zum einen an Löschungen in der Zeit zwischen der Erstellung beider Exports. Außerdem enthalten die RDF-Exporte auch Entities, die mittlerweile eine Weiterleitung auf ein anderes Entity sind. Diese Entities generiert Wikidata-Toolkit aber noch nicht. Diese Entities werden daher ignoriert.
+  \item Tripel, die normalisierte Werte für Properties angeben und die entsprechenden Value Nodes. Wikidata-Toolkit unterstützt normalisierte Werte noch nicht, weshalb ein Vergleich hier nicht möglich ist.
+  \item Tripel mit Prädikat \verb|schema:name| oder \verb|skos:prefLabel|. Diese Tripel sind Duplikate der Tripel mit Prädikat \verb|rdfs:label|, und Wikidata-Toolkit generiert aktuell nur \verb|rdfs:label|-Tripel.
+  \item Triple mit den Prädikaten \verb|owl:onProperty| oder \verb|owl:complementOf| sowie Tripel mit einem der Objekte \verb|owl:Class|, \verb|owl:Thing|, \verb|owl:Restriction|, \verb|owl:DatatypeProperty| oder \verb|owl:ObjectProperty|. Diese Tripel werden für OWL-Definitionen der Wikidata Properties verwendet. Im RDF-Export finden sich diese Tripel in dem Dokument für die Property, Wikidata-Toolkit generiert die Tripel jedoch wenn die Property das erste mal verwendet wird. Damit lassen sich diese Tripel nicht dokumentweise vergleichen.
+\end{enumerate}
 
 \section{Ergebnis} 
 
-Differences:
+\begin{table}
+  \begin{tabular}{lp{0.6\textwidth}}
+    \bfseries{Stichwort} & \bfseries{Beschreibung} \\
+    wdata: & Nicht implementiert \\
+    normalisierte Werte & Nicht implementiert \\
+    owl:sameAs & Weiterleitungen nicht implementiert \\
+    \\
+    Statement ID & Groß/Kleinschreibung der Item-ID in der Statement ID nicht beachtet \\
+    Language Tags & Unterschiedliche Language Tags \\
+    simple value (Referenz) & Bei Referenzen werden nur komplexe Werte angegeben \\
+    complex value (SomeValue) & SomeValue Snaks wird auch ein BNode für den komplexen Wert generiert \\
+    \\
+    invalide IRIs & URL-Werte mit \verb|"| erzeugen invalides RDF \\
+    Koordinaten & Längen- und Breitengrad in Koordinatenwerten vertauscht \\
+    Dezimalzahlen & Nicht konforme Verwendung von wissenschaftlicher Darstellung \\
+    Kalender & Umrechnung von Datumsangaben in gregorianischen Kalender fehlt \\
+    invalide Daten & Mehrere Abweichungen bei invaliden Daten (30 Februar etc) \\
+    Commons Link & Links zu Wikimedia Commons sind unterschiedlich (falsches Prefix und Behandlung von Sonderzeichen) \\
+    Formeln & Konvertierung nach MathML fehlt \\
+    falsche Literaltypen & \verb|xsd:int| vs \verb|xsd:integer|, Tippfehler bei \verb|wikibase:GlobeCoordinatesValue|, fehlender Datentyp \verb|wikibase:MusicalNotation| \\
+    Rundung & Gleitkommazahlen unterscheiden sich aufgrund von Rundungsfehlern \\
+    \\
+    Datumdeduplizierung & Datumsangaben wurden falsch dedupliziert (Präzision nicht beachtet) \\
+    Referenzdeduplizierung & Gleiche Referenzen mit unterschiedlicher Snak-Reihenfolge werden nicht dedupliziert \\
+  \end{tabular}
+  \caption{Übersicht der festgestellten Differenzen (aus Sicht von Wikidata-Toolkit)}
+  \label{tab:wdtk-diff}
+\end{table}
+
+Eine Übersicht über das Ergebnis des Vergleichs gibt \cref{tab:wdtk-diff}.
+Die meisten Differenzen lassen sich einfach beheben, oft sind nur wenige Veränderungen an Wikidata-Toolkit notwendig. Dazu zählen: Statement ID, invalide IRIs, simple value (Referenz), complex value (SomeValue), Koordinaten, Dezimalzahlen, Commons Link, Formeln, falsche Literaltypen, Datumdeduplizierung und Referenzdeduplizierung.
+Diese Korrekturen werden auch dem Wikidata-Toolkit Projekt beigetragen.
+Ein Großteil der Differenzen treten bei komplexen Literalwerten, wie Zeitdaten oder Geokoordinaten auf.
+Während die meisten Differenzen relativ harmlose Formfehler sind (wie das Verwenden falscher Literaltypen), sind auch drei inhaltliche Fehler aufgefallen.
+
+Der erste Fall ist die Vertauschung von Längen- und Breitengrad bei Koordinatenangaben.
+Statt \verb|"Point(4.6681 50.6411)"^^geo:wktLiteral| generiert Wikidata-Toolkit \verb|"Point(50.641111111111 4.6680555555556)"^^geo:wktLiteral| (die Abweichung der Fließkommazahlen liegen an dem Rundungsproblem). Die GeoSPARQL Spezifikation\cite{spec:geosparql} legt für den Datentyp \verb|geo:wktLiteral| fest, dass die Reihenfolge der Koordinaten abhängig vom angegebenen Koordinatensystem ist.
+Für den Standardwert CRS84\footnote{\url{http://www.opengis.net/def/crs/OGC/1.3/CRS84}} ist die Reihenfolge \emph{Längengrad}-\emph{Breitengrad}, was entgegen der verbreiteten Darstellung 50°38'28"N, 4°40'5"E ist.
+
+Der zweite Fall hängt mit der Deduplizierung von Value Nodes zusammen.
+Um die Größe des Dumps zu reduzieren, werden für gleiche komplexe Werte die selben Value Nodes verwendet, sodass die Daten nicht zweimal abgespeichert werden müssen.
+Wikidata-Toolkit verwendet dazu einfach den Hash, der auch in der IRI für die Value Node vorkommt.
+Falls schon ein Value Node für diesen Hash generiert wurde, werden die Daten nicht erneut geschrieben.
+Bei Daten und Zeitwerten berücksichtigt dieser Hash jedoch die Präzision des Wertes nicht.
+Damit werden Werte, die sich nur in der Präzisionsangabe unterscheiden, zum selben Value Node.
+Die Präzision aller Zeitwerte für diesen Zeitpunkt entspricht dann der Präzision des zuerst verarbeiteten Zeitwerts.
+Dieser Fehler lässt sich einfach beheben, in dem auch die Präzision mit in den Hash aufgenommen wird.
+Ein ähnliches Problem tritt im Zusammenhang mit Referenzen auf.
+Hier wird auch die Reihenfolge der Properties vom Hash berücksichtigt, sodass Referenzen mit gleichem Inhalt aber unterschiedlicher Reihenfolge unterschiedliche Hashes erhalten.
+Diese Differenz ist natürlich deutlich weniger kritisch (ob diese Differenz überhaupt einen inhaltlichen Fehler darstellt ist streitbar) lässt sich aber genauso einfach beheben.
+
+Der dritte Fall betrifft auch Datumsangaben.
+Die XML-Schema Spezifikation verlangt, dass Literale mit Typ \verb|xsd:dateTime| im proleptischen gregorianischen Kalender angegeben werden.\footnote{\url{https://www.w3.org/TR/xmlschema11-2/\#dateTime}}
+Im JSON-Export sind jedoch auch Daten im julianischen Kalender vorhanden.
+Wikidata-Toolkit hat die notwendige Konversion zum gregorianischen Kalender noch nicht implementiert.
+Dieser Fehler kann die Daten um mehrere Tage verändern. Ein Beispiel dafür sind diesen beiden Tripel:
+\begin{lstlisting}[language=SPARQL]
+# tripel aus dem Wikidata RDF Export
+wd:Q45 wdt:P571 "1143-10-12T00:00:00Z"^^xsd:dateTime .
+
+# tripel von Wikidata-Toolkit generiert
+wd:Q45 wdt:P571 "1143-10-05T00:00:00Z"^^xsd:dateTime .
+\end{lstlisting}
+
+Datumsangaben sind allgemein komplex, was sich auch in weiteren Differenzen zeigt. 
+Diese sind zwar inhaltlich nicht falsch, entsprechen aber trotzdem nicht der Spezifikation.
+Ein Beispiel sind negative Jahreszahlen.
+Die XML Schema Spezifikation verlangt hier, dass die Jahreszahl (ohne das Minuszeichen) vierstellig ist.
+Wikidata-Toolkit generiert aber insgesamt nur vier Stellen (mit Minuszeichen).
+Weiterhin gibt es Abweichungen bei invaliden Daten.
+Der RDF-Export von Wikidata versucht diese zu bereinigen.
+Wenn Tag oder Monat 0 ist, wird dieser auf 1 geändert und der Tag wird auf die maximale Anzahl an Tagen für diesen Monat begrenzt.
+Das wird auch von der XML-Schema Spezifikation so verlangt.
+Wikidata-Toolkit verändert die Daten jedoch deutlich weniger, sodass sich die Tripel hier unterscheiden.
+
+Weitere Differenzen finden sich bei den Language Tags.
+Das Problem tritt hier bei weniger verbreiteten Sprachen auf, die teilweise keinen Language Code nach BCP47\footnote{\url{https://tools.ietf.org/html/bcp47}} besitzen.
+Wikidata Toolkit versucht hier, die Wikimedia Language Codes auf BCP47 Codes abzubilden.
+Diese Abbildung wird im RDF Export von Wikidata nicht vorgenommen.
+In diesem Fall ist es schwer zu sagen, welche Variante ``korrekt'' ist, da RDF explizit die Verwendung von BCP47 vorsieht.
+Dennoch sollte sich am Ende für eine einheitliche Variante entschieden werden.
+Die Verwendung der Wikimedia Language Codes, die sich auch an BCP47 orientieren, stellt hier die einfachste Lösung da.
+
+Insgesamt zeigt dieser Vergleich, dass das komplexe Datenmodell von Wikidata auch einige Tücken hat.
+Viele der gefundenen Differenzen sind subtil und wären ohne explizites Suchen nach Differenzen vermutlich schwer zu finden.
+Durch die Verbesserung von Wikidata-Toolkit können diese Differenzen reduziert werden.
 % 
 % owl#sameAs entities missing in generated:
 %     <https://www.wikidata.org/wiki/Special:EntityData/Q6825> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Dataset> .
@@ -87,13 +201,6 @@ Differences:
 %     <http://www.wikidata.org/entity/statement/Q133308-142F7486-FF03-45FB-8F26-8BB40461CEE0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.wikidata.org/prop/noqualifiervalue/P1366> .
 % 
 % SomeValue is simple only
-% 
-% OWL missing in official dumps?
-% 
-% Language tags: upper cs lower case? -> RDF says lower case is OK
-%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P1549> "比利时"@zh-cn .
-%     --
-%     <http://www.wikidata.org/entity/Q31> <http://www.wikidata.org/prop/direct/P1549> "比利时"@zh-CN .
 % 
 % Some metadata about wikilinks is missing:
 %     <https://sc.wikipedia.org/wiki/B%C3%A8lgiu> <http://schema.org/isPartOf> <https://sc.wikipedia.org/> .
