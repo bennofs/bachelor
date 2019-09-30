@@ -5,8 +5,8 @@ Die Anwendung besteht aus zwei Teilen: Backend und Frontend. Über das Frontend 
 Das Backend stellt dazu in regelmäßigen Abständen Anfragen an eine Datenbank, um nach neuen Aufträgen zu schauen welche vom Frontend hinzugefügt wurden.
 Man könnte dafür auch eine spezielle Message-Queue verwenden. Die Datenbank wäre in diesem Fall allerdings trotzdem notwendig, um Metadaten zu den Aufträgen persistent zu speichern. Um die Komplexität gering zu halten wurde deshalb auf eine separate Message-Queue verzichtet.
 
-In diesen Kapitel werden wir uns zunächst das Datenmodell anschauen, welches zur Kommunikation verwendet wird.
-Danach werden wir die Implementierung von jeweils Frontend und Backend genauer betrachten.
+In diesen Kapitel wird erst das Datenmodell vorgestellt, welches zur Kommunikation verwendet wird.
+Danach wird die Implementierung von jeweils Frontend und Backend genauer beschrieben.
 
 \section{Datenmodell}
 \begin{figure}
@@ -34,11 +34,11 @@ Sobald neue Aufträge verfügbar sind, wird die Verarbeitung gestartet.
 Neue Aufträge werden dann erst wieder nach Beendigung des aktuellen Verarbeitungsprozesses abgerufen.
 
 Am Start befindet sich das Backend in der wartenden Phase.
-Um neue Aufträge abzurufen, werden dazu periodische die in \cref{lst:backend-waiting} dargestellten SQL-Befehl in einer Transaktion ausgeführt.
+Um neue Aufträge abzurufen, werden dazu periodische die in \cref{lst:backend-waiting} dargestellten SQL-Befehle in einer Transaktion ausgeführt.
 Da in Zeile 6 nur Aufträge zugewiesen werden, die noch keinem \verb|Run| zugwiesen sind, kann diese Abfrage theoretisch auch von mehreren Prozessen gleichzeitg ausgeführt werden ohne dabei Kollisionen zu erzeugen.
 Es ist so unmöglich, dass ein Auftrag mehr als einem \verb|Run| zugwiesen wird, was die Robustheit des Systems erhöht.
 Falls diese Befehle keine Ergebnisse liefern (wenn keine neuen Aufträge vorliegen), wird eine definierte Zeit gewartet bevor dieser Vorgang wiederholt wird.
-Diese Wartezeit führt gleichzeitig dazu, dass mehrere Aufträge gesammelt werden können, da die Verabeitung nicht direkt beginnt.
+Diese Wartezeit führt gleichzeitig dazu, dass mehrere Aufträge gesammelt werden können, da die Verarbeitung nicht direkt beginnt.
 
 \begin{lstlisting}[language=SQL, caption={Abrufen neuer Aufträge}, label={lst:backend-waiting}]
 -- neuen Run erstellen
@@ -65,7 +65,7 @@ Der RDF-Export ist dabei als eine Klasse implementiert, welche das von Wikidata-
 
 
 \cref{lst:export-pseudo} zeigt den Ablauf des Exports in Pseudocode.
-Für jede Entität (Items, Properties und Lexemes) wird dazu zunächst überprüft ob sie überhaupt exportiert werden soll.
+Für jede Entität (Items, Properties und Lexemes) wird dazu zunächst überprüft, ob sie exportiert werden soll.
 Nur wenn das der Fall ist, werden danach für jedes Statement die Optionen zum Export entsprechend der Filter-Spezifikation bestimmt. 
 Wenn die Optionen feststehen, kann dann das Statement exportiert werden.
 Aktuell werden Lexemes noch nicht untersützt, da Wikidata-Toolkit den RDF-Export dafür noch nicht implementiert hat.

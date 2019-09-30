@@ -1,38 +1,38 @@
 \chapter{Design}
 \label{chap:design}
-
-In diesem Kapitel werden wir nun die Anforderungen präzisieren und ein Design für die Umsetzung erarbeiten.
-Dazu sind mehrere Aspekte relevant: zum einen die technische Umsetzung der Filterung und Generierung von Dumps (Architektur und unterstützte Filterkriterien), aber auch das User-Interface und welche externen Dienste genutzt werden können (z.B. für die Archivierung der erzeugten Dumps).
-Diese bedingen sich gegenseitig: es nützt wenig, wenn die Architektur sehr komplexe Filterkriterien unterstützt, dass User-Interface diese aber gar nicht abbilden kann (oder umgekehrt).
+In diesem Kapitel werden die Anforderungen präzisiert und ein Design für die Umsetzung erarbeitet.
+Dazu sind mehrere Aspekte relevant: zum einen die technische Umsetzung der Filterung und Generierung von Dumps (Architektur und unterstützte Filterkriterien), sowie das User-Interface und welche externen Dienste genutzt werden können (z.B. für die Archivierung der erzeugten Dumps).
+Diese bedingen sich gegenseitig: es ist wenig sinnvoll, wenn die Architektur sehr komplexe Filterkriterien unterstützt, dass User-Interface das aber gar nicht abbilden kann (oder umgekehrt).
 
 \section{Architektur}
 Für die Architektur der Anwendung stellt sich zuerst die Frage, wie die Arbeit zwischen Server und Client verteilt werden soll.
-Auf der einen Seite steht die Variante, einen schlauen Client zu entwickeln welcher direkt mit der Wikidata API und dem SPARQL-Endpunkt spricht bzw. den Dump als Stream verarbeitet.
+Auf der einen Seite steht die Variante, einen schlauen Client zu entwickeln, welcher direkt mit der Wikidata API und dem SPARQL-Endpunkt spricht bzw. den Dump als Stream verarbeitet.
 Der Client kann dann von jedem Nutzer lokal auf seinem eigenen System ausgeführt werden.
-Der Vorteil dieser Variante ist klar: der Server müsste in diesem Fall keine eigenen Dumps erzeugen, sondern maximal Metadaten zu generierten Dumps speichern.
-Allerdings bringt diese Variante auch mehrere Probleme: erstens muss der Client vom Nutzer selbst ausgeführt werden, was problematisch wird wenn die Erzeugung der Dumps einen längeren Zeitraum in Anspruch nimmt, da dann das System des Nutzers die gesamte Zeit online sein muss. Zweitens müsste für die Archivierung der Nutzer die Dumps selbst hochladen.
+Der Vorteil dieser Variante ist eindeutig: der Server müsste in diesem Fall keine eigenen Dumps erzeugen, sondern maximal Metadaten zu generierten Dumps speichern.
+Allerdings bringt diese Variante auch mehrere Probleme: erstens muss der Client vom Nutzer selbst ausgeführt werden, was problematisch wird wenn die Erzeugung der Dumps einen längeren Zeitraum in Anspruch nimmt, da dann das System des Nutzers die gesamte Zeit online sein muss.
+Zweitens müsste für die Archivierung der Nutzer die Dumps selbst hochladen.
 Die Generierung auf einem Server hat diese Nachteile nicht.
 Der Nutzer muss während der Generierung nicht online sein, sondern kann den Dump einfach herunterladen sobald dieser fertig ist.
 Außerdem kann die Archivierung vom Server übernommen werden.
-Die Anwendung implementiert die Logik zur Generierung der Dumps daher auf dem Server.
+Die umgesetzte Anwendung implementiert die Logik zur Generierung der Dumps daher auf dem Server.
 
-Die nächste Frage ist nun, wie der Server die Dumps generieren soll. Dafür sind drei Varianten denkbar:
+Für die Generierung der Dumps auf dem Server sind drei Varianten denkbar:
 \begin{enumerate}[label=\alph*) ]
   \item Der Server verwaltet einen eigenen Index
   \item Der Server nutzt den Wikidata SPARQL Endpunkt und die Wikidata API
-  \item Der Server verarbeitet die existierend JSON oder RDF-Dumps von Wikidata auf Anfrage sequentiell
+  \item Der Server verarbeitet die existierend JSON- oder RDF-Exporte von Wikidata auf Anfrage sequentiell
 \end{enumerate}
 Variante a) könnte zum Beispiel so aussehen, dass die Daten vorher in kleine Blöcke zerlegt werden, von denen dann nur die gewünschten kombiniert werden.
 Insgesamt hat diese Variante den Vorteil, dass die Erzeugung der Dumps sehr schnell geht, denn es müssen nur die geforderten Blöcke gelesen werden.
 Allerdings ist die Variante relativ komplex zu implementieren, da der Index mit den aktuellen Daten von Wikidata synchron gehalten werden muss.
-Dazu ist entweder einen periodische Neuerstellung notwendig oder der Index muss inkrementell aktualisiert werden, was die Komplexität weiter erhöht.
-Die Notwendigkeit der inkrementellen Aktualisierung und gezielten Zugriff auf Teile der Daten hindert außerdem die Kompression.
-Diese Variante hat also einen hohen Speicherplatzbedarf.
+Dazu ist entweder eine periodische Neuerstellung notwendig oder der Index muss inkrementell aktualisiert werden, was die Komplexität weiter erhöht.
+Die Notwendigkeit der inkrementellen Aktualisierung und des gezielten Zugriff auf Teile der Daten hindert außerdem die Kompression.
+Diese Variante hat damit einen hohen Speicherplatzbedarf.
 
-Variante b) basiert auf der Beobachtung, dass Indexierung der Daten genau das ist, was auch RDF-Datenbanken machen.
+Variante b) basiert auf der Beobachtung, dass die Indexierung der Daten genau das ist, was auch RDF-Datenbanken machen.
 Es gibt schon eine existierende RDF-Datenbank für die Daten von Wikidata, die über den Wikidata Query Service abgefragt werden kann.
 Diese wird auch ständig aktuell gehalten, was das Problem der Aktualität löst.
-Die Generierung der Dumps in dieser Variante würde also aus den Filterkriterien einen SPARQL-Query generieren, und diesen dann an den SPARQL-Endpunkt von Wikidata senden.
+Die Generierung der Dumps in dieser Variante würde aus den Filterkriterien einen SPARQL-Query generieren und diesen dann an den SPARQL-Endpunkt von Wikidata senden.
 Wie auch Variante a) ist diese Möglichkeit sehr schnell, der Wikidata SPARQL Endpunkt besitzt ein Timeout von 60 Sekunden.
 Genau das ist aber auch ein Problem dieser Variante: das Timeout von 60 Sekunden erlaubt es nicht, sehr große Mengen von Daten über den Query Service anzufragen. Zum Beispiel terminiert diese Abfrage, welche alle Instanzen der Klasse \verb|Q13442814| (wissenschaftlicher Artikel) abfragt, nicht innerhalb des Timeouts (das Ergebnis wären 21986127 Entities):
 \begin{lstlisting}[language=SPARQL, caption=SPARQL-Query nach wissenschaftlichen Artikeln]
@@ -40,21 +40,20 @@ SELECT ?item {
   ?item wdt:P31 wd:Q13442814
 } 
 \end{lstlisting}
-Und dieser Query fragt noch gar nicht nach Statements oder Labels der gefundenen Artikel.
-Dieses Problem ist auch schon in der Praxis vorgekommen\cite{wd-wk-common-references}.
+Zu den Items müssten dann auch noch die Statements und Referenzen abgerufen werden, die in diesem Query noch gar nicht betrachtet werden.
 
 Die Variante c) hat dieses Problem nicht.
 Dafür ist hier die Generierung von Dumps deutlich langsamer, da für die Generierung ein vollständiger Wikidata-Export verarbeitet werden muss.
-Der Vorteil dieser Lösung ist das sie im Vergleich zu Variante a) einfacher in der Umsetzung ist, da keine Synchronisation oder komplexe Indexstrukturen notwendig sind.
+Der Vorteil dieser Lösung ist, dass sie im Vergleich zu Variante a) einfacher in der Umsetzung ist, da keine Synchronisation oder komplexe Indexstrukturen notwendig sind.
 Zudem ist kein zusätzlich Speicherbedarf für einen Index erforderlich, der Wikidata-Export kann direkt als Datenstrom verarbeitet werden.
 Im Gegensatz zu Variante b) müssen die Filterkriterien nicht als SPARQL formulierbar sein, sondern können in der Programmiersprache implementiert werden, die für die Verarbeitung der Exports genutzt wird.
-Dafür sind komplexe, graph-basierte Filter die das Betrachten von mehr als einer Entität auf einmal erfordern, nicht so einfach umsetzbar.
+Dafür sind komplexe, graph-basierte Filter, die das Betrachten von mehr als einer Entität auf einmal erfordern, nicht so einfach umsetzbar.
 
 Die Auswahl der Architektur ist auch davon abhängig, welche Kriterien zur Filterung unterstützt werden sollen.
 Ein paar Beispiele von Kriterien, nach denen andere Arbeiten die Exporte von Wissensgraphen wie Wikidata gefiltert haben, sind:
 \begin{enumerate}[label=\arabic*)]
   \item nur ``truthy'' Statements mit Entities als Objekt, Labels/Beschreibungen nur in Englisch und Spanisch\cite{usage-grafa}
-  \item nur truthy simple Statements, wobei sowohl Subjekt als auch Objekt ein Wikidata-Item sind\cite{usage-wembedder}
+  \item nur `'truthy'' simple Statements, wobei sowohl Subjekt als auch Objekt ein Wikidata-Item sind\cite{usage-wembedder}
   \item alle Items mit einem Statement für die Property \verb|P727| (Europeana ID, ID in der europäischen virtuellen Bibliothek „Europeana“ für Kulturobjekte)\cite{usage-europeana}
   \item alle Items mit einem Statement für mindestens eine von 50 Properties\cite{usage-narratives} 
   \item nur der englische Teil\cite{usage-web-tables} 
@@ -63,20 +62,20 @@ Ein paar Beispiele von Kriterien, nach denen andere Arbeiten die Exporte von Wis
   \item kleinere Datensätze, erzeugt durch zufälliges Auswählen von Statements\cite{usage-sparql-benchmark}
   \item alle Items, die Instanzen (\verb|P31|) der Klassen \verb|Q5| (Mensch) sind und mindestens 6 Fakten (Statements) haben\cite{usage-one-sentence} oder nur die einfachen Statements dieser Personen für die Properties \verb|P27| (Land der Staatsangehörigkeit) und \verb|P106| (Tätigkeit)\cite{usage-person-networks}
   \item zufällige Auswahl von Entities (Sampling), mit englischer Beschreibung und mindestens 5 Statements\cite{usage-generate-entity-type-desc}, optional auch mit Downsampling von Instanzen bestimmter Klassen (um die Verteilung der Klassen im Ergebnis auszugleichen)\cite{usage-synthesize-entity-desc}
-  \item alle Statements welche Referenzen haben, und die Sitelinks der Subjekte dieser Statements\cite{wd-wk-common-references}
+  \item alle Statements, welche Referenzen haben, und die Sitelinks der Subjekte dieser Statements\cite{wd-wk-common-references}
 \end{enumerate}
 Alle diese Filter sind für jede Entität lokal auswertbar, es müssen keine benachbarten Entitäten angeschaut werden.
-Nur die Entscheidung, für welche Properties die Statements exportiert werden sollen ist teilweise komplizierter.
+Nur die Entscheidung, für welche Properties die Statements exportiert werden sollen, ist teilweise komplizierter.
 Bei einer sequentiellen Verarbeitung von Dumps ist die Zugehörigkeit einer Property zu einer Klasse erst bekannt, sobald die Entität für diese Property verarbeitet wurde.
 Da die Anzahl der Properties jedoch gering genug ist (< 10000), können solche komplexe Filter vor Beginn der Verarbeitung mithilfe des Wikidata Query Service in eine Liste von Properties aufgelöst werden.
 Die Variante c) kann damit die Filter dieser Art abdecken.
-Auch Sampling kann in dem sequentiellen Ansatz einfach implementiert werden.
+Auch Sampling (zufällige Auswahl eines Subsets der Daten) kann in dem sequentiellen Ansatz einfach implementiert werden.
 
 Insgesamt bietet der sequentielle Ansatz die meiste Flexibilität und ist einfach in der Implementierung.
 Variante a) ist komplizierter und weniger flexibel, da ein Index nur bestimmte Filter effizient unterstützt.
-Variante b) funktioniert nur für kleinere Dumps, bei größeren Dumps das Problem des Timeouts auftritt.
+Variante b) funktioniert nur für kleinere Dumps, weil bei größeren Dumps das Problem des Timeouts auftritt.
 Die Einfachheit der Variante c) erlaubt es, schnell neue Arten von Filtern zu implementieren.
-In dieser Arbeit wurde sich deshalb für diese Variant entschieden, auch da zu erwarten ist dass das System am Anfang noch keine Nutzung in so großem Ausmaß haben wird, um die Komplexität und den zusätzlichen Speicherbedarf eines Index zu rechtfertigen.
+In dieser Arbeit wurde sich deshalb für diese Variante entschieden, auch da zu erwarten ist, dass das System am Anfang noch keine Nutzung in so großem Ausmaß haben wird, um die Komplexität und den zusätzlichen Speicherbedarf eines Index zu rechtfertigen.
 
 \section{Interface}
 Das Interface hat die Aufgabe, die Erstellung und Spezifikation von Dumps möglichst einfach zu gestalten und bereits existierende Dumps zu finden und anzuzeigen.
@@ -86,9 +85,9 @@ Die Anwendungsfälle für das Filtern von Wikidata sind verschieden.
 Ein typisches Szenario ist die Extraktion von Daten einer bestimmten Thematik, z.B. nur Daten von Personen oder Städten.
 In diesem Fall geschieht die Filterung auf Entitätenebene, mit eventuell zusätzlichen Einschränkung der zu exportierende Statements und Sprachen.
 Ein anderes Szenario orientiert sich mehr an der Struktur der Statements.
-Beispiele hierfür sind die Analyse von lediglich Statements mit Referenzen, die Extraktion aller Statements für eine bestimmte Property oder alle Statements mit deprecrated Rank.
+Beispiele hierfür sind die Analyse von Statements mit mindestens einer Referenz, die Extraktion aller Statements für eine bestimmte Property oder alle Statements mit deprecrated Rank.
 Das dritte Szenario verwendet Filterung, um die Daten für Benchmarks auf eine kleinere Menge zu reduzieren.
-In diesem Fall sind statistische Filter interessant, um z.B. nur jedes zehnte Statement oder nur jede zehnte Entität zu exportieren.
+In diesem Fall sind statistische Filter interessant, um zum Beispiel nur jedes zehnte Statement oder nur jede zehnte Entität zu exportieren.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{pics/ui-layout}
@@ -99,7 +98,7 @@ In diesem Fall sind statistische Filter interessant, um z.B. nur jedes zehnte St
 In Wikidata sind Statements immer ein Teil von Entities.
 Folglich kann der Filterprozess konzeptionell in zwei Schritte zerlegt werden: zuerst werden die Entities ausgewählt, danach für diese Entities die zu exportierenden Statements.
 Zusätzlich gibt es noch weitere globale Optionen, die sich nicht auf einzelne Statements beziehen, wie bspw. welche Sprachen exportiert werden sollen oder ob sitelinks von Entities exportiert werden sollen.
-Diese Struktur des Interfaces in \cref{fig:ui-layout} dargestellt.
+Diese Struktur des Interfaces ist in \cref{fig:ui-layout} dargestellt.
 
 Für die Auswahl der Entitäten sind viele verschiedene Arten von Bedingungen denkbar.
 Deswegen erlaubt das Interface die Kombination mehrerer Entitätsfilter von unterschiedlicher Art.
@@ -115,23 +114,23 @@ In diesem Fall werden alle Entitäten exportiert (entsprechend den weiteren Rege
 
 Für die Statements können Exportoptionen festgelegt werden.
 Dafür gibt zum einen Standardoptionen, die für alle Statements der selektierten Entitäten angewendet werden.
-Zusätzlich können für bestimmte Predikate spezielle Exportoptionen festgelegt werden.
-Damit können beispielsweise qualifier nur bei bestimmten Prädikaten exportiert werden.
+Zusätzlich können für bestimmte Prädikate spezielle Exportoptionen festgelegt werden.
+Damit können beispielsweise Qualifier nur bei bestimmten Prädikaten exportiert werden.
 Die Optionen für den Export von Statements orientieren sich an der Struktur von Wikidata-Statements.
 Für jede Komponente eines Statements (simple Statement, full Statement, Qualifier und Referenzen) kann einzeln festgelegt werden, ob diese generiert werden soll oder nicht.
 Eine weitere Kategorie von Optionen betrifft den Export von Werten.
-Hier könnte man Schalter für den Export von einfachen Werten, komplexen Werten, normalisiert oder nicht normalisiert anbieten.
-Da das Backend dies aber aktuell noch nicht unterstützt sind diese Optionen aktuell im Interface noch nicht vorhanden.
-Insgesamt ist dieser Teil aber einfach erweiterbar, da die Optionen alle binär sind und somit einfach umsetzbar.
+Dafür sind Schalter für den Export von einfachen Werten, komplexen Werten, normalisiert oder nicht normalisiert möglich.
+Da das Backend das aber noch nicht unterstützt sind diese Optionen im Interface noch nicht vorhanden.
+Insgesamt ist dieser Teil aber einfach erweiterbar, da die Optionen alle binär und somit einfach umsetzbar sind.
 
 Die globalen Optionen sind auch größtenteils binär.
 Hier kann eingestellt werden, ob Labels, Beschreibungen, Aliase bzw. sitelinks für selektierte Entitäten exportiert werden sollen.
 Zudem findet sich hier die Option für die zu exportierenden Sprachen.
 Man kann entweder keine Filterung der Sprachen vornehmen (alle Sprachen exportieren) oder eine Liste von Sprachen angeben.
 
-An allen Stellen wo dies sinnvoll ist bietet das Interface automatische Vervollständigung an.
+An allen Stellen wo dies sinnvoll ist, bietet das Interface automatische Vervollständigung an.
 Das trifft auf alle Eingabefelder für Entitäten zu, wobei Entitäten hier über ihr Label vervollständigt werden.
-Außerdem wird eine Vervollständigung bei der Angabe von Sprache angeboten, wobei eine feste Liste der möglichen Sprachen verwendet wird.
+Außerdem wird eine Vervollständigung bei der Angabe von Sprachen angeboten, wobei eine feste Liste der möglichen Sprachen verwendet wird.
 
 \section{Integration in existierende Infrastruktur}
 Um die Anwendung zu betreiben, werden Ressourcen in Form von Rechenzeit für die Generierung der Dumps und Speicherplatz für die Archivierung benötigt.
@@ -153,4 +152,4 @@ Dabei stellt sich die Frage, welcher Account für den Upload verwendet wird.
 Zenodo bietet auch einen OAuth-Schnittstelle an, sodass es möglich wäre, die Dumps direkt zu einem Account des Nutzers hochzuladen.
 Das erfordert es allerdings, dass Nutzer bereits einen Zenodo-Account besitzen.
 Da die Implementierung von OAuth zudem zusätzliche Komplexität verursacht, verwendet die erste Version der Anwendung einen eigenen Account, der speziell dafür erstellt wurde.
-Damit ist es mit einem Klick möglich, einen Dump zu Zenodo hochzuladen und den Dump dann über die DOI zu referenzieren, ohne das Nutzer selbst einen Account bei Zenodo benötigen.
+Damit ist es mit einem Klick möglich, einen Dump zu Zenodo hochzuladen und den Dump dann über die DOI zu referenzieren, ohne das die Nutzer selbst einen Account bei Zenodo benötigen.

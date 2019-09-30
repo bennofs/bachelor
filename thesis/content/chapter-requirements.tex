@@ -1,7 +1,10 @@
 \chapter{Anforderungen}
 \label{chap:requirements}
+In diesem Kapitel werden die Anforderungen an das System zum Erstellen von gefilterten RDF-Dumps definiert.
+Dazu werden zuerst die funktionalen, dann die nicht-funktionalen Anforderungen betrachtet.
+Um das System von bereits existierenden Systemen abzugrenzen werden danach verwandte Systeme verglichen.
 
-\section{funktionale Anforderungen}
+\section{Funktionale Anforderungen}
 Im Fokus dieser Arbeit steht die Entwicklung eines Systems zur Filterung des RDF-Exports von Wikidata.
 Damit sollen Wissenschaftler mit wenig Aufwand Dumps nach speziellen Kriterien erstellen können.
 Die wesentlichen Merkmale des Systems sind:
@@ -10,32 +13,33 @@ Die wesentlichen Merkmale des Systems sind:
   \item[Format] Der Dump soll als RDF im N-Triples Format erstellt werden. Damit die gefilterten Dumps möglichst kompatibel mit dem vollständigen Wikidata RDF Dump sind, sollte das Schema dem offiziellen RDF-Dump-Format entsprechen. Erweiterungen des Schemas müssen klar gekennzeichnet sein.
   \item[Filterung] Nutzer sollen über eine einfache Oberfläche wählen können, welche Entitäten in welchem Detailgrad im erstellten Dump enthalten sind. 
   \item[Archivierung] Damit die Dumps in wissenschaftlichen Veröffentlichungen zitiert werden können, muss die Verfügbarkeit auch in ferner Zukunft garantiert werden. Deshalb ist eine Methode zur Langzeitarchivierung generierter Dumps notwendig. 
-  \item[Suche] es soll eine durchsuchbare Übersicht über alle erstellen Dumps.
-    So können Ideen anderer Nutzer als Vorlage dienen und nicht jeder Nutzer muss sich eigene Filterregeln ausdenken,
-  \item[Statistiken] Um schnell zu entscheiden, ob ein Dump für einen bestimmten Anwendungsfall geeignet ist, sollten Statistiken über den Inhalt (z.B. die Anzahl der Entitäten) des Dumps angezeigt werden. Zusätzlich sollten auch schon während der Generierung Statistiken zum Fortschritt des Dumps bereitgestellt werden.
+  \item[Suche] Es soll eine durchsuchbare Übersicht über alle erstellten Dumps.
+    So können Ideen anderer Nutzer als Vorlage dienen und nicht jeder Nutzer muss sich eigene Filterregeln ausdenken.
+  \item[Statistiken] Um schnell zu entscheiden, ob ein Dump für einen bestimmten Anwendungsfall geeignet ist, sollten Statistiken über den Inhalt (z.B. die Anzahl der Entitäten) des Dumps angezeigt werden. Zusätzlich sollten schon während der Generierung Statistiken zum Fortschritt des Dumps bereitgestellt werden.
   \item[Nachvollziehbarkeit] Gerade für den wissenschaftlichen Einsatz ist es erforderlich, dass die Herkunft der Daten und Generierung nachvollziehbar ist. Es sollte demnach leicht sichtbar sein, wie der Dump entstanden ist und eine Reproduktion des Dumps mit diesen Daten möglich sein. 
   \item[Aktualität der Daten] Die Dumps sollten aus möglichst aktuellen Daten erstellt werden.
     Es ist natürlich nicht notwendig, dass die Dumps immer komplett aktuell sind, aber die Daten zur Generierung der Dumps sollten regelmäßig aktualisiert werden.
 \end{description}
 
-\section{nicht-funktionale Anforderungen}
-Neben den Anforderungen an die Funktion des Systems existieren auch eine Reihe von weiteren Anforderungen:
+\section{Nicht-funktionale Anforderungen}
+Für den Betrieb des Systems existieren eine Reihe an nicht-funktionale Anforderungen:
 
 \begin{description}
   \item[Hardwareanforderungen] Der Ressourcenverbrauch des Systems sollte in einem akzeptablen Rahmen liegen.
   Als Anhaltspunkte für die Beurteilung dienen hier vergleichbare Systeme, wie bspw. der Wikidata Query Service, welcher ebenfalls Services basierend auf den RDF-Daten von Wikidata anbietet und gleichzeitig deutlich populärer ist. Demnach sollte das System entsprechend seiner Relevanz geringere Hardwareanforderungen als der Wikidata Query Service haben.
 \item[Freie Lizenz] Die Wikimedia Foundation legt großen Wert darauf, möglichst viele der verwendeten Tools unter einer freien Lizenz bereitzustellen\cite{wikimedia-guiding-principles}.
   Wenn das System in der Wikimedia Cloud betrieben werden soll, dann ist die Veröffentlichung des Quellcodes unter einer freien Lizenz sogar Pflicht\cite{wikimedia-cloud-tos}.
-\item[Bearbeitungszeit] Das System sollte maximal einen Tag zur Generierung eines Dumps benötigen, besser unter 12 Stunden. Während längerer Prozesse sollte keine ständig Verfügbarkeit des Nutzers erwartet werden. 
-\item[Erweiterbarkeit] Da die funktionalen Anforderungen an das System sehr allgemein sind, muss auf Erweiterbarkeit geachtet werden sodass neue Anforderungen einfach umgesetzt werden können. Es sind beispielsweise viele verschiedene Filtermöglichkeiten und Statistiken denkbar, die nicht alle in der ersten Version umgesetzt werden können. Es ist daher sinnvoll vor allem in diesem Bereich auf Erweiterbarkeit zu achten.
-\item[Skalierbarkeit] Wikidata wächst beständig, aktuell existieren etwas weniger als 59 Millionen Items.\TODO{cite}
-  Insgesamt gibt es über 700 Millionen Statements und diese Zahl ist allein im letzten Jahr um 200 Millionen gewachsen. Das System muss also mit dieser Menge an Daten umgehen können und dies auch für die nächsten Jahre noch leisten können.
+\item[Bearbeitungszeit] Das System sollte maximal einen Tag zur Generierung eines Dumps benötigen, besser unter 12 Stunden. Während längerer Prozesse sollte keine ständige Verfügbarkeit des Nutzers erwartet werden. 
+\item[Erweiterbarkeit] Da die funktionalen Anforderungen an das System sehr allgemein sind, muss auf Erweiterbarkeit geachtet werden, sodass neue Anforderungen einfach umgesetzt werden können. Es sind beispielsweise viele verschiedene Filtermöglichkeiten und Statistiken denkbar, die nicht alle in der ersten Version umgesetzt werden können. Es ist daher sinnvoll vor allem in diesem Bereich auf Erweiterbarkeit zu achten.
+\item[Skalierbarkeit] Wikidata wächst beständig, Stand September 2019 existieren etwas mehr als 60 Millionen Items\footnote{\url{https://web.archive.org/web/20190930152246/https://www.wikidata.org/wiki/Wikidata:Statistics}}.
+  Insgesamt gibt es über 700 Millionen Statements\footnote{\url{https://grafana.wikimedia.org/d/000000175/wikidata-datamodel-statements?refresh=30m&orgId=1}} und diese Zahl ist allein im letzten Jahr um 200 Millionen gewachsen. Das System muss mit dieser Menge an Daten umgehen können und dies auch für die nächsten Jahre noch leisten können.
 \end{description}
 
 \section{Verwandte Arbeiten}
 Zu den verwandten Projekten gehört sicherlich der Wikidata Query Service\cite{wd-sparql}, welcher bereits einen gezielten Zugriff auf die Daten gewährt.
 Die Daten des Query Services entsprechen bis auf wenige Minuten Verzögerung der neusten Wikidata Version.
-Da der Query Service allerdings beliebige SPARQL-Abfragen erlaubt, ist ein Timeout von einer Minute notwendig um zu großen Ressourcenverbrauch abzufangen, denn bei SPARQL-Abfragen kann die Termination nicht sichergestellt werden.
+Da der Query Service allerdings beliebige SPARQL-Abfragen erlaubt, kann die Termination nicht sichergestellt werden.
+Deshalb existiert ein Laufzeitlimit von einer Minute um zu großen Ressourcenverbrauch abzufangen.
 Für die Erzeugung von großen Dumps ist der Query Service damit ungeeignet.
 
 Zwei weitere existierende APIs, der Linked Data Export von Wikidata und die Wikidata API, skalieren ebenso nicht für größere Abfragen.
@@ -43,22 +47,29 @@ Mit dem Linked Data Export können die RDF und JSON Daten einzelner Items über 
 Die API erlaubt das Abrufen der JSON Daten von bis zu 50 Items in einer Anfrage.
 Beide Varianten sind daher nur für den Abruf einer kleinen Menge an Items geeignet.
 
-Ein Mittelweg zwischen Abfragekomplexität für den Server und Anzahl an Abfragen an der Server beschreibt die Linked Data Fragments\cite{ldf} Spezifikation.
-Allerdings führt dies zu hohen Abfragekosten auf dem Client, da die Joins auf dem Client ausgewertet werden.
-Die Implementierung für Wikidata basiert außerdem auf der selben RDF-Datenbank wie auch der Wikidata Query Service.
+Ein Mittelweg zwischen Abfragekomplexität für den Server und Anzahl an Abfragen an den Server beschreibt die Linked Data Fragments\cite{ldf} Spezifikation.
+Linked Data Fragments sind sehr allgemein und beschreiben lediglich ein Protokoll, jedoch keine konkrete Implementierung.
+Eine Form von Linked Data Fragments sind Triple Pattern Fragments.
+Diese Form unterstützt Abfragen, die nach Tripeln mit einer bestimmten Kombination aus Subjekt, Prädikat und Objekt suchen.
+Nicht alle Felder müssen angegeben werden, eine Abfragen kann zum Beispiel nach allen Tripeln mit Prädikat \verb|rdfs:label| suchen.
+Da die Abfragen sehr einfach sind, erfordert die Auswertung dieser Abfragen wenig Ressourcen auf dem Server und es ist keine Laufzeitlimit notwendig.
+Für komplexere Abfragen sind dann allerdings Joins auf dem Client erforderlich, was zu hohen Rechenkosten führt.
+Die Linked Data Fragments Implementierung für Wikidata basiert auf der selben RDF-Datenbank wie auch der Wikidata Query Service.
 Im Kontext von Wikidata haben Linked Data Fragments daher keinen Vorteil gegenüber dem Query Service.
 
-Eine Variante zur Reduzierung der Größe von RDF-Dumps ist HDT\cite{hdt}, einem Binärformat für RDF-Daten.
+Eine Variante zur Reduzierung der Größe von RDF-Dumps ist HDT\cite{hdt}, ein Binärformat für RDF-Daten.
 Es verwendet eine optimierte, komprimierte Kodierung zur Speicherung der Dumps.
 Auf diesem Format lassen sich sogar einfache SPARQL-Abfragen effizient ausführen\cite{hdt-query}.
 Leider erfordert die Erstellung von HDT-Dumps viel Arbeitsspeicher und Rechenzeit, besonders bei einer so großen Datenmenge wie Wikidata.
 Durch die komprimierte Kodierung ist eine inkrementelle Aktualisierung von HDT-Dumps nicht möglich, sodass der komplette Dump regelmäßig neu erstellt werden müsste.
 
-DBpedia\cite{dbpedia} teilt die seine Dumps in mehrere, kleinere Dumps auf.
+DBpedia\cite{dbpedia} partioniert die seine Dumps in mehrere, kleinere Dumps auf.
 Auch einige aus Wikidata abgeleitete Dumps sind verfügbar\footnote{\url{https://databus.dbpedia.org/dbpedia/wikidata/}}.
-Durch das fest definierte Schema ist eine solche Trennung der Datensätze bei DBpedia möglich.
-Für Wikidata ist dieser Ansatz deutlich schwieriger, da das Datenschema so flexibel ist.
-Es gibt in Wikidata damit einzelnen Aspekt, nach dem diese Trennung erfolgen könnte.
+Die Daten in DBpedia stammen aus definierten Extraktionen von Wikimedia Projekten, die jeweils nur bestimmte Relationen extrahieren.
+Durch das klar definierte Schema ist damit eine Trennung der Datensätze nach der Art der Extraktion möglich.
+Für Wikidata ist dieser Ansatz deutlich schwieriger, da das Datenschema so flexibel ist und die Relationen (Properties) vorher nicht feststehen.
+Außerdem gibt es neben den Relationen noch weitere Aspekte, nach denen eine Trennung erfolgen könnte, zum Beispiel ob Statements Referenzen haben oder nicht.
+Die Definition von Kriterien zur Partionierung von Wikidata ist daher schwierig.
 
 Ein mächtiges Tool zum Erstellen von Listen von Wikidata Items ist PetScan\footnote{\url{https://petscan.wmflabs.org/}}.
 Dieses Tool bietet ein User-Interface mit einer Vielzahl an Optionen, um Listen von Wikipedia bzw. Wikidata-Seiten zu erstellen.
