@@ -1,2 +1,52 @@
 \chapter{Fazit}
 \label{chap:conclusion}
+Zum Abschluss der Arbeit wird in diesem Kapitel eine Zusammenfassung der Ergebnisse präsentiert.
+Die wesentlichen Anforderungen konnten erfüllt werden.
+Aufgrund der großen Breite des Themas gibt es jedoch immer noch viele mögliche Erweiterungen für die entwickelte Anwendung.
+Einige dieser zukünftigen Erweiterungen und Verbesserungen werden im folgenden Ausblick diskutiert.
+
+\section{Ausblick} 
+Die Möglichkeiten zur weiteren Verbesserung der Anwendung lassen sich in drei Kategorien einteilen: User-Interface, Performance und weitere Filterkriterien.
+Das User-Interface ist besonders im Bereich des Entdeckens und der Anzeige schon generierter Dumps noch ausbaufähig.
+In der aktuellen Version gibt es nur eine Liste der Dumps. 
+Für den Anfang ist das aufgrund der geringen Anzahl an generierten Dumps jedoch kein Problem.
+Zur Beschreibung der Dumps wäre mindestens noch ein weiteres Eingabefeld, zur Eingabe eines längeren Texts, sinnvoll.
+Der Eintrag bei Zenodo wird mit dieser zusätzlichen Information ebenfalls aussagekräftiger.
+Auch eine automatische Vorschau ist denkbar.
+
+Eine spannende Variante zur Verbesserung der Performance ist die Parallelisierung. 
+Die Generierung der Dumps sollte sich dazu gut eignen, da jedes Dokument einzeln und unabhängig von den anderen Dokumenten verarbeitet wird.
+Das Problem ist hier die Komprimierung.
+Auf der einen Seite sind die Eingabedaten komprimiert, sodass nicht einfach an einer beliebigen Stellen mit der Verarbeitung angefangen werden kann.
+Auf der anderen Seite müssen auch die Ausgabedaten wieder komprimiert werden, sodass diese nicht vollständig unabhängig voneinander generiert werden können.
+Für die Eingabe sollte sich das durch Verwendung des BZip2\footnote{\url{https://sourceware.org/bzip2/}}-Kompressions\-algorithmus lösen lassen, da dieses Block-basiert ist.
+Somit ist eine unabhängige, parallele Verarbeitung mehrere Blöcke möglich sein.
+Für die Ausgabe muss eine Möglichkeit gefunden werden, die verschiedenen Teile unter Beibehaltung der Kompression zusammenzuführen.
+Die Parallelisierung sollte die Performance nahezu linear verbessern.
+Mit zwei statt einem Prozess würde die Generierung dann nur noch halb so lange dauern.
+
+Weitere Erweiterungsmöglichkeiten bieten sich bei den Filterkriterien. 
+Aufwändig ist dabei vor allem die Umsetzung im User-Interface.
+Für neue Filter muss darauf geachtet werden, wie diese den Nutzern verständlich präsentiert werden.
+Ideen für Filter gibt es viele, wie zum Beispiel statistische Filter zur Reduzierung der Datenmenge.
+
+\section{Zusammenfassung}
+Die Arbeit hat demonstriert, dass das entwickelte Design erfolgreich umgesetzt werden kann.
+Damit wurde das anfangs gestellte Problem, kleinere Dumps für Teilmengen der Daten aus Wikidata zu erzeugen, gelöst.
+Der Vergleich der erzeugten Dumps mit den direkten RDF-Exporten von Wikidata hat einige Differenzen aufgedeckt.
+Die Fehler in Wikidata-Toolkit konnten behoben werden, sodass die Korrektheit sichergestellt ist.
+Nicht behoben werden konnten einige kleinere Differenzen, wie zum Beispiel Abweichungen bei Fließkommazahlen.
+Diese entstehen durch fehlende Informationen in den JSON-Exporten, daher gibt es keine Möglichkeit, diese in Wikidata-Toolkit zu korrigieren.
+Die generierten Dumps werden dadurch jedoch nur marginal beeinflusst, sodass es in der Praxis kein Problem darstellt.
+
+Von den Verbesserungen in Wikidata-Toolkit profitiert nicht nur die entwickelte Anwendung.
+Die Änderungen wurden dem offiziellen Wikidata-Toolkit Projekt beigetragen.
+Andere Anwendungen, die ebenfalls auf Wikidata-Toolkit basieren, sind damit eingeschlossen.
+
+Besonders bei den Filterkriterien ist es schwierig, im Vorfeld alle Möglichkeiten zu implementieren.
+Mit der entwickelten Anwendung, die online verfügbar ist, kann nun hilfreiches Feedback gesammelt werden.
+Auf Basis dieses Feedbacks können dann weitere Features implementiert werden.
+
+
+
+
