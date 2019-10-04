@@ -3,8 +3,6 @@
 
 Die Anwendung besteht aus zwei Teilen: Backend und Frontend. Über das Frontend können Nutzer Aufträge für Dumps erstellen und existierende Dumps verwalten, während das Backend nur für die Generierung von Dumps zuständig ist.
 Das Backend stellt dazu in regelmäßigen Abständen Anfragen an eine Datenbank, um nach neuen Aufträgen zu schauen welche vom Frontend hinzugefügt wurden.
-Man könnte dafür auch eine spezielle Message-Queue verwenden. Die Datenbank wäre in diesem Fall allerdings trotzdem notwendig, um Metadaten zu den Aufträgen persistent zu speichern. Um die Komplexität gering zu halten wurde deshalb auf eine separate Message-Queue verzichtet.
-
 In diesen Kapitel wird erst das Datenmodell vorgestellt, welches zur Kommunikation verwendet wird.
 Danach wird die Implementierung von jeweils Frontend und Backend genauer beschrieben.
 
@@ -14,6 +12,11 @@ Danach wird die Implementierung von jeweils Frontend und Backend genauer beschri
   \caption{Datenbankschema}
   \label{fig:db-er}
 \end{figure}
+Als zentraler Kommunikationspunkt zwischen Frontend und Backend wird eine Datenbank verwendet.
+Man könnte dafür auch eine spezielle Message-Queue verwenden.
+Die Datenbank wäre in diesem Fall allerdings trotzdem notwendig, um Metadaten zu den Aufträgen persistent zu speichern.
+Um die Komplexität gering zu halten wurde deshalb auf eine separate Message-Queue verzichtet.
+
 Eine Übersicht des Datenmodells liefert \cref{fig:db-er}.
 Das zentrale Element ist der Dump, welcher alle Metadaten zu einem Auftrag speichert.
 Neben ein paar einfachen Daten wie Titel (\verb|title|) und Zeitpunkt der Erstellung des Auftrags (\verb|created_at|) bzw. Fertigstellung (\verb|finished_at|) ist jeder Dump durch eine JSON-Spezifikation (\verb|spec|) charakterisiert. Zusätzlich hat der Dump auch Felder für Statistiken, wie die Anzahl der Entitäten (\verb|entity_count|) und Dateigröße (\verb|compressed_size|).
