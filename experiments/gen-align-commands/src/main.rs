@@ -148,29 +148,28 @@ fn main() {
 
         // emit update if rev date is not equal
         if let Some(ref revs) = date_revs.get(&nt_date) {
-            update_line = update_line.and_then(|update| {
-                let need_update = !revs.contains(&json_rev.parse().unwrap());
-                if need_update {
-                    if update.0 == nt_id {
+            let need_update = !revs.contains(&json_rev.parse().unwrap());
+            if need_update {
+                match update_line {
+                    Some(ref update) if update.0 == nt_id => {
                         writeln!(writer, "{}", update.1).unwrap();
-                    } else {
+                    }
+                    _ => {
                         writeln!(writer,
                                  "{{\"type\":\"need_update\",\"id\":\"{}\",\"date\":\"{}\"}}",
                                  nt_id,
                                  nt_date).unwrap();
                     }
                 }
+            }
 
+            update_line = update_line.and_then(|update| {
                 if update.0 == nt_id {
                     next_update(&mut lines_update)
                 } else {
                     Some(update)
                 }
             });
-            if update_line.is_none() {
-                update_line = next_update(&mut lines_update);
-            } else {
-            }
         }
 
         json_line = next_line(&mut lines_json);
