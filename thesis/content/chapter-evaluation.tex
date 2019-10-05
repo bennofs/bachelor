@@ -1,10 +1,37 @@
 \chapter{Evaluation}
 \label{chap:evaluation}
-Zur Evaluation der Anwendung wird diesem Kapitel bewertet, ob Wikidata-Toolkit eine geeignete Wahl zum Erzeugen der RDF-Dumps ist.
-Dazu wird das von Wikidata-Toolkit erzeugte RDF mit den offizielen Wikidata RDF-Exporten verglichen, um die Korrektheit und Vollständigkeit zu überprüfen.
+In diesem Kapitel wird die Umsetzung der Anwendung bewertet.
+Wie \cref{fig:screen-main}, \cref{fig:screen-filter} und \cref{fig:screen-statements} zeigen, war die Umsetzung der Grundfunktion der Anwendung erfolgreich.
+Die Anwendung ist unter \url{https://tools.wmflabs.org/wdumps} erreichbar.
+Viele der Anforderungen wurden bereits im Design beachtet.
+Zur Evaluation wird deshalb nur ein Aspekt genauer betrachtet: die Konsistenz der erzeugten Dumps.
+
+Die umgesetzte Anwendung verwendet Wikidata-Toolkit zum Erzeugen der Dumps verwendet.
+Die vollständigen RDF-Exporte von Wikidata hingegen werden von Wikibase, einer PHP-Erweiterung für MediaWiki, generiert.
+Damit kann es zwischen beiden Implementierung zu Differenzen kommen.
+Um diese Differenzen zu finden und zu beheben wird in diesem Kapitel ein offizielle RDF-Export von Wikidata mit den von Wikidata-Toolkit generierten RDF Daten verglichen. 
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{pics/screen-main}
+  \caption{Startseite mit Interface zur Angabe von Filtern. In der gezeigten Standardeinstellung werden die simple Statements, Terme und Sitelinks zu jeder Entität in allen Sprachen exportiert.}
+  \label{fig:screen-main}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{pics/screen-filter}
+  \caption{Sektion zum Filtern: Im Beispiel werden nur Entities, welche Instanz von (P31) Mensch (Q5) sind und ein Statement für P569 (Geburtsdatum) besitzen exportiert.}
+  \label{fig:screen-filter}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{pics/screen-statements}
+  \caption{Sektion mit Statementeinstellungen: es werden alle simple Statements exportiert und dazu die Statements für P569 (Geburtsdatum) mit Referenzen}
+  \label{fig:screen-statements}
+\end{figure}
 
 \section{Vorgehen}
-Für den Vergleich werden die JSON- und RDF-Exporte von Wikidata vom 26. August 2019 verwendet \TODO{cite}.
+Für den Vergleich werden die JSON- und RDF-Exporte von Wikidata vom 26. August 2019 verwendet.
+Die Daten und der Quellcode für den Vergleich sind über Zenodo verfügbar\cite{zenodo-diff-data}.
 Da sich die Daten während der Generierung des Exporten verändern, beschreiben die JSON- und RDF-Exporte nicht exakt die selben Daten.
 Deswegen werden für den Vergleich zusätzlich noch die Wikidata incremental Dumps verwendet.
 Diese enthalten die JSON-Version aller in einem Zeitraum geänderten Wikidata Dokumente, zusammen mit Revisionsnummer und Datum der Revision. 
