@@ -1,7 +1,8 @@
 \chapter{Implementierung}
 \label{chap:implementation}
 
-Die Anwendung besteht aus zwei Teilen: Backend und Frontend. Über das Frontend können Nutzer Aufträge für Dumps erstellen und existierende Dumps verwalten, während das Backend nur für die Generierung von Dumps zuständig ist.
+Die Anwendung besteht aus zwei Teilen: Backend und Frontend.
+Über das Frontend können Nutzer Aufträge für Dumps erstellen und existierende Dumps verwalten, während das Backend nur für die Generierung von Dumps zuständig ist.
 Das Backend stellt dazu in regelmäßigen Abständen Anfragen an eine Datenbank, um nach neuen Aufträgen zu schauen welche vom Frontend hinzugefügt wurden.
 In diesen Kapitel wird erst das Datenmodell vorgestellt, welches zur Kommunikation verwendet wird.
 Danach wird die Implementierung von jeweils Frontend und Backend genauer beschrieben.
@@ -66,7 +67,6 @@ Der RDF-Export ist dabei als eine Klasse implementiert, welche das von Wikidata-
   }
 \end{lstlisting}
 
-
 \cref{lst:export-pseudo} zeigt den Ablauf des Exports in Pseudocode.
 Für jede Entität (Items, Properties und Lexemes) wird dazu zunächst überprüft, ob sie exportiert werden soll.
 Nur wenn das der Fall ist, werden danach für jedes Statement die Optionen zum Export entsprechend der Filter-Spezifikation bestimmt. 
@@ -95,19 +95,52 @@ for each entity:
 Wikidata-Toolkit unterstützt mehrere \verb|EntityDocumentProcessor|s gleichzeitig.
 Damit können mehrere Aufträge in einem Durchlauf verarbeitet werden. 
 Diese Funktionalität wird auch verwendet, um den aktuellen Fortschritt des Durchlaufs in der Datenbank zu aktualisieren.
-Dazu zählt ein \verb|EntityDocumentProcessor| die Anzahl der verarbeiteten Entities mit und speichert diese regelmäßig in der \verb|run|-Tabelle der Datenbank.
+Ein \verb|EntityDocumentProcessor| zählt die Anzahl der verarbeiteten Entities mit und speichert diese regelmäßig in der \verb|run|-Tabelle der Datenbank.
 
-\TODO{Auf StatementOptions / Spec interface eingehen}
+Das Interface zur Angabe von Optionen für einen Dump zeigt \cref{lst:interface-dumpspec}.
+Wie bereits in \cref{chap:design} beschrieben lässt sich die Spezifkation in drei Aspekte zerlegen.
+Zuerst wird geprüft, ob ein Dokument exportiert werden soll (Methode \verb|includeDocument|).
+Danach werden für jedes Statement in diesem Dokument die Optionen bestimmt (\verb|findStatementOptions|).
+Der dritte Aspekt sind globale Optionen, wie die zu exportierenden Sprachen (\verb|includeLanguage|) und einige binäre Optionen.
+
+\begin{lstlisting}[language=Java, caption={Interface für die Filterkriterien}, label={lst:interface-dumpspec}]
+public interface DumpSpec {
+  public boolean includeDocument(StatementDocument doc);
+
+  public StatementOptions findStatementOptions(String property);
+
+  public boolean includeLanguage(String code);
+  public boolean isSitelinks();
+  public boolean isLabels();
+  public boolean isDescriptions();
+  public boolean isAliases();
+  public boolean isMeta();
+}
+
+public interface StatementOptions {
+  public boolean isSimple();
+  public boolean isFull();
+  public boolean isReferences();
+  public boolean isQualifiers();
+}
+\end{lstlisting}
+
+Die Anwendung realisiert dieses Interface auf Basis einer Spezifikation im JSON-Format, die vom Frontend generiert wird. 
 
 \section{Frontend}
 Das Frontend besteht aus einem Web-Interface zum Erstellen von Dump-Aufträgen und Verwaltung der existierenden Dumps.
-Für dessen Implementierung wird hauptsächlich HTML/CSS mit Typescript verwendet, für die Auslieferung und Kommunikation mit der Datenbank gibt es aber auch eine kleine serverseitige Anwendung, welche in Python mit Flask geschrieben ist.
+Für dessen Implementierung wird hauptsächlich HTML/CSS mit Typescript verwendet.
+Für die Auslieferung und Kommunikation mit der Datenbank wird eine minimale serverseitige Anwendung verwendet, welche in Python mit Flask geschrieben ist.
 
-Der serverseitige Teil bietet dazu Endpunkte für das Erstellen, Suchen, Herunterladen und Abfrage von Informationen von Dumps an. Dazu werden vier Endpunkte bereitgestellt:
+Der serverseitige Teil bietet Endpunkte für das Erstellen, Suchen, Herunterladen und Abfragen von Informationen von Dumps an.
+Dazu werden sechs Endpunkte bereitgestellt:
 \begin{itemize}
-\item \verb|POST /create| erstellt einen neuen Dump-Auftrag. Der Request-Body werden die Filter-Spezifikation sowie ein paar Metadaten (Titel, etc.) übergeben.
+\item \verb|GET /| liefert die Startseite der Anwendung mit Interface zum Erstellen von Dumps aus
+\item \verb|POST /create| erstellt einen neuen Dump-Auftrag. Im Request-Body werden die Filter-Spezifikation sowie ein paar Metadaten (Titel, etc.) als JSON übergeben.
 \item \verb|GET /dump/<id>| liefert eine Statusseite mit Informationen zu einem bestimmten Dump.
 \item \verb|GET /dumps| gibt eine Liste aller Dumps zurück.
 \item \verb|GET /download/<id>| lädt einen Dump herunter.
+\item \verb|POST /zenodo| fordert Upload eines Dumps zu Zenodo an (Details werden als JSON-Body übergeben)
 \end{itemize}
-
+Diese Endpunkte implementieren wenig Anwendungslogik, sondern dienen nur als Schnittstelle zwischen dem Frontend und dem Backend.
+Dazu werden Information in die Datenbank eingetragen oder abfragt.
