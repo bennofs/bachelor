@@ -6,33 +6,36 @@ Um das System von bereits existierenden Systemen abzugrenzen werden danach verwa
 
 \section{Funktionale Anforderungen}
 Im Fokus dieser Arbeit steht die Entwicklung eines Systems zur Filterung des RDF-Exports von Wikidata.
-Damit sollen Wissenschaftler mit wenig Aufwand Dumps nach speziellen Kriterien erstellen können.
+Damit sollen Anwender mit wenig Aufwand Dumps nach speziellen Kriterien erstellen können.
 Die wesentlichen Merkmale des Systems sind:
 
 \begin{description}
-  \item[Format] Der Dump soll als RDF im N-Triples Format erstellt werden. Damit die gefilterten Dumps möglichst kompatibel mit dem vollständigen Wikidata RDF Dump sind, sollte das Schema dem offiziellen RDF-Dump-Format entsprechen. Erweiterungen des Schemas müssen klar gekennzeichnet sein.
-  \item[Filterung] Nutzer sollen über eine einfache Oberfläche wählen können, welche Entitäten in welchem Detailgrad im erstellten Dump enthalten sind. 
-  \item[Archivierung] Damit die Dumps in wissenschaftlichen Veröffentlichungen zitiert werden können, muss die Verfügbarkeit auch in ferner Zukunft garantiert werden. Deshalb ist eine Methode zur Langzeitarchivierung generierter Dumps notwendig. 
-  \item[Suche] Es soll eine durchsuchbare Übersicht über alle erstellten Dumps.
-    So können Ideen anderer Nutzer als Vorlage dienen und nicht jeder Nutzer muss sich eigene Filterregeln ausdenken.
-  \item[Statistiken] Um schnell zu entscheiden, ob ein Dump für einen bestimmten Anwendungsfall geeignet ist, sollten Statistiken über den Inhalt (z.B. die Anzahl der Entitäten) des Dumps angezeigt werden. Zusätzlich sollten schon während der Generierung Statistiken zum Fortschritt des Dumps bereitgestellt werden.
+  \item[Korrektheit] Der Dump soll als RDF im N-Triples Format erstellt werden. Damit die gefilterten Dumps möglichst kompatibel mit dem vollständigen Wikidata RDF Dump sind, sollte das Schema dem offiziellen RDF-Dump-Format entsprechen. Erweiterungen des Schemas müssen klar gekennzeichnet sein.
+  \item[Filterung] Über eine einfache Oberfläche soll eine Filterung nach mindestens drei Aspekten möglich sein: nach Entität (welche Entitäten sollen exportiert werden), nach Property (Statements für welche Properties sollen exportiert werden) und nach Sprache (in welchen Sprachen sollen Zeichenketten exportiert werden). Für Statements soll auswählbar sein, welche Teile exportiert werden (Qualifier, Referenzen, nur Truthy Tripel, vollständiges Statement)\TODO{reword}.
+  \item[Vollständigkeit] Alle Daten, welche den gewählten Filtern entsprechen, sollten im Dump vorhanden sein. 
+  \item[Nebenläufigkeit] Mehrere Anfragen sollen parallel verarbeiten werden. Das bedeutet, dass die Zeit zum Erstellen eines Dumps nicht unbegrenzt mit der Anzahl der Nutzer wächst.
+  \item[Archivierung] Damit die Dumps in wissenschaftlichen Veröffentlichungen zitiert werden können, muss die Verfügbarkeit auch in absehbarer Zukunft garantiert werden. Deshalb ist eine Methode zur Langzeitarchivierung generierter Dumps notwendig. 
+  \item[Suche] Es soll eine durchsuchbare Übersicht über alle erstellten Dumps geben.
+    So können Ideen anderer Nutzer als Vorlage dienen. Das spart Zeit, da keine erneute Spezifikation der einzelnen Filter notwendig ist. Außerdem wird damit die Nutzung vorhandener Dumps gefördert, was die Last auf das System verringert und Vergleichbarkeit in Studien verbessert.
+  \item[Statistiken] Um schnell zu entscheiden, ob ein Dump für einen bestimmten Anwendungsfall geeignet ist, sollten Metadaten über den Inhalt (z.B. die Anzahl der Entitäten) des Dumps angezeigt werden. 
+  \item[Fortschritt] Während ein Dump generiert wird, soll der Fortschritt des Generierungsprozesses angezeigt werden.
   \item[Nachvollziehbarkeit] Gerade für den wissenschaftlichen Einsatz ist es erforderlich, dass die Herkunft der Daten und Generierung nachvollziehbar ist. Es sollte demnach leicht sichtbar sein, wie der Dump entstanden ist und eine Reproduktion des Dumps mit diesen Daten möglich sein. 
   \item[Aktualität der Daten] Die Dumps sollten aus möglichst aktuellen Daten erstellt werden.
-    Es ist natürlich nicht notwendig, dass die Dumps immer komplett aktuell sind, aber die Daten zur Generierung der Dumps sollten regelmäßig aktualisiert werden.
+    Es ist nicht notwendig, dass die Dumps immer komplett aktuell sind, aber die Daten zur Generierung der Dumps sollten regelmäßig aktualisiert werden.
 \end{description}
 
 \section{Nicht-funktionale Anforderungen}
-Für den Betrieb des Systems existieren eine Reihe an nicht-funktionale Anforderungen:
+Für den Betrieb des Systems existieren eine Reihe an nicht-funktionalen Anforderungen:
 
 \begin{description}
   \item[Hardwareanforderungen] Der Ressourcenverbrauch des Systems sollte in einem akzeptablen Rahmen liegen.
-  Als Anhaltspunkte für die Beurteilung dienen hier vergleichbare Systeme, wie bspw. der Wikidata Query Service, welcher ebenfalls Services basierend auf den RDF-Daten von Wikidata anbietet und gleichzeitig deutlich populärer ist. Demnach sollte das System entsprechend seiner Relevanz geringere Hardwareanforderungen als der Wikidata Query Service haben.
+  Als Anhaltspunkte für die Beurteilung dienen hier vergleichbare Systeme, wie der Wikidata Query Service, welcher ebenfalls Dienste basierend auf den RDF-Daten von Wikidata anbietet und gleichzeitig deutlich populärer ist. Demnach sollte das System entsprechend seiner Relevanz geringere Hardwareanforderungen als der Wikidata Query Service haben.
 \item[Freie Lizenz] Die Wikimedia Foundation legt großen Wert darauf, möglichst viele der verwendeten Tools unter einer freien Lizenz bereitzustellen\cite{wikimedia-guiding-principles}.
   Wenn das System in der Wikimedia Cloud betrieben werden soll, dann ist die Veröffentlichung des Quellcodes unter einer freien Lizenz sogar Pflicht\cite{wikimedia-cloud-tos}.
-\item[Bearbeitungszeit] Das System sollte maximal einen Tag zur Generierung eines Dumps benötigen, besser unter 12 Stunden. Während längerer Prozesse sollte keine ständige Verfügbarkeit des Nutzers erwartet werden. 
+\item[Bearbeitungszeit] Das System sollte maximal einen Tag zur Generierung eines Dumps benötigen, besser unter 12 Stunden. Falls die Generierung länger als 10 Minuten dauert, muss die Generierung auf einem Server stattfinden, sodass der Rechner des Nutzers währenddessen ausgeschaltet werden kann.
 \item[Erweiterbarkeit] Da die funktionalen Anforderungen an das System sehr allgemein sind, muss auf Erweiterbarkeit geachtet werden, sodass neue Anforderungen einfach umgesetzt werden können. Es sind beispielsweise viele verschiedene Filtermöglichkeiten und Statistiken denkbar, die nicht alle in der ersten Version umgesetzt werden können. Es ist daher sinnvoll vor allem in diesem Bereich auf Erweiterbarkeit zu achten.
-\item[Skalierbarkeit] Wikidata wächst beständig, Stand September 2019 existieren etwas mehr als 60 Millionen Items\footnote{\url{https://web.archive.org/web/20190930152246/https://www.wikidata.org/wiki/Wikidata:Statistics}}.
-  Insgesamt gibt es über 700 Millionen Statements\footnote{\url{https://grafana.wikimedia.org/d/000000175/wikidata-datamodel-statements?refresh=30m&orgId=1}} und diese Zahl ist allein im letzten Jahr um 200 Millionen gewachsen. Das System muss mit dieser Menge an Daten umgehen können und dies auch für die nächsten Jahre noch leisten können.
+\item[Skalierbarkeit] Wikidata wächst beständig; Stand September 2019 existieren etwas mehr als 60 Millionen Items\footnote{\url{https://web.archive.org/web/20190930152246/https://www.wikidata.org/wiki/Wikidata:Statistics}}.
+  Insgesamt gibt es über 700 Millionen Statements\footnote{\url{https://grafana.wikimedia.org/d/000000175/wikidata-datamodel-statements?refresh=30m&orgId=1}} und diese Zahl ist allein im letzten Jahr um 200 Millionen gewachsen. Das System muss mit dieser Menge an Daten umgehen können und dies auch in absehbarer Zukunft noch leisten können.
 \end{description}
 
 \section{Verwandte Arbeiten}

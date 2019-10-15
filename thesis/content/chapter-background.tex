@@ -10,60 +10,65 @@ RDF ist Standardformat für den Austausch von strukturierten Informationen.
 Wikidata ist die gemeinsame Wissensdatenbank der Wikimedia Projekte.
 Wie Wikipedia selbst basiert Wikidata auf MediaWiki\footnote{\url{https://mediawiki.org}}, einer Software für das Betreiben von kollaborativen Wikis.
 Statt Dokumenten in natürlicher Sprache verwaltet Wikidata jedoch strukturierte Dokumente.
-Die Erweiterungen für MediaWiki dazu stellt das Wikibase\footnote{\url{htts://wikiba.se}} Projekt bereit.
+Die Erweiterungen für MediaWiki stellt dazu das Wikibase\footnote{\url{htts://wikiba.se}} Projekt bereit.
 
+Die Dokumentation von Wikibase \cite{wikibase-data-model} beschreibt das Datenmodell detailliert.
 Alle Dokumente in Wikidata besitzen einen eindeutigen Identifier.
 Dieser beginnt mit einem Großbuchstaben, der den Typ des Dokuments angibt, gefolgt von einer Zahl.
-Aktuell kennt Wikidata drei Typen von Dokumenten: Items (Q), Properties (P) und Lexemes (L).
+Aktuell kennt Wikidata drei Typen von Dokumenten: \introterm{Items} (Q), \introterm{Properties} (P) und \introterm{Lexemes} (L).
 Lexemes wurden erst 2018 hinzugefügt, sind damit noch recht neu.
 Da Wikidata-Toolkit diese noch nicht vollständig unterstützt, werden Lexemes im folgenden nicht genauer betrachtet.
 
 Den Hauptbestandteil der Daten bilden die Items (Q).
 Items repräsentieren Dinge, die durch Wikidata beschrieben werden.
 In vielen Fällen existieren auch Wikipedia-Artikel in verschiedenen Sprachen zu dem Ding, welches durch das Item repräsentiert wird.
-Zur Verlinkung zwischen Item und Seiten des Wikimedia Projekts (Wikipedia-Artikel, Wikiquote-Seiten etc) enthält jedes Item eine Liste von Sitelinks.
+Zur Verlinkung zwischen Item und Seiten des Wikimedia Projekts (Wikipedia-Artikel, Wikiquote-Seiten etc.) enthält jedes Item eine Liste von \introterm{Sitelinks}.
 Die Properties (P) stellen die Attribute dar, die zur Beschreibung von Items verwendet werden können.
 
 Der Aufbau eines Items ist beispielhaft anhand von \verb|Q42| (Douglas Adams) in \cref{fig:wd-datamodel} dargestellt.
-Den ersten Teil bilden die Terme: \verb|label|, \verb|description| und \verb|aliases|.
+Den ersten Teil bilden die \introterm{Terme}: \introterm{Label}, \introterm{Description} und \introterm{Aliases}.
 Diese dienen zur Beschreibung und Definition des Items.
-Die Terme sind mehrsprachig: ein Item kann ein \verb|label| für jede der möglichen Sprachen haben.
-Darauf folgen Statements, welche die Fakten zu diesem Item wiedergeben.
+Die Terme sind mehrsprachig: ein Item kann ein \introterm{Label} für viele verschiedene Sprachen haben.
+Darauf folgen \introterm{Statements}, welche die Fakten zu diesem Item wiedergeben.
 Den letzten Teil bilden die Sitelinks.
-Die Sitelinks von \verb|Q42| verlinken zum Beispiel auf Artikel von Douglas Adams in den unterschiedlichen Sprachversionen von Wikipedia und in Wikiquote.
+Die Sitelinks von \verb|Q42| verlinken zum Beispiel unter anderem auf Artikel von Douglas Adams in den unterschiedlichen Sprachversionen von Wikipedia und in Wikiquote.
 
 Die Fakten eines Items werden in Statements beschrieben.
-Ein Statement besteht aus zwei Teilen: einem Claim, der eine bestimmte Aussage trifft, und einer Liste von Referenzen.
+Ein Statement besteht aus zwei Teilen: einem \introterm{Claim}, der eine bestimmte Aussage trifft, und einer Liste von \introterm{Referenzen}.
 Da Statements ohne Referenzen erlaubt sind, kann die Liste der Referenzen leer sein.
-Wikidata unterstützt drei Arten von Aussagen, genannt Snaks:
+Jede Aussage enthält einen \introterm{Snak}.
+Es gibt drei Arten von Snaks:
 \begin{description}
 \item[PropertyValue] die am meisten verwendete Art eines Snaks. Sie beschreibt den Fakt, dass eine bestimmte Eigenschaft (Property) einen gewissen Wert (Value) hat. Die Property bestimmt dabei den Typ der Value. Values können je nach Property andere Items oder skalare Werte (wie Zahlen, Zeichenketten, Koordinaten, Zeiten usw.) sein.
-\item[SomeValue] diese Art Snak wird verwendet, um auszudrücken, dass ein Wert für die Eigenschaft existiert der aber nicht bekannt ist. Zum Beispiel kann der Snak ``es existiert ein Wert für den Todeszeitpunkt einer Person'' verwendet werden, falls eine Person gestorben ist, der Todeszeitpunkt aber nicht bekannt ist.
+\item[SomeValue] diese Art Snak wird verwendet, um auszudrücken, dass ein Wert für die Eigenschaft existiert der aber nicht bekannt ist. Zum Beispiel kann der Snak "`es existiert ein Wert für den Todeszeitpunkt einer Person"' verwendet werden, falls eine Person gestorben ist, der Todeszeitpunkt aber nicht bekannt ist.
 \item[NoValue] drückt aus, dass es für eine bestimmte Eigenschaft keinen Wert gibt. Diese Art Snak wird verwendet, wenn das Fehlen einer Information keine Unvollständigkeit darstellt. Kann zum Beispiel für \verb|P200| (Zuflüsse) verwendet werden, wenn ein Gewässer keine Zuflüsse besitzt. 
 \end{description}
-Der Claim eines Statements besteht aus einem MainSnak, der die Hauptaussage darstellt, und zusätzlichen Qualifiern zur Verfeinerung der Aussage.
+Der Claim eines Statements besteht aus einem \introterm{MainSnak} für die Hauptaussage und zusätzlichen \introterm{Qualifiern} zur Verfeinerung der Aussage.
 Eine Referenz ist einfach eine Liste von Snaks. 
+
 Ein MainSnak zu Douglas Adams (Q42) ist zum Beispiel \verb|P69| (educated at) - \verb|Q691283| (St John's College).
 Mit den Qualifier-Snaks wie \verb|P582| (end time) - \verb|1974| bildet dieser dann einen Claim.
 Das Statement setzt sich dann aus diesem Claim und der Liste von Referenzen zusammen.
-Alle Statements für die gleiche Property werden in einer Statement Group zusammengefasst.
-Jedes Statement besitzt zusätzlich noch einen Rank (deprecated, normal oder best) um die Priorität innerhalb der Statement Group auszudrücken.
+Alle Statements für die gleiche Property werden in einer \introterm{Statement Group} zusammengefasst.
+Jedes Statement besitzt einen \introterm{Rank} (\introterm{Deprecated}, \introterm{Normal} oder \introterm{Best}) um die Priorität innerhalb der Statement Group auszudrücken.
 
 Dieses dokumentorientierte Datenmodell lässt sich einfach als JSON\footnote{\url{https://www.json.org}} (JavaScript Object Notation) repräsentieren.
 Die vollständige Darstellung ist jedoch sehr umfangreich und ist deshalb aus Platzgründen hier nicht abgebildet.
-Für ein Entity kann die JSON-Repräsentation einfach online abgerufen werden, für \verb|Q42| zum Beispiel unter folgender URL: \url{https://www.wikidata.org/wiki/Special:EntityData/Q42.json}.
+Für ein Entity kann die JSON-Repräsentation einfach online abgerufen werden, für \verb|Q42| zum Beispiel unter: \url{https://www.wikidata.org/wiki/Special:EntityData/Q42.json}.
 Zusätzlich stellt Wikidata Exporte aller Dokumente als JSON bereit.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{pics/Datamodel_in_Wikidata}
-  \caption{Wikidata Item ``Q42''}
+  \caption{Wikidata Item "`Q42"'}
   \label{fig:wd-datamodel}
 \end{figure}
 
 \section{Wikidata als Linked Data}
 Eine Besonderheit von Wikidata ist die starke Verlinkung der Daten untereinander.
 Diese Verlinkung ermöglicht eine Art des Zugriffs, die sich von der dokumentbasierten Betrachtungsweise unterscheidet.
-Fragestellungen wie ``Wer sind die Verwandten von Douglas Adams?'' oder ``Welche berühmten Personen sind in einem Staat geboren, der Mitglied der europäischen Union ist?'' betrachten die Beziehungen der Dokumente und nicht allein den Inhalt einzelner Dokumente.
+
+
+Fragestellungen wie "`Wer sind die Verwandten von Douglas Adams?"' oder "`Welche berühmten Personen sind in einem Staat geboren, der Mitglied der europäischen Union ist?"' betrachten die Beziehungen der Dokumente und nicht allein den Inhalt einzelner Dokumente.
 
 Das W3C hat für solche Graph-basierten Daten RDF entwickelt.
 In RDF werden als eindeutige Bezeichner Internationalized Resource Identifiers (IRIs)\footnote{https://www.ietf.org/rfc/rfc3987.txt} verwendet.
@@ -88,7 +93,7 @@ In diesem Fall muss der Datentyp \url{http://www.w3.org/1999/02/22-rdf-syntax-ns
 
 RDF Dokumente sind eine ungeordnete Kollektion von Tripeln.
 Für die Serialisierung von RDF gibt es verschiedene Standards, ein einfacher und verbreiteter ist N-Triples\footnote{\url{https://www.w3.org/TR/n-triples/}}.
-Die Syntax von N-Triples ist in folgendem Beispiel exemplarisch dargestellt:
+Die Syntax von N-Triples ist in folgendem Beispiel dargestellt:
 \begin{lstlisting}[language=SPARQL, breaklines=true]
 <https://example.org> <http://schema.org/name> "Beispiel"@de .
 <https://example.org> <http://schema.org/name> "Example"@en .
@@ -177,5 +182,5 @@ Eine spezielle Bedeutung hat der \verb|wdt:| Präfix.
 Tripel mit diesen Prädikaten verlinken Items direkt mit den einfachen Werten.
 Diese Tripel existieren allerdings nur dann, wenn das zugehörige Statement vom Typ \verb|BestRank| ist.
 Dieser Typ umfasst alle Statements, die den höchsten Rang für diese Property haben und nicht deprecrated sind.
-Solche Statements und Tripel werden auch als ``truthy'' bezeichnet.
+Solche Statements und Tripel werden auch als "`truthy"' bezeichnet.
 In vielen Fällen können Abfragen damit deutlich kürzer und zugleich lesbarer formuliert werden, da einfache Verbindungen oft unabhängig von Qualifiern oder Referenzen betrachtet werden.

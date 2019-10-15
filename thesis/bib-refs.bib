@@ -16,6 +16,14 @@ volume	= {57}
   urldate = {2019-08-01}
 }
 
+@online{wikibase-data-model,
+  author = {MediaWiki contributors},
+  year = {2019},
+  title = {Wikibase/DataModel},
+  url = {https://www.mediawiki.org/w/index.php?title=Wikibase/DataModel&oldid=3250513},
+  urldate = {2019-10-12}
+}
+
 @online{wikimedia-guiding-principles,
   author = {Wikimedia Foundation Project},
   year = {2013},
@@ -161,19 +169,40 @@ volume	= {57}
   bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
-@Article{usage-implicational-knowledge,
+@InProceedings{usage-implicational-knowledge,
   author       = {Tom Hanika and Maximilian Marx and Gerd Stumme},
   title        = {Discovering Implicational Knowledge in Wikidata},
   year         = 2019,
-  volume       = {abs/1902.00916},
-  eprint       = {1902.00916},
-  url          = {http://arxiv.org/abs/1902.00916},
-  journal      = {CoRR},
-  archiveprefix= {arXiv},
-  timestamp    = {Tue, 21 May 2019 18:03:37 +0200},
-  biburl       = {https://dblp.org/rec/bib/journals/corr/abs-1902-00916},
+  booktitle    = {Formal Concept Analysis - 15th International Conference,
+                  {ICFCA} 2019, Frankfurt, Germany, June 25-28, 2019,
+                  Proceedings},
+  pages        = {315-323},
+  doi          = {10.1007/978-3-030-21462-3\_21},
+  url          = {https://doi.org/10.1007/978-3-030-21462-3\_21},
+  crossref     = {DBLP:conf/icfca/2019},
+  timestamp    = {Mon, 29 Jul 2019 16:00:20 +0200},
+  biburl       = {https://dblp.org/rec/bib/conf/icfca/Hanika0S19},
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
+
+@proceedings{DBLP:conf/icfca/2019,
+  editor    = {Diana Cristea and
+               Florence Le Ber and
+               Baris Sertkaya},
+  title     = {Formal Concept Analysis - 15th International Conference, {ICFCA} 2019,
+               Frankfurt, Germany, June 25-28, 2019, Proceedings},
+  series    = {LNCS},
+  volume    = {11511},
+  publisher = {Springer},
+  year      = {2019},
+  url       = {https://doi.org/10.1007/978-3-030-21462-3},
+  doi       = {10.1007/978-3-030-21462-3},
+  isbn      = {978-3-030-21461-6},
+  timestamp = {Mon, 29 Jul 2019 16:00:20 +0200},
+  biburl    = {https://dblp.org/rec/bib/conf/icfca/2019},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
 @InProceedings{usage-learning-structured-embeddings,
   author       = {Antoine Bordes and Jason Weston and Ronan Collobert and Yoshua
                   Bengio},
@@ -230,7 +259,7 @@ volume	= {57}
                Eva Blomqvist},
   title     = {The Semantic Web - {ISWC} 2011 - 10th International Semantic Web Conference,
                Bonn, Germany, October 23-27, 2011, Proceedings, Part {I}},
-  series    = {Lecture Notes in Computer Science},
+  series    = {LNCS},
   volume    = {7031},
   publisher = {Springer},
   year      = {2011},
@@ -279,22 +308,40 @@ volume	= {57}
 }
 
 @InProceedings{hdt-query,
-author="Mart{\'i}nez-Prieto, Miguel A.
-and Arias Gallego, Mario
-and Fern{\'a}ndez, Javier D.",
-editor="Simperl, Elena
-and Cimiano, Philipp
-and Polleres, Axel
-and Corcho, Oscar
-and Presutti, Valentina",
-title="Exchange and Consumption of Huge RDF Data",
-booktitle="The Semantic Web: Research and Applications",
-year="2012",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="437--452",
-abstract="Huge RDF datasets are currently exchanged on textual RDF formats, hence consumers need to post-process them using RDF stores for local consumption, such as indexing and SPARQL query. This results in a painful task requiring a great effort in terms of time and computational resources. A first approach to lightweight data exchange is a compact (binary) RDF serialization format called HDT. In this paper, we show how to enhance the exchanged HDT with additional structures to support some basic forms of SPARQL query resolution without the need of ''unpacking'' the data. Experiments show that i) with an exchanging efficiency that outperforms universal compression, ii) post-processing now becomes a fast process which iii) provides competitive query performance at consumption.",
-isbn="978-3-642-30284-8"
+  author       = {Miguel A. Mart{\'{\i}}nez{-}Prieto and Mario Arias Gallego and
+                  Javier D. Fern{\'{a}}ndez},
+  title        = {Exchange and Consumption of Huge {RDF} Data},
+  year         = 2012,
+  booktitle    = {The Semantic Web: Research and Applications - 9th Extended
+                  Semantic Web Conference, {ESWC} 2012, Heraklion, Crete,
+                  Greece, May 27-31, 2012. Proceedings},
+  pages        = {437-452},
+  doi          = {10.1007/978-3-642-30284-8\_36},
+  url          = {https://doi.org/10.1007/978-3-642-30284-8\_36},
+  crossref     = {DBLP:conf/esws/2012},
+  timestamp    = {Wed, 25 Sep 2019 18:19:49 +0200},
+  biburl       = {https://dblp.org/rec/bib/conf/esws/Martinez-PrietoGF12},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@proceedings{DBLP:conf/esws/2012,
+  editor    = {Elena Simperl and
+               Philipp Cimiano and
+               Axel Polleres and
+               {\'{O}}scar Corcho and
+               Valentina Presutti},
+  title     = {ESWC 2012, Heraklion, Crete, Greece, May 27-31,
+               2012. Proceedings},
+  series    = {LNCS},
+  volume    = {7295},
+  publisher = {Springer},
+  year      = {2012},
+  url       = {https://doi.org/10.1007/978-3-642-30284-8},
+  doi       = {10.1007/978-3-642-30284-8},
+  isbn      = {978-3-642-30283-1},
+  timestamp = {Tue, 14 May 2019 10:00:44 +0200},
+  biburl    = {https://dblp.org/rec/bib/conf/esws/2012},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
 @InProceedings{usage-one-sentence,
@@ -357,41 +404,82 @@ isbn="978-3-642-30284-8"
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 
-@Article{usage-generate-entity-type-desc,
+@InProceedings{usage-generate-entity-type-desc,
   author       = {Rajarshi Bhowmik and Gerard de Melo},
   title        = {Generating Fine-Grained Open Vocabulary Entity Type
                   Descriptions},
   year         = 2018,
-  volume       = {abs/1805.10564},
-  eprint       = {1805.10564},
-  url          = {http://arxiv.org/abs/1805.10564},
-  journal      = {CoRR},
-  archiveprefix= {arXiv},
-  timestamp    = {Mon, 13 Aug 2018 16:48:49 +0200},
-  biburl       = {https://dblp.org/rec/bib/journals/corr/abs-1805-10564},
+  booktitle    = {Proceedings of the 56th Annual Meeting of the Association for
+                  Computational Linguistics, {ACL} 2018, Melbourne, Australia,
+                  July 15-20, 2018, Volume 1: Long Papers},
+  pages        = {877-888},
+  doi          = {10.18653/v1/P18-1081},
+  url          = {https://www.aclweb.org/anthology/P18-1081/},
+  crossref     = {DBLP:conf/acl/2018-1},
+  timestamp    = {Mon, 16 Sep 2019 13:46:41 +0200},
+  biburl       = {https://dblp.org/rec/bib/conf/acl/MeloB18},
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 
+@proceedings{DBLP:conf/acl/2018-1,
+  editor    = {Iryna Gurevych and
+               Yusuke Miyao},
+  title     = {Proceedings of the 56th Annual Meeting of the Association for Computational
+               Linguistics, {ACL} 2018, Melbourne, Australia, July 15-20, 2018, Volume
+               1: Long Papers},
+  publisher = {Association for Computational Linguistics},
+  year      = {2018},
+  url       = {https://www.aclweb.org/anthology/volumes/P18-1/},
+  isbn      = {978-1-948087-32-2},
+  timestamp = {Mon, 19 Aug 2019 18:08:50 +0200},
+  biburl    = {https://dblp.org/rec/bib/conf/acl/2018-1},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
 
-@Article{usage-synthesize-entity-desc,
+
+
+@InProceedings{usage-synthesize-entity-desc,
   author       = {Rajarshi Bhowmik and Gerard de Melo},
   title        = {Be Concise and Precise: Synthesizing Open-Domain Entity
                   Descriptions from Facts},
   year         = 2019,
-  volume       = {abs/1904.07391},
-  eprint       = {1904.07391},
-  url          = {http://arxiv.org/abs/1904.07391},
-  journal      = {CoRR},
-  archiveprefix= {arXiv},
-  timestamp    = {Thu, 25 Apr 2019 13:55:01 +0200},
-  biburl       = {https://dblp.org/rec/bib/journals/corr/abs-1904-07391},
+  booktitle    = {The World Wide Web Conference, {WWW} 2019, San Francisco, CA,
+                  USA, May 13-17, 2019},
+  pages        = {116-126},
+  doi          = {10.1145/3308558.3313656},
+  url          = {https://doi.org/10.1145/3308558.3313656},
+  crossref     = {DBLP:conf/www/2019},
+  timestamp    = {Sun, 22 Sep 2019 18:12:47 +0200},
+  biburl       = {https://dblp.org/rec/bib/conf/www/BhowmikM19},
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
+
+@proceedings{DBLP:conf/www/2019,
+  editor    = {Ling Liu and
+               Ryen W. White and
+               Amin Mantrach and
+               Fabrizio Silvestri and
+               Julian J. McAuley and
+               Ricardo Baeza{-}Yates and
+               Leila Zia},
+  title     = {The World Wide Web Conference, {WWW} 2019, San Francisco, CA, USA,
+               May 13-17, 2019},
+  publisher = {{ACM}},
+  year      = {2019},
+  url       = {https://doi.org/10.1145/3308558},
+  doi       = {10.1145/3308558},
+  isbn      = {978-1-4503-6674-8},
+  timestamp = {Sun, 22 Sep 2019 18:12:47 +0200},
+  biburl    = {https://dblp.org/rec/bib/conf/www/2019},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+
 
 @online{youtube-facebook-wp,
   author = {Hillary K. Grigonis},
   year = {2018},
-  title = {Wikibase/Indexing/RDF Dump Format},
+  title = {TODO},
   url = {https://web.archive.org/web/20190822103829/https://www.digitaltrends.com/social-media/facebook-about-this-article-wikipedia/},
   urldate = {2019-08-22}
 }
@@ -460,7 +548,7 @@ isbn="978-3-642-30284-8"
                Jeff Heflin},
   title     = {The Semantic Web - {ISWC} 2017 - 16th International Semantic Web Conference,
                Vienna, Austria, October 21-25, 2017, Proceedings, Part {I}},
-  series    = {Lecture Notes in Computer Science},
+  series    = {LNCS},
   volume    = {10587},
   publisher = {Springer},
   year      = {2017},
@@ -511,7 +599,7 @@ isbn="978-3-642-30284-8"
                Carole A. Goble},
   title     = {The Semantic Web - {ISWC} 2014 - 13th International Semantic Web Conference,
                Riva del Garda, Italy, October 19-23, 2014. Proceedings, Part {I}},
-  series    = {Lecture Notes in Computer Science},
+  series    = {LNCS},
   volume    = {8796},
   publisher = {Springer},
   year      = {2014},
@@ -550,7 +638,7 @@ isbn="978-3-642-30284-8"
 }
 
 @proceedings{DBLP:conf/semweb/2018-2,
-  editor    = {Denny Vrandecic and
+  editor    = {Denny Vrandečić and
                Kalina Bontcheva and
                Mari Carmen Su{\'{a}}rez{-}Figueroa and
                Valentina Presutti and
@@ -560,7 +648,7 @@ isbn="978-3-642-30284-8"
                Elena Simperl},
   title     = {The Semantic Web - {ISWC} 2018 - 17th International Semantic Web Conference,
                Monterey, CA, USA, October 8-12, 2018, Proceedings, Part {II}},
-  series    = {Lecture Notes in Computer Science},
+  series    = {LNCS},
   volume    = {11137},
   publisher = {Springer},
   year      = {2018},
@@ -605,19 +693,22 @@ isbn="978-3-642-30284-8"
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 
-@Article{oie-errors,
-  author       = {Rudolf Schneider and Tom Oberhauser and Tobias Klatt and Felix
-                  A. Gers and Alexander L{\"{o}}ser},
-  title        = {Analysing Errors of Open Information Extraction Systems},
-  year         = 2017,
-  volume       = {abs/1707.07499},
-  eprint       = {1707.07499},
-  url          = {http://arxiv.org/abs/1707.07499},
-  journal      = {CoRR},
-  archiveprefix= {arXiv},
-  timestamp    = {Mon, 13 Aug 2018 16:47:02 +0200},
-  biburl       = {https://dblp.org/rec/bib/journals/corr/SchneiderOKGL17},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
+@inproceedings{oie-errors,
+    title = "Analysing Errors of Open Information Extraction Systems",
+    author = {Schneider, Rudolf  and
+      Oberhauser, Tom  and
+      Klatt, Tobias  and
+      Gers, Felix A.  and
+      L{\"o}ser, Alexander},
+    booktitle = "Proceedings of the First Workshop on Building Linguistically Generalizable {NLP} Systems",
+    month = sep,
+    year = "2017",
+    address = "Copenhagen, Denmark",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/W17-5402",
+    doi = "10.18653/v1/W17-5402",
+    pages = "11--18",
+    abstract = "We report results on benchmarking Open Information Extraction (OIE) systems using RelVis, a toolkit for benchmarking Open Information Extraction systems. Our comprehensive benchmark contains three data sets from the news domain and one data set from Wikipedia with overall 4522 labeled sentences and 11243 binary or n-ary OIE relations. In our analysis on these data sets we compared the performance of four popular OIE systems, ClausIE, OpenIE 4.2, Stanford OpenIE and PredPatt. In addition, we evaluated the impact of five common error classes on a subset of 749 n-ary tuples. From our deep analysis we unreveal important research directions for a next generation on OIE systems.",
 }
 
 @InProceedings{extract-rel-ibm,
