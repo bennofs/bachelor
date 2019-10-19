@@ -39,7 +39,7 @@ Da Statements ohne Referenzen erlaubt sind, kann die Liste der Referenzen leer s
 Jede Aussage enthält einen \introterm{Snak}.
 Es gibt drei Arten von Snaks:
 \begin{description}
-\item[PropertyValue] die am meisten verwendete Art eines Snaks. Sie beschreibt den Fakt, dass eine bestimmte Eigenschaft (Property) einen gewissen Wert (Value) hat. Die Property bestimmt dabei den Typ der Value. Values können je nach Property andere Items oder skalare Werte (wie Zahlen, Zeichenketten, Koordinaten, Zeiten usw.) sein.
+\item[PropertyValue] die am meisten verwendete Art eines Snaks. Sie beschreibt den Fakt, dass eine bestimmte Eigenschaft (Property) einen gewissen Wert (Value) hat. Die Property bestimmt dabei den Typ der Value. Values können je nach Property andere Items oder skalare Werte (wie Zahlen, Zeichenketten, Koordinaten, Zeiten usw.) sein. Eine Liste der möglichen Typen zeigt \cref{tab:wd-datatypes}.
 \item[SomeValue] diese Art Snak wird verwendet, um auszudrücken, dass ein Wert für die Eigenschaft existiert der aber nicht bekannt ist. Zum Beispiel kann der Snak "`es existiert ein Wert für den Todeszeitpunkt einer Person"' verwendet werden, falls eine Person gestorben ist, der Todeszeitpunkt aber nicht bekannt ist.
 \item[NoValue] drückt aus, dass es für eine bestimmte Eigenschaft keinen Wert gibt. Diese Art Snak wird verwendet, wenn das Fehlen einer Information keine Unvollständigkeit darstellt. Kann zum Beispiel für \verb|P200| (Zuflüsse) verwendet werden, wenn ein Gewässer keine Zuflüsse besitzt. 
 \end{description}
@@ -55,22 +55,70 @@ Jedes Statement besitzt einen \introterm{Rank} (\introterm{Deprecated}, \introte
 Dieses dokumentorientierte Datenmodell lässt sich einfach als JSON\footnote{\url{https://www.json.org}} (JavaScript Object Notation) repräsentieren.
 Die vollständige Darstellung ist jedoch sehr umfangreich und ist deshalb aus Platzgründen hier nicht abgebildet.
 Für ein Entity kann die JSON-Repräsentation einfach online abgerufen werden, für \verb|Q42| zum Beispiel unter: \url{https://www.wikidata.org/wiki/Special:EntityData/Q42.json}.
-Zusätzlich stellt Wikidata Exporte aller Dokumente als JSON bereit.
+
+Wikidata erstellt wöchentlich einen \introterm{Gesamtexport} der Daten als JSON-Liste von Dokumenten.
+Unter \url{https://dumps.wikimedia.org/wikidatawiki/entities/} lassen sich diese Exporte als GZip\footnote{\url{http://www.gzip.org/}} (58 GiB\footnote{die Zahlen wurden am 18.10.2019 ermittelt}) oder BZip2\footnote{\url{https://sourceforge.net/projects/bzip2/}} (39 GiB) komprimierte Dateien herunterladen.
+Der GZip-Export ist zwar etwas größer, dafür ist der Aufwand zur Dekompression geringer, sodass die Geschwindigkeit der Verarbeitung schneller ist.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{pics/Datamodel_in_Wikidata}
-  \caption{Wikidata Item "`Q42"'}
+  \caption[Wikidata Item "`Q42"']{Wikidata Item "`Q42"'. \\ \small{Bild aus \url{https://www.mediawiki.org/wiki/Wikibase/DataModel/Primer\#/media/File:Datamodel_in_Wikidata.svg}}}
   \label{fig:wd-datamodel}
 \end{figure}
 
-\section{Wikidata als Linked Data}
+\begin{table}
+  \setlength{\extrarowheight}{0.1cm}
+  \begin{adjustwidth}{-1cm}{-1cm}
+    \begin{minipage}{\textwidth}
+    \begin{tabular}{l p{0.75\textwidth} p{0.1\textwidth}}
+      \bfseries{Typ}   & \bfseries{Beschreibung}                                                                                                                                       & \bfseries{Attribute} \\
+      String           & Zeichenkette (ohne Sprachangabe)                                                                                                                              & nein \\
+      Monolingualtext  & Zeichenkette (mit Angabe der Sprache)                                                                                                                         & nein \\
+      WikibaseItem     & Ein Wikidata Item                                                                                                                                             & nein \\
+      WikibaseProperty & Eine Wikidata Property                                                                                                                                        & nein \\
+      ExternalId       & Ein Bezeichner in einer anderen Datenbank\newline{}
+                         Mit P1630 (formatter URL) wird bei Properties von diesem Typ ein Format zur Erzeugung von URLs aus dem Bezeichner angegeben                                   & nein \\
+      Url              & Eine URL zur Identifikation einer externen Resource. Beispiele sind Webseiten (\verb|http:|), Email-Adressen (\verb|mailto:|) oder IRC channel (\verb|irc:|)  & nein \\
+      Math             & Eine mathematische Formel; das Format ist ein MediaWiki-spezifisches Subset von \LaTeX\footnote{\url{https://en.wikipedia.org/wiki/Help:Displaying_a_formula}}& nein \\
+      MusicalNotation  & Eine Sequenz von Noten; Werte mit diesem Typ sind Zeichenketten in der LilyPond\footnote{\url{http://lilypond.org/}}-Notation                                 & nein \\
+      CommonsMedia     & Referenz auf eine Mediendatei in Wikimedia Commons                                                                                                            & nein \\
+      TabularData      & Referenz auf eine Tabelle in Wikimedia Commons                                                                                                                & nein \\
+      GeoShape         & Referenz auf Kartendaten (\verb|.map|) in Wikimedia Commons                                                                                                   & nein \\
+      Quantity         & Eine Zahlenangabe; neben der Zahl selbst (\verb|amount|) kann optional eine untere (\verb|upperBound|) und untere (\verb|lowerBound|) Schranke für das
+                         Interval der Unsicherheit angegeben werden; außerdem wird eine Einheit \verb|unit| gespeichert (diese kann für dimensionslose Werte leer sein)                & \verb|amount|\newline{}
+                                                                                                                                                                                         \verb|upperBound|\newline{}
+                                                                                                                                                                                         \verb|lowerBound|\newline{}
+                                                                                                                                                                                         \verb|unit| \\
+      Time             & Ein Zeitpunkt; \verb|time| ist ein Zeitstempel in einem an ISO 8601 angelehnten Format (Beispiel: +2013-01-01T00:00:00Z);
+                         \verb|precision| gibt Präzision der Angabe an (100 Millionen Jahre (1), \ldots, Jahrhundert (7), Dekade (8), Jahr (9), Monat (10), Tag (11), \ldots);
+                         \verb|before| und \verb|after| geben die Ungenaugkeit der Angabe an (Einheit abhängig von \verb|precision|);
+                         \verb|timezone| spezifiziert die Zeitzone, \verb|calendarmodel| das Kalendermodell (momentan werden gregorianisch und julianische Kalender untersüztzt)            & \verb|time|\newline{}
+                                                                                                                                                                                         \verb|before|\newline{}
+                                                                                                                                                                                         \verb|after|\newline{}
+                                                                                                                                                                                         \verb|precision|\newline{}
+                                                                                                                                                                                         \verb|timezone|\newline{}
+                                                                                                                                                                                         \verb|calendarmodel| \\
+      GlobeCoordinate  & Geographische Position; \verb|latitute| und \verb|longtitude| geben die Koordinaten an; \verb|globe| spezifiziert den Planet (Standard: \verb|Q2| (Erde));
+                         \verb|precision| speichert die numerische Präzision der Koordinatenangaben; als Koordinatensystem wird das World Geodetic System (WGS84) angenommen           & \verb|latitude|\newline{}
+                                                                                                                                                                                         \verb|longtitude|\newline{}
+                                                                                                                                                                                         \verb|globe|\newline{}
+                                                                                                                                                                                         \verb|precision| \\
+      WikibaseLexeme   & Ein Wikidata Lexeme                                                                                                                                           & nein \\
+      WikibaseSense    & Ein Wikidata Sense (Teil von Lexemes)                                                                                                                         & nein \\
+      WikibaseForm     & Wikidata Form (Teil von Lexemes)                                                                                                                              & nein
+    \end{tabular}
+    \end{minipage}
+  \end{adjustwidth}
+  \caption{Datentypen in Wikidata. Eine Beschreibung dieser Datentypen ist unter \url{https://www.wikidata.org/w/index.php?title=Help:Data_type&oldid=1027592722} abrufbar}
+  \label{tab:wd-datatypes}
+\end{table}
+
+\section{Resource Description Framework}
 Eine Besonderheit von Wikidata ist die starke Verlinkung der Daten untereinander.
 Diese Verlinkung ermöglicht eine Art des Zugriffs, die sich von der dokumentbasierten Betrachtungsweise unterscheidet.
+Fragestellungen wie "`Wer sind die Verwandten von Douglas Adams?"' oder "`Welche berühmten Personen sind in einem Staat geboren, der Mitglied der Europäischen Union ist?"' betrachten die Beziehungen der Dokumente und nicht allein den Inhalt einzelner Dokumente.
 
-
-Fragestellungen wie "`Wer sind die Verwandten von Douglas Adams?"' oder "`Welche berühmten Personen sind in einem Staat geboren, der Mitglied der europäischen Union ist?"' betrachten die Beziehungen der Dokumente und nicht allein den Inhalt einzelner Dokumente.
-
-Das W3C hat für solche Graph-basierten Daten RDF entwickelt.
+Das W3C hat für solche Graph-basierten Daten RDF entwickelt \cite{rdf-spec}.
 In RDF werden als eindeutige Bezeichner Internationalized Resource Identifiers (IRIs)\footnote{https://www.ietf.org/rfc/rfc3987.txt} verwendet.
 IRIs sind eine Erweiterung von URIs zur Unterstützung von internationalen Zeichensätzen.
 In der Praxis werden für IRIs oft HTTP URLs verwendet, sodass Namenskonflikte zwischen unterschiedlichen Organisationen vermieden werden.
@@ -89,10 +137,10 @@ Literale in RDF bestehen aus einer Zeichenkette und optional noch einem Datentyp
 Mit dem Datentyp kann die Interpretation der Zeichenkette genauer spezifiziert werden.
 Datentypen werden über IRIs identifiziert.
 Language Tags geben die Sprache der Zeichenkette als Language Code nach BCP47\footnote{\url{https://tools.ietf.org/html/bcp47}} an.
-In diesem Fall muss der Datentyp \url{http://www.w3.org/1999/02/22-rdf-syntax-ns#langString} sein.
+In diesem Fall muss der Datentyp \url{http://www.w3.org/1999/02/22-rdf-syntax-ns#langString} sein \cite{rdf-spec} .
 
 RDF Dokumente sind eine ungeordnete Kollektion von Tripeln.
-Für die Serialisierung von RDF gibt es verschiedene Standards, ein einfacher und verbreiteter ist N-Triples\footnote{\url{https://www.w3.org/TR/n-triples/}}.
+Für die Serialisierung von RDF gibt es verschiedene Standards, ein einfacher und verbreiteter ist N-Triples \cite{rdf-ntriples}.
 Die Syntax von N-Triples ist in folgendem Beispiel dargestellt:
 \begin{lstlisting}[language=SPARQL, breaklines=true]
 <https://example.org> <http://schema.org/name> "Beispiel"@de .
@@ -147,14 +195,19 @@ wdno: & <http://www.wikidata.org/prop/novalue/>
 \label{tab:rdf-prefixes}
 \end{table}
 
-RDF kennt weder Referenzen noch Qualifier und kann im Gegensatz zu Wikidata auch nicht mehrere gleiche Tripel speichern.
+\section{Wikidata als RDF}
+Als Standardformat für Graphdaten ist RDF weit verbreitet.
+Um existierende Anwendungen mit den Daten von Wikidata verwenden zu können, ist eine Darstellung als RDF sinnvoll.
+Eine direkte Abbildung von Statements auf Tripel ist jedoch nicht möglich, da RDF das Konzept von Qualifiern und Referenzen nicht kennt.
+Außerdem erlaubt Wikidata mehrere Statements mit identischem Inhalt, was in RDF nicht vorgesehen ist.
+
 Erxleben, Günther, Krötzsch, Mendez und Vrandečić haben 2014 beschrieben wie trotzdem eine Darstellung als RDF möglich ist und ein System zur Erstellung regelmäßiger Exporte als RDF entwickelt \cite{wikidata-rdf-export}.
 Nach dem Prinzip der Reifikation werden Statements, Referenzen und komplexe Werte nicht direkt als Tripel exportiert, sondern als eigene Ressourcen. 
 Diese Ressourcen besitzen dann ein Tripel, das zu dem Objekt des Statements verlinkt und zusätzlich noch Tripel für Qualifier und Referenzen.
 Jedes Statement hat somit einen eindeutigen Namen, sodass auch zwei Statements mit dem selben Inhalt erfasst werden können.
 \begin{figure}
   \includegraphics[width=\linewidth]{pics/Rdf_mapping}
-  \caption{Mapping des Datenmodells auf RDF}
+  \caption{Mapping des Datenmodells auf RDF \\ Quelle für das Bild: \url{https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format\#/media/File:Rdf_mapping-vector.svg}}
   \label{fig:rdf-mapping}
 \end{figure}
 
@@ -184,3 +237,12 @@ Diese Tripel existieren allerdings nur dann, wenn das zugehörige Statement vom 
 Dieser Typ umfasst alle Statements, die den höchsten Rang für diese Property haben und nicht deprecrated sind.
 Solche Statements und Tripel werden auch als "`truthy"' bezeichnet.
 In vielen Fällen können Abfragen damit deutlich kürzer und zugleich lesbarer formuliert werden, da einfache Verbindungen oft unabhängig von Qualifiern oder Referenzen betrachtet werden.
+
+Auf Basis dieses Schemas hat Wikidata ein offizielles Format für Exporte als RDF entwickelt \footnote{\url{https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format}}.
+Analog zu den Exporten im JSON-Format werden wöchentlich Gesamtexporte aller Daten als RDF erzeugt und zum Download angeboten.
+Da RDF die Informationen weniger kompakt repräsentiert als JSON, sind die Exporte etwas größer: 76 GiB mit BZip2 und 99 GiB mit GZip.
+Zusätzlich zu den vollständigen Exporten wird auch ein Export mit nur den truthy Tripeln angeboten, welcher deutlich kleiner ausfällt (32 GiB mit GZip).
+
+Ein prominenter Nutzer des RDF-Formats ist der Wikidata Query Service\footnote{\url{https://query.wikidata.org}} \cite{wd-sparql}.
+Auf Basis der RDF-Datenbank BlazeGraph\footnote{\url{https://blazegraph.com/}} wird ein Interface zum Abfragen der Daten mittels SPARQL bereitgestellt.
+Die Daten werden initial aus dem RDF-Gesamtexport geladen und dann laufend mit der Wikidata-API inkrementell aktualisiert, sodass immer der aktuelle Stand abrufbar ist.
