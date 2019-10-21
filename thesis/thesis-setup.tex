@@ -73,3 +73,17 @@
 \RedeclareSectionCommand[beforeskip=0pt]{paragraph}
 
 \newcommand{\introterm}[1]{\emph{#1}}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{calc}
+
+\newcommand{\tikzcomponent}[2]
+{%
+  \newsavebox{#1}%
+  \begin{lrbox}{#1}%
+    \begin{tikzpicture}%
+      #2
+    \end{tikzpicture}%
+  \end{lrbox}%
+}

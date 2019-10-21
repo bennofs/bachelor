@@ -77,6 +77,12 @@ Variante b) funktioniert nur für kleinere Dumps, weil bei größeren Dumps das 
 Die Einfachheit der Variante c) erlaubt es, schnell neue Arten von Filtern zu implementieren.
 In dieser Arbeit wurde sich deshalb für diese Variante entschieden, auch da zu erwarten ist, dass das System am Anfang noch keine Nutzung in so großem Ausmaß haben wird, um die Komplexität und den zusätzlichen Speicherbedarf eines Index zu rechtfertigen.
 
+\begin{figure}
+  \input{./content/tikz/arch.tex}
+  \caption{Übersicht der gewählten Architektur}
+  \label{fig:arch}
+\end{figure}
+
 \section{Interface}
 Das Interface hat die Aufgabe, die Erstellung und Spezifikation von Dumps möglichst einfach zu gestalten und bereits existierende Dumps zu finden und anzuzeigen.
 Um das Interface für die Spezifikation der Filter zu entwerfen muss zunächst die Struktur der Filter, welche unterstützt werden sollen, genauer festgelegt werden.

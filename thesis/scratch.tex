@@ -1,0 +1,22 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{calc}
+
+\newcommand{\tikzcomponent}[2]
+{%
+  \newsavebox{#1}%
+  \begin{lrbox}{#1}%
+    \begin{tikzpicture}%
+      #2
+    \end{tikzpicture}%
+  \end{lrbox}%
+}
+
+
+\begin{document}
+
+\input{./content/tikz/arch.tex}
+
+\end{document}
