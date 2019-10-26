@@ -3,7 +3,7 @@
 \chapter{Hintergrund}
 \label{sec:concepts}
 In diesem Kapitel wird das Datenmodell von Wikidata beschrieben.
-Danach wird das Format RDF\footnote{\url{https://www.w3.org/RDF/}} (Resource Description Framework) erläutert und die Abbildung von Wikidata auf dieses Format erklärt.
+Danach wird das Format RDF (Resource Description Framework) erläutert und die Abbildung von Wikidata auf dieses Format erklärt.
 RDF ist Standardformat für den Austausch von strukturierten Informationen. 
 
 \section{Wikidata als strukturiertes Wiki}
@@ -62,7 +62,7 @@ Der GZip-Export ist zwar etwas größer, dafür ist der Aufwand zur Dekompressio
 
 \begin{figure}
   \includegraphics[width=\linewidth]{pics/Datamodel_in_Wikidata}
-  \caption[Wikidata Item "`Q42"']{Wikidata Item "`Q42"'. \\ \small{Bild aus \url{https://www.mediawiki.org/wiki/Wikibase/DataModel/Primer\#/media/File:Datamodel_in_Wikidata.svg}}}
+  \caption[Wikidata Item "`Q42"']{Wikidata Item "`Q42"'. \\ \small{Quelle: \url{https://mediawiki.org/wiki/Wikibase/DataModel/Primer}}}
   \label{fig:wd-datamodel}
 \end{figure}
 
@@ -137,10 +137,10 @@ Literale in RDF bestehen aus einer Zeichenkette und optional noch einem Datentyp
 Mit dem Datentyp kann die Interpretation der Zeichenkette genauer spezifiziert werden.
 Datentypen werden über IRIs identifiziert.
 Language Tags geben die Sprache der Zeichenkette als Language Code nach BCP47\footnote{\url{https://tools.ietf.org/html/bcp47}} an.
-In diesem Fall muss der Datentyp \url{http://www.w3.org/1999/02/22-rdf-syntax-ns#langString} sein \cite{rdf-spec} .
+Die Angabe von Language Tags ist nur für Literale mit folgendem Datentyp erlaubt: \url{http://www.w3.org/1999/02/22-rdf-syntax-ns#langString} \cite{rdf-spec} .
 
 RDF Dokumente sind eine ungeordnete Kollektion von Tripeln.
-Für die Serialisierung von RDF gibt es verschiedene Standards, ein einfacher und verbreiteter ist N-Triples \cite{rdf-ntriples}.
+Für die Serialisierung von RDF gibt es verschiedene Standards; ein einfacher und verbreiteter ist N-Triples \cite{rdf-ntriples}.
 Die Syntax von N-Triples ist in folgendem Beispiel dargestellt:
 \begin{lstlisting}[language=SPARQL, breaklines=true]
 <https://example.org> <http://schema.org/name> "Beispiel"@de .
@@ -211,10 +211,11 @@ Jedes Statement hat somit einen eindeutigen Namen, sodass auch zwei Statements m
   \label{fig:rdf-mapping}
 \end{figure}
 
-Diese Übersetzung ist in \cref{fig:rdf-mapping} gezeigt.
+Das Schema für diese Übersetzung ist in \cref{fig:rdf-mapping} gezeigt.
 Jeder Pfeil beschreibt dabei Prädikatpräfix, welches für RDF-Tripel verwendet wird.
-An dieses Präfix wird der Bezeichner der Property angehangen.
-Hier ist ein Beispiel zur Verdeutlichung (gekürzt, die Informationen zu den Reference und Value Nodes sind nicht abgebildet):
+An dieses Präfix wird der Bezeichner der Property angehangen.\TODO{besseres Bild, fix absätze}
+
+Ein Beispiel zur Verdeutlichung (gekürzt, die Informationen zu den Reference und Value Nodes sind nicht abgebildet):
 \begin{lstlisting}[language=SPARQL]
 wd:Q42 p:P26 wds:q42-xxxx .
 wds:q42-xxxx rdf:type wikibase:Statement .
@@ -229,7 +230,7 @@ wd:Q42 wdt:P26 wd:Q14623681 .
 Das Beispiel zeigt, wie die Property \verb|P26| (spouse) zuerst mit dem Prädikat \verb|p:P26| auf das Statement verlinkt.
 Das Statement verlinkt über \verb|ps:P26| zum einfachen Wert der Property.
 Mit \verb|pq:P580| (start time) bzw. \verb|pqv:P580| wird auf die einfache und komplexe Darstellung des Wertes für diesen Qualifier verlinkt.
-Die komplexe Darstellung enthält noch weitere Informationen zu dem Datum, wie bspw. die Genauigkeit oder das verwendete Kalendermodell.
+Die komplexe Darstellung enthält noch weitere Informationen zu dem Datum, wie beispielsweise die Genauigkeit oder das verwendete Kalendermodell.
 
 Eine spezielle Bedeutung hat der \verb|wdt:| Präfix.
 Tripel mit diesen Prädikaten verlinken Items direkt mit den einfachen Werten.

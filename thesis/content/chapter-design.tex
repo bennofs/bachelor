@@ -1,14 +1,15 @@
 \chapter{Design}
 \label{chap:design}
 In diesem Kapitel werden die Anforderungen präzisiert und ein Design für die Umsetzung erarbeitet.
-Dazu sind mehrere Aspekte relevant: zum einen die technische Umsetzung der Filterung und Generierung von Dumps (Architektur und unterstützte Filterkriterien), sowie das User-Interface und welche externen Dienste genutzt werden können (z.B. für die Archivierung der erzeugten Dumps).
+Dazu sind mehrere Aspekte relevant: zum einen die technische Umsetzung der Filterung und Generierung von Dumps (Architektur und unterstützte Filterkriterien), zum anderen die Gestaltung des User-Interfaces und die Auswahl externen Dienste (z.B. für die Archivierung der erzeugten Dumps).
 Diese bedingen sich gegenseitig: es ist wenig sinnvoll, wenn die Architektur sehr komplexe Filterkriterien unterstützt, dass User-Interface das aber gar nicht abbilden kann (oder umgekehrt).
 
 \section{Architektur}
 Für die Architektur der Anwendung stellt sich zuerst die Frage, wie die Arbeit zwischen Server und Client verteilt werden soll.
 Auf der einen Seite steht die Variante, einen schlauen Client zu entwickeln, welcher direkt mit der Wikidata API und dem SPARQL-Endpunkt spricht bzw. den Dump als Stream verarbeitet.
 Der Client kann dann von jedem Nutzer lokal auf seinem eigenen System ausgeführt werden.
-Der Vorteil dieser Variante ist eindeutig: der Server müsste in diesem Fall keine eigenen Dumps erzeugen, sondern maximal Metadaten zu generierten Dumps speichern.
+Der Vorteil dieser Variante ist, dass der Server keine eigenen Dumps erzeugen muss, sondern maximal Metadaten zu generierten Dumps speichert.
+Damit sind wenig Ressourcen für den Betrieb des Servers erforderlich.
 Allerdings bringt diese Variante auch mehrere Probleme: erstens muss der Client vom Nutzer selbst ausgeführt werden, was problematisch wird wenn die Erzeugung der Dumps einen längeren Zeitraum in Anspruch nimmt, da dann das System des Nutzers die gesamte Zeit online sein muss.
 Zweitens müsste für die Archivierung der Nutzer die Dumps selbst hochladen.
 Die Generierung auf einem Server hat diese Nachteile nicht.
@@ -50,22 +51,6 @@ Im Gegensatz zu Variante b) müssen die Filterkriterien nicht als SPARQL formuli
 Dafür sind komplexe, graph-basierte Filter, die das Betrachten von mehr als einer Entität auf einmal erfordern, nicht so einfach umsetzbar.
 
 Die Auswahl der Architektur ist auch davon abhängig, welche Kriterien zur Filterung unterstützt werden sollen.
-Ein paar Beispiele von Kriterien, nach denen andere Arbeiten die Exporte von Wissensgraphen wie Wikidata gefiltert haben, sind:
-\begin{enumerate}[label=\arabic*)]
-  \item nur "`truthy"' Statements mit Entities als Objekt, Labels/Beschreibungen nur in Englisch und Spanisch\cite{usage-grafa}
-  \item nur "`truthy"' simple Statements, wobei sowohl Subjekt als auch Objekt ein Wikidata-Item sind\cite{usage-wembedder}
-  \item alle Items mit einem Statement für die Property \verb|P727| (Europeana ID, ID in der europäischen virtuellen Bibliothek „Europeana“ für Kulturobjekte)\cite{usage-europeana}
-  \item alle Items mit einem Statement für mindestens eine von 50 Properties\cite{usage-narratives} 
-  \item nur der englische Teil\cite{usage-web-tables} 
-  \item nur Statements für Properties, wobei die Properties Instanzen einer bestimmten Klasse sein müssen, ohne deprecrated, no-value und unknown-value Statements\cite{usage-implicational-knowledge} (allerdings wurde der Dump hier nicht als RDF, sondern in der JSON-Form verarbeitet)
-  \item nur Entities von gestorbenen Personen, die an mindestens drei Statements für mindestens 5000 mal vorkommende Properties beteiligt sind\cite{usage-learning-structured-embeddings}
-  \item kleinere Datensätze, erzeugt durch zufälliges Auswählen von Statements\cite{usage-sparql-benchmark}
-  \item alle Items, die Instanzen (\verb|P31|) der Klassen \verb|Q5| (Mensch) sind und mindestens 6 Fakten (Statements) haben\cite{usage-one-sentence} oder nur die einfachen Statements dieser Personen für die Properties \verb|P27| (Land der Staatsangehörigkeit) und \verb|P106| (Tätigkeit)\cite{usage-person-networks}
-  \item zufällige Auswahl von Entities (Sampling), mit englischer Beschreibung und mindestens 5 Statements\cite{usage-generate-entity-type-desc}, optional auch mit Downsampling von Instanzen bestimmter Klassen (um die Verteilung der Klassen im Ergebnis auszugleichen)\cite{usage-synthesize-entity-desc}
-  \item alle Statements, welche Referenzen haben, und die Sitelinks der Subjekte dieser Statements\cite{wd-wk-common-references}
-\end{enumerate}
-Alle diese Filter sind für jede Entität lokal auswertbar, es müssen keine benachbarten Entitäten angeschaut werden.
-Nur die Entscheidung, für welche Properties die Statements exportiert werden sollen, ist teilweise komplizierter.
 Bei einer sequentiellen Verarbeitung von Dumps ist die Zugehörigkeit einer Property zu einer Klasse erst bekannt, sobald die Entität für diese Property verarbeitet wurde.
 Da die Anzahl der Properties jedoch gering genug ist (< 10000), können solche komplexe Filter vor Beginn der Verarbeitung mithilfe des Wikidata Query Service in eine Liste von Properties aufgelöst werden.
 Die Variante c) kann damit die Filter dieser Art abdecken.
@@ -76,6 +61,9 @@ Variante a) ist komplizierter und weniger flexibel, da ein Index nur bestimmte F
 Variante b) funktioniert nur für kleinere Dumps, weil bei größeren Dumps das Problem des Timeouts auftritt.
 Die Einfachheit der Variante c) erlaubt es, schnell neue Arten von Filtern zu implementieren.
 In dieser Arbeit wurde sich deshalb für diese Variante entschieden, auch da zu erwarten ist, dass das System am Anfang noch keine Nutzung in so großem Ausmaß haben wird, um die Komplexität und den zusätzlichen Speicherbedarf eines Index zu rechtfertigen.
+
+Das Konzept der gewählten Architektur zeigt \cref{fig:arch}.
+Das Frontend ist hier %TODO
 
 \begin{figure}
   \input{./content/tikz/arch.tex}
@@ -90,7 +78,7 @@ Um das Interface für die Spezifikation der Filter zu entwerfen muss zunächst d
 Die Anwendungsfälle für das Filtern von Wikidata sind verschieden.
 Ein typisches Szenario ist die Extraktion von Daten einer bestimmten Thematik, z.B. nur Daten von Personen oder Städten.
 In diesem Fall geschieht die Filterung auf Entitätenebene, mit eventuell zusätzlichen Einschränkung der zu exportierende Statements und Sprachen.
-Ein anderes Szenario orientiert sich mehr an der Struktur der Statements.
+Ein anderes Szenario orientiert sich an der Struktur der Statements.
 Beispiele hierfür sind die Analyse von Statements mit mindestens einer Referenz, die Extraktion aller Statements für eine bestimmte Property oder alle Statements mit deprecrated Rank.
 Das dritte Szenario verwendet Filterung, um die Daten für Benchmarks auf eine kleinere Menge zu reduzieren.
 In diesem Fall sind statistische Filter interessant, um zum Beispiel nur jedes zehnte Statement oder nur jede zehnte Entität zu exportieren.

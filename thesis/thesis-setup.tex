@@ -67,7 +67,7 @@
 \usepackage{cleveref}
 \usepackage{bookmark}
 \usepackage{changepage}
-\usepackage{longtable}
+\usepackage{xsavebox}
 
 % avoid large space before paragraphs with title
 \RedeclareSectionCommand[beforeskip=0pt]{paragraph}
@@ -78,12 +78,10 @@
 \usetikzlibrary{shapes.geometric}
 \usetikzlibrary{calc}
 
-\newcommand{\tikzcomponent}[2]
-{%
-  \newsavebox{#1}%
-  \begin{lrbox}{#1}%
+\newenvironment{tikzcomponent}[1]{%
+  \begin{xlrbox}{#1}%
     \begin{tikzpicture}%
-      #2
+    }{
     \end{tikzpicture}%
-  \end{lrbox}%
+  \end{xlrbox}%
 }

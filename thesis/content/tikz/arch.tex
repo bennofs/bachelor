@@ -1,15 +1,13 @@
 % gear symbol
-\tikzcomponent{\gear}
-{
+\begin{tikzcomponent}{gear}
   \foreach \angle in {0, 60, ..., 360} {
     \draw[fill=black] (0,0) -- (\angle-30:0.7cm) -- (\angle-30+8:0.7cm) -- (\angle-13:1cm) -- (\angle+13:1cm) -- (\angle+30-8:0.7cm) -- (\angle+30:0.7cm) -- cycle;
   };
   \draw[fill=white] (0,0) circle [radius=0.3];
-}
+\end{tikzcomponent}
 
 % database symbol
-\tikzcomponent{\database}
-{
+\begin{tikzcomponent}{database}
   \pgfmathsetmacro{\radius}{0.8};
   \begin{scope}[line width=1pt]
     \draw (0,0) circle [x radius=\radius, y radius=0.3];
@@ -19,11 +17,10 @@
     \draw (-\radius,-1.0) arc[start angle=180, delta angle=180, x radius=\radius, y radius=0.3];
     \draw (-\radius,-1.5) arc[start angle=180, delta angle=180, x radius=\radius, y radius=0.3];
   \end{scope};
-}
+\end{tikzcomponent}
 
 % web server symbol
-\tikzcomponent{\webserver}
-{
+\begin{tikzcomponent}{webserver}
   \begin{scope}[scale=1.2]
     \pgfmathsetmacro{\frontwidth}{1};
     \pgfmathsetmacro{\backwidth}{0.6};
@@ -34,41 +31,58 @@
       \draw[fill=white] (\frontwidth*\i/3+0.15\frontwidth, -\topheight-0.35) circle [radius=1mm];
     }
   \end{scope}
-}
+\end{tikzcomponent}
+
+% archive symbol
+\begin{tikzcomponent}{archive}
+  \begin{scope}[line width=1pt]
+    \pgfmathsetmacro{\width}{1.8};
+    \pgfmathsetmacro{\shear}{0.8};
+    \pgfmathsetmacro{\topheight}{0.6};
+    \pgfmathsetmacro{\gap}{0.2};
+    \draw (0,0) rectangle (\width,-1);
+    \draw (0,0) rectangle (\width,\gap);
+    \draw (0,\gap) -- ({(1-\shear)*\width},\gap+\topheight) -- (\width*\shear,\gap+\topheight) -- (\width,0.2) -- cycle;
+    \node[rectangle, draw, rounded corners=4pt, inner xsep=8pt] at (0.5*\width,-0.5) {};
+  \end{scope}
+\end{tikzcomponent}
 
 % client pc symbol
-\tikzcomponent{\client}
-{
+\begin{tikzcomponent}{client}
   \draw [line width=3mm] (0,0) rectangle (2,1.3);
   \draw [line width=2mm] (0,-0.4) -- (2, -0.4);
-}
+\end{tikzcomponent}
 
 
 \begin{tikzpicture}[
   line width=2pt
   ]
-  \node (frontend) at (6.5,0) {\usebox\webserver};
+  \node (frontend) at (6.5,0) {\thewebserver};
   \node[below of=frontend, node distance=1.2cm] (frontendtext) {Frontend};
 
-  \node (database) at (6.5,-4) {\usebox\database};
+  \node (database) at (6.5,-4) {\thedatabase};
   \node[below of=database, node distance=1.5cm] (databasetext) {Datenbank};
   \node[below of=databasetext, anchor=north, node distance=0.3cm] {\small Speicherung von Dump-Metadaten};
 
   \draw[<->] (frontendtext) -- (database);
 
-  \node (backend) at (0,0) {\usebox\gear};
+  \node (backend) at (0,0) {\thegear};
   \node[below of=backend, anchor=north, node distance=1.2cm, align=center] (backendtitle) {Backend};
   \node[below of=backendtitle, anchor=north, align=left, node distance=0.3cm] (backenddesc) {{\small Verarbeitet regelmäßig Aufträge} \\ {\small aus der Warteschlange}};
   
   \node[line width=1pt, cylinder, draw, shape aspect=0.4, inner ysep=0.3cm] at ($(backend)!0.47!(frontend)$) (queue) { Warteschlange };
 
-  \node (client) at (3,5) {\usebox\client};
+  \node (client) at (4.5,5) {\theclient};
   \node[below of=client, anchor=north, node distance=1.2cm] (clienttext) { Client };
-  \draw[<->] (clienttext.south east) -- (frontend) node[midway, above, anchor=south west] {Web-Interface};
+  \draw[<->] (clienttext.south east) -- (frontend) node[midway, above, anchor=south west] {\small Web-Interface};
 
-  \draw[->] ($(frontend.west)+(0.1,0)$) -- ($(queue.east)-(0.25,0)$);
+  \draw[->] ($(frontend.west)+(0.05,0)$) -- ($(queue.east)-(0.25,0)$);
   \draw[->] (queue) -- (backend);
 
   \draw[->] (backenddesc) to [bend right=10] node[anchor=north east]{\small Aktualisierung der Dump-Metadaten} (database);
+
+  \node (zenodo) at (0,4.5) {\thearchive};
+  \node[below of=zenodo, anchor=north, node distance=1.0cm] (zenodotext) {Zenodo};
+  \draw[->] (backend) -- (zenodotext) node[midway, anchor=west]{\small Upload};
   
 \end{tikzpicture}

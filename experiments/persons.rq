@@ -1,0 +1,68 @@
+CONSTRUCT {
+  ?node ?p ?o .
+}
+
+# get items
+WITH {
+  SELECT ?item WHERE {
+   ?item wdt:P31 wd:Q5 . # instances of class human
+  } LIMIT 3000
+} AS %items
+
+# get statements for items
+WITH {
+  SELECT ?stmt WHERE {
+    INCLUDE %items .
+    ?item ?p ?stmt .
+    [] wikibase:claim ?p .
+  }
+} AS %stmts
+
+# get references for statements
+WITH {
+  SELECT REDUCED ?ref WHERE {
+    INCLUDE %stmts .
+    ?stmt prov:wasDerivedFrom ?ref .
+  }
+} AS %refs 
+
+# get values for statements/references
+WITH {
+  SELECT REDUCED ?val WHERE {
+    {
+      INCLUDE %stmts .
+      ?stmt ?p ?val .
+      [] wikibase:statementValue|wikibase:statementValueNormalized|
+         wikibase:referenceValue|wikibase:referenceValueNormalized|
+         wikibase:qualifierValue|wikibase:qualifierValueNormalized ?p .
+      FILTER (STRSTARTS(STR(?val), "http://www.wikidata.org/value/"))
+    }
+    UNION
+    {
+      INCLUDE %refs .
+      ?ref ?p ?val .
+      [] wikibase:statementValue|wikibase:statementValueNormalized|
+         wikibase:referenceValue|wikibase:referenceValueNormalized|
+         wikibase:qualifierValue|wikibase:qualifierValueNormalized ?p .
+      FILTER (STRSTARTS(STR(?val), "http://www.wikidata.org/value/"))
+    }
+  }
+} AS %vals 
+
+# get all nodes
+WITH {
+  SELECT ?node WHERE {
+    { SELECT (?item as ?node) WHERE { INCLUDE %items } }
+    UNION 
+    { SELECT (?stmt as ?node) WHERE { INCLUDE %stmts } } 
+    UNION
+    { SELECT (?ref as ?node) WHERE { INCLUDE %refs } } 
+    UNION
+    { SELECT (?val as ?node) WHERE { INCLUDE %vals } }
+  }
+} as %nodes
+
+WHERE {
+  INCLUDE %nodes .
+  ?node ?p ?o .
+}

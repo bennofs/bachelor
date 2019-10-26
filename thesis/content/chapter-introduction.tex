@@ -7,7 +7,7 @@ Bei fast 50 Millionen Artikeln in 278 Sprachen\footnote{\url{https://stats.wikim
 Sogar YouTube und Facebook greifen auf Wikipedia zurück, um zusätzliche Informationen zu kontroversen Themen zu präsentieren \cite{youtube-facebook-wp}.
 
 Die Darstellung der Informationen in natürlicher Sprache als Textartikel ist für Menschen praktisch.
-Die Extraktion von Fakten für die maschinelle Verarbeitung aus diesen Textartikel ist jedoch schwierig \cite{oie-errors,extract-rel-ibm}.
+Die Extraktion von Fakten für die maschinelle Verarbeitung aus diesen Textartikeln ist jedoch schwierig \cite{oie-errors,extract-rel-ibm}.
 Das Problem wird durch die unterschiedlichen Sprachversionen noch verstärkt, denn die beschriebenen Fakten können sich je nach Sprache unterscheiden.
 Als Lösung wurde 2012 das Wikidata Projekt gegründet, mit dem Ziel, die Informationen aus Wikipedia in atomare Aussagen zerlegt strukturiert zu verwalten \cite{wikidata}.
 
@@ -33,11 +33,10 @@ Ziel dieser Arbeit ist deswegen die Entwicklung eines Systems zum einfachen Abru
 
 Eine bereits existierende Möglichkeit zur Abfrage von Daten ist der Wikidata Query Service \cite{wd-sparql}. 
 Mit diesem Service lassen sich komplexe Abfragen auf den Daten von Wikidata beantworten.
-Da die Laufzeit von Abfragen auf eine Minute limitiert ist, eignet sich dieser allerdings nicht für große Datenmengen.
+Allerdings ist es mit diesem Service sehr schwierig, die kompletten Daten zu einem Thema abzurufen, da das Schema des Query Services die Daten sehr stark zerlegt.
+Außerdem ist die Laufzeit von Abfragen auf eine Minute limitiert, was bei großen Datenmengen ein Problem ist.
 Das dieses Limit nicht nur ein theoretisches Problem ist, zeigt eine Arbeit zur Verwendung von Referenzen in Wikidata\cite{wd-wk-common-references}.
 Die Autoren mussten die Abfrage nach allen Referenzen von einem Mitarbeiter von Wikimedia Deutschland ausführen lassen, da sie nicht innherhalb des Limits terminiert.
-Ein weiteres Problem ist die sehr feine Zerlegung der Daten beim Wikidata Query Service.
-Während damit der Zugriff auf spezifische Informationen einfach ist, wird es schwierig, alle Informationen zu einem Thema abzurufen.
 
 Das in dieser Arbeit vorgestellte System füllt die Nische zwischen dem vollständigen Export und dem Wikidata Query Service.
 Durch die Angabe von Filtern wird eine Teilmenge der Daten definiert.
