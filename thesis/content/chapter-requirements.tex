@@ -28,17 +28,17 @@ Die wesentlichen Merkmale des Systems sind:
 Als Grundlage zur Ermittlung der Minimalanforderungen für die Filterkriterien werden existierende Arbeiten betrachtet, welche Exporte von Wissengraphen wie Wikidata gefiltert haben.
 Ein paar Beispiele dafür sind:
 \begin{enumerate}[label=\arabic*)]
-  \item nur "`truthy"' Statements mit Entities als Objekt, Labels/Descriptions nur in Englisch und Spanisch\cite{usage-grafa}
-  \item nur "`truthy"' simple Statements, wobei sowohl Subjekt als auch Objekt ein Wikidata-Item sind\cite{usage-wembedder}
-  \item alle Items mit einem Statement für die Property \verb|P727| (Europeana ID, ID in der europäischen virtuellen Bibliothek „Europeana“ für Kulturobjekte)\cite{usage-europeana}
-  \item alle Items mit einem Statement für mindestens eine von 50 festgelegten Properties\cite{usage-narratives} 
-  \item nur der englische Teil\cite{usage-web-tables} 
-  \item nur Statements für Properties, wobei die Properties Instanzen einer bestimmten Klasse sein müssen, ohne deprecrated, no-value und unknown-value Statements\cite{usage-implicational-knowledge} (allerdings wurde der Dump hier nicht als RDF, sondern in der JSON-Form verarbeitet)
-  \item nur Entities von gestorbenen Personen, die an mindestens drei Statements für mindestens 5000 mal vorkommende Properties beteiligt sind\cite{usage-learning-structured-embeddings}
-  \item kleinere Datensätze, erzeugt durch zufälliges Auswählen von Statements\cite{usage-sparql-benchmark}
-  \item alle Items, die Instanzen (\verb|P31|) der Klassen \verb|Q5| (Mensch) sind und mindestens 6 Fakten (Statements) haben\cite{usage-one-sentence} oder nur die einfachen Statements dieser Personen für die Properties \verb|P27| (Land der Staatsangehörigkeit) und \verb|P106| (Tätigkeit)\cite{usage-person-networks}
-  \item zufällige Auswahl von Entities (Sampling), mit englischer Beschreibung und mindestens 5 Statements\cite{usage-generate-entity-type-desc}, optional auch mit Downsampling von Instanzen bestimmter Klassen (um die Verteilung der Klassen im Ergebnis auszugleichen)\cite{usage-synthesize-entity-desc}
-  \item alle Statements, welche Referenzen haben, und die Sitelinks der Subjekte dieser Statements\cite{wd-wk-common-references}
+  \item nur "`truthy"' Statements mit Entities als Objekt; Labels/Descriptions nur in Englisch und Spanisch \cite{usage-grafa}
+  \item nur "`truthy"' simple Statements, wobei sowohl Subjekt als auch Objekt ein Wikidata-Item sind \cite{usage-wembedder}
+  \item alle Items mit einem Statement für die Property \verb|P727| (Europeana ID, ID in der europäischen virtuellen Bibliothek „Europeana“ für Kulturobjekte) \cite{usage-europeana}
+  \item alle Items mit einem Statement für mindestens eine von 50 festgelegten Properties \cite{usage-narratives} 
+  \item nur der englische Teil; Labels in anderen Sprachen werden verworfen \cite{usage-web-tables} 
+  \item nur Statements für Properties, wobei die Properties Instanzen einer bestimmten Klasse sein müssen, ohne deprecrated, no-value und unknown-value Statements \cite{usage-implicational-knowledge} (allerdings wurde der Dump hier nicht als RDF, sondern in der JSON-Form verarbeitet)
+  \item nur Entities von gestorbenen Personen, die an mindestens drei Statements für mindestens 5000 mal vorkommende Properties beteiligt sind \cite{usage-learning-structured-embeddings}
+  \item kleinere Datensätze, erzeugt durch eine zufällige Auswahl (\introterm{Sampling}) von Statements \cite{usage-sparql-benchmark}
+  \item alle Items, die Instanzen (\verb|P31|) der Klassen \verb|Q5| (Mensch) sind und mindestens 6 Fakten (Statements) haben\cite{usage-one-sentence} oder nur die einfachen Statements dieser Personen für die Properties \verb|P27| (Land der Staatsangehörigkeit) und \verb|P106| (Tätigkeit) \cite{usage-person-networks}
+  \item zufällige Auswahl von Entities (Sampling), mit englischer Beschreibung und mindestens 5 Statements \cite{usage-generate-entity-type-desc}, optional auch mit Downsampling von Instanzen bestimmter Klassen (um die Verteilung der Klassen im Ergebnis auszugleichen) \cite{usage-synthesize-entity-desc}
+  \item alle Statements, welche Referenzen haben, und die Sitelinks der Subjekte dieser Statements \cite{wd-wk-common-references}
 \end{enumerate}
 Mit den drei beschriebenen Aspekten (Filterung nach Entity, Property und Sprache) und den verschiedenen Optionen für den Export von Statements lassen sich die meisten dieser Anwendungsfälle abdecken.
 Außerdem fällt auf, dass die Auswahl von Entities nur auf lokalen Eigenschaften basiert, die anhand des Entity-Dokuments entschieden werden können. 
@@ -55,8 +55,8 @@ Die nicht-funktionalen Anforderungen setzen sich zusammen aus Standardanforderun
     Als Anhaltspunkte für die Beurteilung dienen hier vergleichbare Systeme, wie der Wikidata Query Service, welcher ebenfalls Dienste basierend auf den RDF-Daten von Wikidata anbietet und gleichzeitig deutlich populärer ist (44 Anfragen pro Sekunde im Jahr 2018 \cite{wd-sparql}). Die Datenbank des Wikidata Query Service war 2018 über 400GB groß. Der Dienst benutzt sechs Server mit folgender Hardware: dual Intel(R) Xeon(R) CPU E5-2620 v4 8 core; 128G RAM; Dual RAID 800G SSD als Speicher. Diese laufen allerdings nicht unter Volllast.
     Das System sollte entsprechend seiner Relevanz geringere Hardwareanforderungen als der Wikidata Query Service haben. Für die initiale Version des Systems sollten 200GiB Festplattenspeicher und 8 GiB Arbeitsspeicher ausreichen. Diese Anforderungen erlauben das Deployment auf der Wikimedia Toolforge\footnote{Die Toolforge erlaubt nach einer einfachen Registration die Nutzung von verschiedenen Cloud-Services der Wikimedia Foundation: \url{https://tools.wmflabs.org/}}. Damit ist das Deployment für die initiale Version einfach.
 \item[Skalierbarkeit] Wikidata wächst beständig; Stand September 2019 existieren etwas mehr als 60 Millionen Items\footnote{\url{https://web.archive.org/web/20190930152246/https://www.wikidata.org/wiki/Wikidata:Statistics}}.
-\item[Freie Lizenz] Die Wikimedia Foundation legt großen Wert darauf, möglichst viele der verwendeten Tools unter einer freien Lizenz bereitzustellen\cite{wikimedia-guiding-principles}.
-  Wenn das System in der Wikimedia Cloud betrieben werden soll, dann ist die Veröffentlichung des Quellcodes unter einer freien Lizenz sogar Pflicht\cite{wikimedia-cloud-tos}.
+\item[Freie Lizenz] Die Wikimedia Foundation legt großen Wert darauf, möglichst viele der verwendeten Tools unter einer freien Lizenz bereitzustellen \cite{wikimedia-guiding-principles}.
+  Wenn das System in der Wikimedia Cloud betrieben werden soll, dann ist die Veröffentlichung des Quellcodes unter einer freien Lizenz sogar Pflicht \cite{wikimedia-cloud-tos}.
 \item[Bearbeitungszeit] Das System sollte nicht länger als einen Tag zur Generierung eines Dumps benötigen, besser unter 12 Stunden. Falls die Generierung länger als 10 Minuten dauert, muss die Generierung auf einem Server stattfinden, sodass der Rechner des Nutzers währenddessen ausgeschaltet werden kann.
 \item[Erweiterbarkeit] Da die funktionalen Anforderungen an das System sehr allgemein sind, muss auf Erweiterbarkeit geachtet werden, sodass neue Anforderungen einfach umgesetzt werden können. Es sind beispielsweise viele verschiedene Filtermöglichkeiten und Statistiken denkbar, die nicht alle in der ersten Version umgesetzt werden können. Es ist daher sinnvoll vor allem in diesem Bereich auf Erweiterbarkeit zu achten.
   Insgesamt gibt es über 700 Millionen Statements\footnote{\url{https://grafana.wikimedia.org/d/000000175/wikidata-datamodel-statements?refresh=30m&orgId=1}} und diese Zahl ist allein im letzten Jahr um 200 Millionen gewachsen. Das System muss mit dieser Menge an Daten umgehen können und dies auch in absehbarer Zukunft noch leisten können.

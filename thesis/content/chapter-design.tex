@@ -2,15 +2,15 @@
 \label{chap:design}
 In diesem Kapitel werden die Anforderungen präzisiert und ein Design für die Umsetzung erarbeitet.
 Dazu sind mehrere Aspekte relevant: zum einen die technische Umsetzung der Filterung und Generierung von Dumps (Architektur und unterstützte Filterkriterien), zum anderen die Gestaltung des User-Interfaces und die Auswahl externen Dienste (z.B. für die Archivierung der erzeugten Dumps).
-Diese bedingen sich gegenseitig: es ist wenig sinnvoll, wenn die Architektur sehr komplexe Filterkriterien unterstützt, dass User-Interface das aber gar nicht abbilden kann (oder umgekehrt).
+Diese bedingen sich gegenseitig: Es ist wenig sinnvoll, wenn die Architektur sehr komplexe Filterkriterien unterstützt, dass User-Interface das aber gar nicht abbilden kann (oder umgekehrt).
 
 \section{Architektur}
 Für die Architektur der Anwendung stellt sich zuerst die Frage, wie die Arbeit zwischen Server und Client verteilt werden soll.
-Auf der einen Seite steht die Variante, einen schlauen Client zu entwickeln, welcher direkt mit der Wikidata API und dem SPARQL-Endpunkt spricht bzw. den Dump als Stream verarbeitet.
+Auf der einen Seite steht die Variante, die gesamte Logik mit einem Client zu implementieren, welcher direkt auf die Wikidata API und den SPARQL-Endpunkt zugreift oder den Dump als Stream verarbeitet.
 Der Client kann dann von jedem Nutzer lokal auf seinem eigenen System ausgeführt werden.
 Der Vorteil dieser Variante ist, dass der Server keine eigenen Dumps erzeugen muss, sondern maximal Metadaten zu generierten Dumps speichert.
 Damit sind wenig Ressourcen für den Betrieb des Servers erforderlich.
-Allerdings bringt diese Variante auch mehrere Probleme: erstens muss der Client vom Nutzer selbst ausgeführt werden, was problematisch wird wenn die Erzeugung der Dumps einen längeren Zeitraum in Anspruch nimmt, da dann das System des Nutzers die gesamte Zeit online sein muss.
+Allerdings bringt diese Variante auch mehrere Probleme: Erstens muss der Client vom Nutzer selbst ausgeführt werden, was problematisch wird wenn die Erzeugung der Dumps einen längeren Zeitraum in Anspruch nimmt, da dann das System des Nutzers die gesamte Zeit online sein muss.
 Zweitens müsste für die Archivierung der Nutzer die Dumps selbst hochladen.
 Die Generierung auf einem Server hat diese Nachteile nicht.
 Der Nutzer muss während der Generierung nicht online sein, sondern kann den Dump einfach herunterladen sobald dieser fertig ist.
@@ -19,9 +19,9 @@ Die umgesetzte Anwendung implementiert die Logik zur Generierung der Dumps daher
 
 Für die Generierung der Dumps auf dem Server sind drei Varianten denkbar:
 \begin{enumerate}[label=\alph*) ]
-  \item Der Server verwaltet einen eigenen Index
-  \item Der Server nutzt den Wikidata SPARQL Endpunkt und die Wikidata API
-  \item Der Server verarbeitet die existierend JSON- oder RDF-Exporte von Wikidata auf Anfrage sequentiell
+  \item Der Server verwaltet einen eigenen Index, auf dem Filter-Anfragen effizient ausgewertet werden können und das Ergebnis ohne große Kosten als RDF ausgegeben werden können, ähnlich dem Wikidata Query Service.
+  \item Der Server nutzt den Wikidata SPARQL Endpunkt und die Wikidata API. 
+  \item Der Server verarbeitet die existierend JSON- oder RDF-Gesamtexporte von Wikidata auf Anfrage sequentiell. 
 \end{enumerate}
 Variante a) könnte zum Beispiel so aussehen, dass die Daten vorher in kleine Blöcke zerlegt werden, von denen dann nur die gewünschten kombiniert werden.
 Insgesamt hat diese Variante den Vorteil, dass die Erzeugung der Dumps sehr schnell geht, denn es müssen nur die geforderten Blöcke gelesen werden.
@@ -34,19 +34,20 @@ Variante b) basiert auf der Beobachtung, dass die Indexierung der Daten genau da
 Es gibt schon eine existierende RDF-Datenbank für die Daten von Wikidata, die über den Wikidata Query Service abgefragt werden kann.
 Diese wird auch ständig aktuell gehalten, was das Problem der Aktualität löst.
 Die Generierung der Dumps in dieser Variante würde aus den Filterkriterien einen SPARQL-Query generieren und diesen dann an den SPARQL-Endpunkt von Wikidata senden.
-Wie auch Variante a) ist diese Möglichkeit sehr schnell, der Wikidata SPARQL Endpunkt besitzt ein Timeout von 60 Sekunden.
-Genau das ist aber auch ein Problem dieser Variante: das Timeout von 60 Sekunden erlaubt es nicht, sehr große Mengen von Daten über den Query Service anzufragen. Zum Beispiel terminiert diese Abfrage, welche alle Instanzen der Klasse \verb|Q13442814| (wissenschaftlicher Artikel) abfragt, nicht innerhalb des Timeouts (das Ergebnis wären 21986127 Entities):
+Wie auch Variante a) ist diese Möglichkeit sehr schnell; der Wikidata SPARQL Endpunkt besitzt ein Timeout von 60 Sekunden.
+Genau das ist aber auch ein Problem dieser Variante: Das Timeout von 60 Sekunden erlaubt es nicht, sehr große Mengen von Daten über den Query Service anzufragen. Zum Beispiel terminiert diese Abfrage, welche alle Instanzen der Klasse \verb|Q13442814| (wissenschaftlicher Artikel) abfragt, nicht innerhalb des Timeouts (das Ergebnis wären 21986127 Entities):
 \begin{lstlisting}[language=SPARQL, caption=SPARQL-Query nach wissenschaftlichen Artikeln]
 SELECT ?item {
   ?item wdt:P31 wd:Q13442814
 } 
 \end{lstlisting}
 Zu den Items müssten dann auch noch die Statements und Referenzen abgerufen werden, die in diesem Query noch gar nicht betrachtet werden.
+Durch die Reifikation von Statements ist zudem die Abfrage aller Daten zu allen Statements bestimmter Items schwierig.
 
 Die Variante c) hat dieses Problem nicht.
 Dafür ist hier die Generierung von Dumps deutlich langsamer, da für die Generierung ein vollständiger Wikidata-Export verarbeitet werden muss.
 Der Vorteil dieser Lösung ist, dass sie im Vergleich zu Variante a) einfacher in der Umsetzung ist, da keine Synchronisation oder komplexe Indexstrukturen notwendig sind.
-Zudem ist kein zusätzlich Speicherbedarf für einen Index erforderlich, der Wikidata-Export kann direkt als Datenstrom verarbeitet werden.
+Zudem ist kein zusätzlicher Speicherbedarf für einen Index erforderlich, denn der Wikidata-Export kann direkt als Datenstrom verarbeitet werden.
 Im Gegensatz zu Variante b) müssen die Filterkriterien nicht als SPARQL formulierbar sein, sondern können in der Programmiersprache implementiert werden, die für die Verarbeitung der Exports genutzt wird.
 Dafür sind komplexe, graph-basierte Filter, die das Betrachten von mehr als einer Entität auf einmal erfordern, nicht so einfach umsetzbar.
 
@@ -63,7 +64,8 @@ Die Einfachheit der Variante c) erlaubt es, schnell neue Arten von Filtern zu im
 In dieser Arbeit wurde sich deshalb für diese Variante entschieden, auch da zu erwarten ist, dass das System am Anfang noch keine Nutzung in so großem Ausmaß haben wird, um die Komplexität und den zusätzlichen Speicherbedarf eines Index zu rechtfertigen.
 
 Das Konzept der gewählten Architektur zeigt \cref{fig:arch}.
-Das Frontend ist hier %TODO
+Das Frontend stellt das User-Interface bereit, während das Backend die beschriebene sequentielle Verarbeitung implementiert.
+Die Warteschlange dient als Puffer, sodass das Backend mehrere Aufträge mit einer sequentiellen Verarbeitung des Gesamtexports verarbeiten kann.
 
 \begin{figure}
   \input{./content/tikz/arch.tex}
@@ -71,15 +73,15 @@ Das Frontend ist hier %TODO
   \label{fig:arch}
 \end{figure}
 
-\section{Interface}
+\section{Exportkriterien und Interface}
 Das Interface hat die Aufgabe, die Erstellung und Spezifikation von Dumps möglichst einfach zu gestalten und bereits existierende Dumps zu finden und anzuzeigen.
 Um das Interface für die Spezifikation der Filter zu entwerfen muss zunächst die Struktur der Filter, welche unterstützt werden sollen, genauer festgelegt werden.
 
 Die Anwendungsfälle für das Filtern von Wikidata sind verschieden.
 Ein typisches Szenario ist die Extraktion von Daten einer bestimmten Thematik, z.B. nur Daten von Personen oder Städten.
-In diesem Fall geschieht die Filterung auf Entitätenebene, mit eventuell zusätzlichen Einschränkung der zu exportierende Statements und Sprachen.
+In diesem Fall geschieht die Filterung auf Entitätenebene, mit eventuell zusätzlichen Einschränkung der zu exportierenden Statements und Sprachen.
 Ein anderes Szenario orientiert sich an der Struktur der Statements.
-Beispiele hierfür sind die Analyse von Statements mit mindestens einer Referenz, die Extraktion aller Statements für eine bestimmte Property oder alle Statements mit deprecrated Rank.
+Beispiele hierfür sind die Analyse von Statements mit mindestens einer Referenz, die Extraktion aller Statements für eine bestimmte Property oder aller Statements mit deprecrated Rank.
 Das dritte Szenario verwendet Filterung, um die Daten für Benchmarks auf eine kleinere Menge zu reduzieren.
 In diesem Fall sind statistische Filter interessant, um zum Beispiel nur jedes zehnte Statement oder nur jede zehnte Entität zu exportieren.
 
@@ -90,8 +92,8 @@ In diesem Fall sind statistische Filter interessant, um zum Beispiel nur jedes z
 \end{figure}
 
 In Wikidata sind Statements immer ein Teil von Entities.
-Folglich kann der Filterprozess konzeptionell in zwei Schritte zerlegt werden: zuerst werden die Entities ausgewählt, danach für diese Entities die zu exportierenden Statements.
-Zusätzlich gibt es noch weitere globale Optionen, die sich nicht auf einzelne Statements beziehen, wie bspw. welche Sprachen exportiert werden sollen oder ob sitelinks von Entities exportiert werden sollen.
+Folglich kann der Filterprozess konzeptionell in zwei Schritte zerlegt werden: Zuerst werden die Entities ausgewählt, danach für diese Entities die zu exportierenden Statements.
+Zusätzlich gibt es noch weitere globale Optionen, die sich nicht auf einzelne Statements beziehen, wie beispielsweise welche Sprachen exportiert werden sollen oder ob Sitelinks von Entities exportiert werden sollen.
 Diese Struktur des Interfaces ist in \cref{fig:ui-layout} dargestellt.
 
 Für die Auswahl der Entitäten sind viele verschiedene Arten von Bedingungen denkbar.
@@ -104,7 +106,7 @@ Prinzipiell könnte man Filter beliebig mit UND bzw. ODER kombinieren.
 Mit dieser Freiheit würde das Interface allerdings sehr komplex.
 Um das Interface einfach zu halten, werden Entitätsfilter deshalb immer mit ODER kombiniert, eine Entität wird demnach exportiert wenn mindestens einer der Filter zutrifft.
 Es ist auch möglich, keinen Filter anzugeben.
-In diesem Fall werden alle Entitäten exportiert (entsprechend den weiteren Regeln).
+In diesem Fall werden alle Entitäten exportiert (entsprechend der weiteren Regeln).
 
 Für die Statements können Exportoptionen festgelegt werden.
 Dafür gibt zum einen Standardoptionen, die für alle Statements der selektierten Entitäten angewendet werden.
@@ -114,11 +116,10 @@ Die Optionen für den Export von Statements orientieren sich an der Struktur von
 Für jede Komponente eines Statements (simple Statement, full Statement, Qualifier und Referenzen) kann einzeln festgelegt werden, ob diese generiert werden soll oder nicht.
 Eine weitere Kategorie von Optionen betrifft den Export von Werten.
 Dafür sind Schalter für den Export von einfachen Werten, komplexen Werten, normalisiert oder nicht normalisiert möglich.
-Da das Backend das aber noch nicht unterstützt sind diese Optionen im Interface noch nicht vorhanden.
-Insgesamt ist dieser Teil aber einfach erweiterbar, da die Optionen alle binär und somit einfach umsetzbar sind.
+Insgesamt ist dieser Teil einfach erweiterbar, da die Optionen alle binär und somit einfach umsetzbar sind.
 
 Die globalen Optionen sind auch größtenteils binär.
-Hier kann eingestellt werden, ob Labels, Beschreibungen, Aliase bzw. sitelinks für selektierte Entitäten exportiert werden sollen.
+Hier kann eingestellt werden, ob Labels, Beschreibungen, Aliase bzw. Sitelinks für selektierte Entitäten exportiert werden sollen.
 Zudem findet sich hier die Option für die zu exportierenden Sprachen.
 Man kann entweder keine Filterung der Sprachen vornehmen (alle Sprachen exportieren) oder eine Liste von Sprachen angeben.
 
@@ -132,7 +133,7 @@ Dazu lohnt es sich, bereits vorhandene Infrastruktur zu nutzen, um Aufwand und K
 
 Die Anwendung sollte auf Wikimedia-Servern betrieben werden, um die Verfügbarkeit auch in Zukunft unabhängig zu gewährleisten.
 Für das Verarbeiten der Dumps und Betreiben des Web-Interfaces bietet sich hier die Wikimedia Toolforge\footnote{\url{https://tools.wmflabs.org/}} an.
-Die Toolforge hat eine Grid-Engine, die zum Ausführung von längeren Jobs wie das Verarbeiten der Dumps geeignet ist, eine MySQL-Datenbank und einen Dienst zum Betreiben von Web-Services.
+Die Toolforge hat eine Grid-Engine, die zur Ausführung von längeren Jobs wie dem Verarbeiten der Dumps geeignet ist, eine MariaDB-Datenbank und einen Dienst zum Betreiben von Web-Services.
 Die Alternative zur Toolforge wäre ein Wikimedia Cloud VPS Projekt\footnote{\url{https://wikitech.wikimedia.org/wiki/Portal:Cloud_VPS}}.
 Es wird jedoch empfohlen, Cloud VPS nur zu verwenden, falls die Toolforge nicht ausreichend ist.
 Deswegen wird für die Anwendung die Toolforge verwendet, da die Dienste in diesem Fall ausreichend sind.

@@ -17,7 +17,7 @@ Alle Dokumente in Wikidata besitzen einen eindeutigen Identifier.
 Dieser beginnt mit einem Großbuchstaben, der den Typ des Dokuments angibt, gefolgt von einer Zahl.
 Aktuell kennt Wikidata drei Typen von Dokumenten: \introterm{Items} (Q), \introterm{Properties} (P) und \introterm{Lexemes} (L).
 Lexemes wurden erst 2018 hinzugefügt, sind damit noch recht neu.
-Da Wikidata-Toolkit diese noch nicht vollständig unterstützt, werden Lexemes im folgenden nicht genauer betrachtet.
+Da Wikidata Toolkit diese noch nicht vollständig unterstützt, werden Lexemes im folgenden nicht genauer betrachtet.
 
 Den Hauptbestandteil der Daten bilden die Items (Q).
 Items repräsentieren Dinge, die durch Wikidata beschrieben werden.
@@ -68,9 +68,10 @@ Der GZip-Export ist zwar etwas größer, dafür ist der Aufwand zur Dekompressio
 
 \begin{table}
   \setlength{\extrarowheight}{0.1cm}
-  \begin{adjustwidth}{-1cm}{-1cm}
+  \begin{adjustwidth}{-1.5cm}{-0.5cm}
     \begin{minipage}{\textwidth}
-    \begin{tabular}{l p{0.75\textwidth} p{0.1\textwidth}}
+    \begin{tabular}{l p{0.70\textwidth} p{0.15\textwidth}}
+      \setlength{\parfillskip}{0pt}
       \bfseries{Typ}   & \bfseries{Beschreibung}                                                                                                                                       & \bfseries{Attribute} \\
       String           & Zeichenkette (ohne Sprachangabe)                                                                                                                              & nein \\
       Monolingualtext  & Zeichenkette (mit Angabe der Sprache)                                                                                                                         & nein \\
