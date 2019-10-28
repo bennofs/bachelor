@@ -245,6 +245,6 @@ Analog zu den Exporten im JSON-Format werden wöchentlich Gesamtexporte aller Da
 Da RDF die Informationen weniger kompakt repräsentiert als JSON, sind die Exporte etwas größer: 76 GiB mit BZip2 und 99 GiB mit GZip.
 Zusätzlich zu den vollständigen Exporten wird auch ein Export mit nur den truthy Tripeln angeboten, welcher deutlich kleiner ausfällt (32 GiB mit GZip).
 
-Ein prominenter Nutzer des RDF-Formats ist der Wikidata Query Service\footnote{\url{https://query.wikidata.org}} \cite{wd-sparql}.
+Ein bekannter Nutzer des RDF-Formats ist der Wikidata Query Service\footnote{\url{https://query.wikidata.org}} \cite{wd-sparql}.
 Auf Basis der RDF-Datenbank BlazeGraph\footnote{\url{https://blazegraph.com/}} wird ein Interface zum Abfragen der Daten mittels SPARQL bereitgestellt.
-Die Daten werden initial aus dem RDF-Gesamtexport geladen und dann laufend mit der Wikidata-API inkrementell aktualisiert, sodass immer der aktuelle Stand abrufbar ist.
+Die Daten werden zu Beginn aus dem RDF-Gesamtexport geladen und dann laufend mit der Wikidata-API inkrementell aktualisiert, sodass immer der aktuelle Stand abrufbar ist.

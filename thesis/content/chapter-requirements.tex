@@ -32,10 +32,10 @@ Ein paar Beispiele dafür sind:
   \item nur "`truthy"' simple Statements, wobei sowohl Subjekt als auch Objekt ein Wikidata-Item sind \cite{usage-wembedder}
   \item alle Items mit einem Statement für die Property \verb|P727| (Europeana ID, ID in der europäischen virtuellen Bibliothek „Europeana“ für Kulturobjekte) \cite{usage-europeana}
   \item alle Items mit einem Statement für mindestens eine von 50 festgelegten Properties \cite{usage-narratives} 
-  \item nur der englische Teil; Labels in anderen Sprachen werden verworfen \cite{usage-web-tables} 
+  \item nur der englische Teil; Labels anderer Sprachen werden verworfen \cite{usage-web-tables} 
   \item nur Statements für Properties, wobei die Properties Instanzen einer bestimmten Klasse sein müssen, ohne deprecrated, no-value und unknown-value Statements \cite{usage-implicational-knowledge} (allerdings wurde der Dump hier nicht als RDF, sondern in der JSON-Form verarbeitet)
   \item nur Entities von gestorbenen Personen, die an mindestens drei Statements für mindestens 5000 mal vorkommende Properties beteiligt sind \cite{usage-learning-structured-embeddings}
-  \item kleinere Datensätze, erzeugt durch eine zufällige Auswahl (\introterm{Sampling}) von Statements \cite{usage-sparql-benchmark}
+  \item kleinere Datensätze, erzeugt durch eine zufällige Auswahl (\introterm{Sampling}) einiger Statements \cite{usage-sparql-benchmark}
   \item alle Items, die Instanzen (\verb|P31|) der Klassen \verb|Q5| (Mensch) sind und mindestens 6 Fakten (Statements) haben\cite{usage-one-sentence} oder nur die einfachen Statements dieser Personen für die Properties \verb|P27| (Land der Staatsangehörigkeit) und \verb|P106| (Tätigkeit) \cite{usage-person-networks}
   \item zufällige Auswahl von Entities (Sampling), mit englischer Beschreibung und mindestens 5 Statements \cite{usage-generate-entity-type-desc}, optional auch mit Downsampling von Instanzen bestimmter Klassen (um die Verteilung der Klassen im Ergebnis auszugleichen) \cite{usage-synthesize-entity-desc}
   \item alle Statements, welche Referenzen haben, und die Sitelinks der Subjekte dieser Statements \cite{wd-wk-common-references}

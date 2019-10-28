@@ -1,5 +1,7 @@
 \chapter{Appendix}
 
+SPARQL-Abfrage zum Test des Timeouts (terminiert für Limit 2500, verursacht ein Timeout bei Limit 3000):
+
 \begin{lstlisting}[language=SPARQL, caption={SPARQL-Query für Person-Items (verwendet NamedSubqueries, eine SPARQL-Erweiterung von BlazeGraph)}, label={lst:sparql-persons}]
 CONSTRUCT {
   ?node ?p ?o .
@@ -8,7 +10,8 @@ CONSTRUCT {
 # get items
 WITH {
   SELECT ?item WHERE {
-   ?item wdt:P31 wd:Q5 . # instances of class human
+   # instances of class human
+   ?item wdt:P31 wd:Q5 . 
   } LIMIT 3000
 } AS %items
 
@@ -37,7 +40,8 @@ WITH {
       ?stmt ?p ?val .
       [] wikibase:statementValue|wikibase:statementValueNormalized|
          wikibase:referenceValue|wikibase:referenceValueNormalized|
-         wikibase:qualifierValue|wikibase:qualifierValueNormalized ?p .
+         wikibase:qualifierValue|wikibase:qualifierValueNormalized 
+       ?p .
       FILTER (STRSTARTS(STR(?val), "http://www.wikidata.org/value/"))
     }
     UNION
@@ -46,7 +50,8 @@ WITH {
       ?ref ?p ?val .
       [] wikibase:statementValue|wikibase:statementValueNormalized|
          wikibase:referenceValue|wikibase:referenceValueNormalized|
-         wikibase:qualifierValue|wikibase:qualifierValueNormalized ?p .
+         wikibase:qualifierValue|wikibase:qualifierValueNormalized 
+       ?p .
       FILTER (STRSTARTS(STR(?val), "http://www.wikidata.org/value/"))
     }
   }

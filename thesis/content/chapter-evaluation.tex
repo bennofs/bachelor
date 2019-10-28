@@ -2,7 +2,7 @@
 \label{chap:evaluation}
 In diesem Kapitel wird die Umsetzung der Anwendung bewertet.
 Viele der Anforderungen wurden bereits im Design beachtet.
-Zur Evaluation wird deshalb nur ein Aspekt genauer betrachtet: Die Korrektheit und Vollständigkeit der erzeugten Dumps.
+Zur Evaluation wird deshalb nur ein Aspekt genauer betrachtet: Die Korrektheit und Vollständigkeit der Dumps.
 
 Die umgesetzte Anwendung verwendet Wikidata Toolkit zum Erzeugen der Dumps.
 Die vollständigen RDF-Exporte von Wikidata hingegen werden von Wikibase, einer PHP-Erweiterung für MediaWiki, generiert.
@@ -72,7 +72,7 @@ Im RDF-Export finden sich die Tripel in dem Dokument für die Property, Wikidata
     falsche Literaltypen & Tippfehler bei \verb|wikibase:GlobeCoordinatesValue|, fehlender Datentyp \verb|wikibase:MusicalNotation| \\
     Rundung & Gleitkommazahlen unterscheiden sich aufgrund von Rundungsfehlern \\
     Datumdeduplizierung & Datumsangaben werden falsch dedupliziert (Präzision nicht beachtet) \\
-    Referenzdeduplizierung & Gleiche Referenzen mit unterschiedlicher Snak-Reihenfolge werden nicht dedupliziert \\
+    Referenzdeduplizierung & Gleiche Referenzen mit unterschiedlicher Snak-Reihenfolge werden nicht dedupliziert
   \end{tabular}
   \caption{Übersicht der festgestellten Differenzen (aus Sicht von Wikidata Toolkit)}
   \label{tab:wdtk-diff}
