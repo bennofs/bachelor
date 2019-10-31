@@ -35,7 +35,7 @@ Es gibt schon eine existierende RDF-Datenbank für die Daten von Wikidata, die �
 Diese wird auch ständig aktuell gehalten, was das Problem der Aktualität löst.
 Die Generierung der Dumps in dieser Variante würde aus den Filterkriterien einen SPARQL-Query generieren und diesen dann an den SPARQL-Endpunkt von Wikidata senden.
 Wie auch Variante a) ist diese Möglichkeit sehr schnell; der Wikidata SPARQL Endpunkt besitzt ein Timeout von 60 Sekunden.
-Genau das ist aber auch ein Problem dieser Variante: Das Timeout von 60 Sekunden erlaubt es nicht, sehr große Mengen von Daten über den Query Service anzufragen. Zum Beispiel terminiert diese Abfrage, welche alle Instanzen der Klasse \verb|Q13442814| (wissenschaftlicher Artikel) abfragt, nicht innerhalb des Timeouts (das Ergebnis wären 21986127 Entities):
+Genau das ist aber auch ein Problem dieser Variante: Das Timeout von 60 Sekunden erlaubt es nicht, sehr große Mengen von Daten über den Query Service anzufragen. Zum Beispiel terminiert diese Abfrage, welche alle Instanzen der Klasse \verb|Q13442814| (wissenschaftlicher Artikel) abfragt, nicht innerhalb des Timeouts (das Ergebnis wären 21986127 Entitäten):
 \begin{lstlisting}[language=SPARQL, caption=SPARQL-Query nach wissenschaftlichen Artikeln]
 SELECT ?item {
   ?item wdt:P31 wd:Q13442814
@@ -91,9 +91,9 @@ In diesem Fall sind statistische Filter interessant, um zum Beispiel nur jedes z
   \label{fig:ui-layout}
 \end{figure}
 
-In Wikidata sind Statements immer ein Teil von Entities.
-Folglich kann der Filterprozess konzeptionell in zwei Schritte zerlegt werden: Zuerst werden die Entities ausgewählt, danach für diese Entities die zu exportierenden Statements.
-Zusätzlich gibt es noch weitere globale Optionen, die sich nicht auf einzelne Statements beziehen, wie beispielsweise welche Sprachen exportiert werden sollen oder ob Sitelinks von Entities exportiert werden sollen.
+In Wikidata sind Statements immer ein Teil von Entitäten.
+Folglich kann der Filterprozess konzeptionell in zwei Schritte zerlegt werden: Zuerst werden die Entitäten ausgewählt, danach für diese Entitäten die zu exportierenden Statements.
+Zusätzlich gibt es noch weitere globale Optionen, die sich nicht auf einzelne Statements beziehen, wie beispielsweise welche Sprachen exportiert werden sollen oder ob Sitelinks von Entitäten exportiert werden sollen.
 Diese Struktur des Interfaces ist in \cref{fig:ui-layout} dargestellt.
 
 Für die Auswahl der Entitäten sind viele verschiedene Arten von Bedingungen denkbar.

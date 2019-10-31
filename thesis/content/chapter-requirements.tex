@@ -28,23 +28,23 @@ Die wesentlichen Merkmale des Systems sind:
 Als Grundlage zur Ermittlung der Minimalanforderungen für die Filterkriterien werden existierende Arbeiten betrachtet, welche Exporte von Wissengraphen wie Wikidata gefiltert haben.
 Ein paar Beispiele dafür sind:
 \begin{enumerate}[label=\arabic*)]
-  \item nur "`truthy"' Statements mit Entities als Objekt; Labels/Descriptions nur in Englisch und Spanisch \cite{usage-grafa}
+  \item nur "`truthy"' Statements mit Entitäten als Objekt; Labels/Descriptions nur in Englisch und Spanisch \cite{usage-grafa}
   \item nur "`truthy"' simple Statements, wobei sowohl Subjekt als auch Objekt ein Wikidata-Item sind \cite{usage-wembedder}
   \item alle Items mit einem Statement für die Property \verb|P727| (Europeana ID, ID in der europäischen virtuellen Bibliothek „Europeana“ für Kulturobjekte) \cite{usage-europeana}
   \item alle Items mit einem Statement für mindestens eine von 50 festgelegten Properties \cite{usage-narratives} 
   \item nur der englische Teil; Labels anderer Sprachen werden verworfen \cite{usage-web-tables} 
   \item nur Statements für Properties, wobei die Properties Instanzen einer bestimmten Klasse sein müssen, ohne deprecrated, no-value und unknown-value Statements \cite{usage-implicational-knowledge} (allerdings wurde der Dump hier nicht als RDF, sondern in der JSON-Form verarbeitet)
-  \item nur Entities von gestorbenen Personen, die an mindestens drei Statements für mindestens 5000 mal vorkommende Properties beteiligt sind \cite{usage-learning-structured-embeddings}
+  \item nur Items von gestorbenen Personen, die an mindestens drei Statements für mindestens 5000 mal vorkommende Properties beteiligt sind \cite{usage-learning-structured-embeddings}
   \item kleinere Datensätze, erzeugt durch eine zufällige Auswahl (\introterm{Sampling}) einiger Statements \cite{usage-sparql-benchmark}
   \item alle Items, die Instanzen (\verb|P31|) der Klassen \verb|Q5| (Mensch) sind und mindestens 6 Fakten (Statements) haben \cite{usage-one-sentence} oder nur die einfachen Statements dieser Personen für die Properties \verb|P27| (Land der Staatsangehörigkeit) und \verb|P106| (Tätigkeit) \cite{usage-person-networks}
-  \item zufällige Auswahl von Entities (Sampling), mit englischer Beschreibung und mindestens 5 Statements \cite{usage-generate-entity-type-desc}, optional auch mit Downsampling von Instanzen bestimmter Klassen (um die Verteilung der Klassen im Ergebnis auszugleichen) \cite{usage-synthesize-entity-desc}
+  \item zufällige Auswahl von Entitäten (Sampling), mit englischer Beschreibung und mindestens 5 Statements \cite{usage-generate-entity-type-desc}, optional auch mit Downsampling von Instanzen bestimmter Klassen (um die Verteilung der Klassen im Ergebnis auszugleichen) \cite{usage-synthesize-entity-desc}
   \item alle Statements, welche Referenzen haben, und die Sitelinks der Subjekte dieser Statements \cite{wd-wk-common-references}
 \end{enumerate}
-Mit den drei beschriebenen Aspekten (Filterung nach Entity, Property und Sprache) und den verschiedenen Optionen für den Export von Statements lassen sich die meisten dieser Anwendungsfälle abdecken.
-Außerdem fällt auf, dass die Auswahl von Entities nur auf lokalen Eigenschaften basiert, die anhand des Entity-Dokuments entschieden werden können. 
+Mit den drei beschriebenen Aspekten (Filterung nach Entität, Property und Sprache) und den verschiedenen Optionen für den Export von Statements lassen sich die meisten dieser Anwendungsfälle abdecken.
+Außerdem fällt auf, dass die Auswahl von Entitäten nur auf lokalen Eigenschaften basiert, die anhand des Entität-Dokuments entschieden werden können. 
 Kompliziertere Kriterien beschränken sich auf die Auswahl der zu exportierenden Statements.
 
-In den genannten initialen Anforderungen ist eine Filterung nach statistischen Merkmalen, wie die Anzahl der Statements eines Entity, und zufällige Auswahl von Objekten (Sampling) noch nicht enthalten.
+In den genannten initialen Anforderungen ist eine Filterung nach statistischen Merkmalen, wie die Anzahl der Statements einer Entität, und zufällige Auswahl von Objekten (Sampling) noch nicht enthalten.
 Für einen Prototypen sind diese Funktionen nicht notwendig, denn wie die Liste der Anwendungsfälle zeigt, gibt es auch viele interessante Kriterien die diese Funktion nicht benötigen.
 Da es jedoch auch mehrere Anwendungsfälle für diese Art der Filterung gibt, sollte das Design um diese Funktionen erweiterbar sein.
 
@@ -103,9 +103,9 @@ Im Gegensatz zu SPARQL sind Triple Pattern Fragments nicht mächtig genug, um in
 Als Möglichkeiten bleiben nur die Abfrage der Tripel für alle Statements oder die einzelne Abfrage der Tripel jedes Statements.
 Beide Varianten sind nicht praktikabel, da entweder zu viele Daten abgefragt werden oder zu viele Abfragen notwendig sind.
 
-Für die Auswahl von Entities für den Export ist PetScan\footnote{\url{https://petscan.wmflabs.org/}} interessant.
+Für die Auswahl von Entitäten für den Export ist PetScan\footnote{\url{https://petscan.wmflabs.org/}} interessant.
 Dieses Tool bietet ein User-Interface mit einer Vielzahl an Optionen, um Listen von Wikipedia bzw. Wikidata-Seiten zu erstellen. 
-Das Tool bietet keinen Optionen zum Export der Entities als RDF an, es lassen sich damit keine Dumps erstellen.
+Das Tool bietet keinen Optionen zum Export der Entitäten als RDF an, es lassen sich damit keine Dumps erstellen.
 Es liefert jedoch eine Vielzahl an Ideen für mögliche Filterkriterien.
 
 Eine andere Variante, die Größe der Dumps zu reduzieren und damit den Zugang zu erleichern, zeigt DBpedia \cite{dbpedia}.

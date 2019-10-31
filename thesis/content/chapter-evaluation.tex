@@ -39,8 +39,8 @@ Einige Differenzen sind schon vorher bekannt, die bspw. aufgrund von fehlenden F
 Zur Vereinfachung der Analyse werden folgende Tripel von dem Vergleich ausgenommen:
 \begin{enumerate}
 \item Tripel, deren Subjekt das Prefix \verb|wdata:| besitzt. Diese Tripel gehören zu den Data Nodes, welche aktuell von Wikidata Toolkit nicht generiert werden.
-Die Data Nodes enthalten Metadaten zu dem Entity, wie \verb|schema:dateModified|.
-\item Entities, welche nur im RDF-Export oder nur im JSON-Export enthalten sind. Dieser Fall kann aus zwei Gründen auftreten: Löschungen in der Zeit zwischen der Erstellung beider Exporte, oder Weiterleitungen.
+Die Data Nodes enthalten Metadaten zu der Entität, wie \verb|schema:dateModified|.
+\item Entitäten, welche nur im RDF-Export oder nur im JSON-Export enthalten sind. Dieser Fall kann aus zwei Gründen auftreten: Löschungen in der Zeit zwischen der Erstellung beider Exporte, oder Weiterleitungen.
   Die RDF-Exporte von Wikidata enthalten für jede Weiterleitung ein Tripel mit Prädikat \verb|owl:sameAs|, welche Wikidata Toolkit nicht generiert.
 \item Tripel, die normalisierte Werte für Properties angeben und die entsprechenden Value Nodes. Wikidata Toolkit unterstützt normalisierte Werte nicht, weshalb ein Vergleich hier nicht möglich ist.
 \item Tripel mit Prädikat \verb|schema:name| oder \verb|skos:prefLabel|. Diese Tripel sind Duplikate der Tripel mit Prädikat \verb|rdfs:label|, und Wikidata Toolkit generiert aktuell nur \verb|rdfs:label|-Tripel.
