@@ -8,8 +8,8 @@ RDF ist Standardformat für den Austausch von strukturierten Informationen.
 
 \section{Wikidata als strukturiertes Wiki}
 Wikidata ist die gemeinsame Wissensdatenbank der Wikimedia Projekte.
-Wie Wikipedia selbst basiert Wikidata auf MediaWiki\footnote{\url{https://mediawiki.org}}, einer Software für das Betreiben von kollaborativen Wikis.
-Statt Dokumenten in natürlicher Sprache verwaltet Wikidata jedoch strukturierte Dokumente.
+Wie auch Wikipedia selbst basiert Wikidata auf MediaWiki\footnote{\url{https://mediawiki.org}}, einer Software für das Betreiben von kollaborativen Wikis.
+An Stelle von Dokumenten in natürlicher Sprache verwaltet Wikidata jedoch strukturierte Dokumente.
 Die Erweiterungen für MediaWiki stellt dazu das Wikibase\footnote{\url{htts://wikiba.se}} Projekt bereit.
 
 Die Dokumentation von Wikibase \cite{wikibase-data-model} beschreibt das Datenmodell detailliert.
@@ -22,14 +22,14 @@ Da Wikidata Toolkit diese noch nicht vollständig unterstützt, werden Lexemes i
 Den Hauptbestandteil der Daten bilden die Items (Q).
 Items repräsentieren Dinge, die durch Wikidata beschrieben werden.
 In vielen Fällen existieren auch Wikipedia-Artikel in verschiedenen Sprachen zu dem Ding, welches durch das Item repräsentiert wird.
-Zur Verlinkung zwischen Item und Seiten des Wikimedia Projekts (Wikipedia-Artikel, Wikiquote-Seiten etc.) enthält jedes Item eine Liste von \introterm{Sitelinks}.
+Zur Verlinkung zwischen Item und Seiten des Wikimedia Projekts (Wikipedia-Artikel, Wikiquote-Seiten etc.) zum selben Thema enthält jedes Item eine Liste von \introterm{Sitelinks}.
 Die Properties (P) stellen die Attribute dar, die zur Beschreibung von Items verwendet werden können.
 
 Der Aufbau eines Items ist beispielhaft anhand von \verb|Q42| (Douglas Adams) in \cref{fig:wd-datamodel} dargestellt.
 Den ersten Teil bilden die \introterm{Terme}: \introterm{Label}, \introterm{Description} und \introterm{Aliases}.
 Diese dienen zur Beschreibung und Definition des Items.
 Die Terme sind mehrsprachig: ein Item kann ein \introterm{Label} für viele verschiedene Sprachen haben.
-Darauf folgen \introterm{Statements}, welche die Fakten zu diesem Item wiedergeben.
+Darauf folgen mehrere \introterm{Statements}, welche die Fakten zu diesem Item wiedergeben.
 Den letzten Teil bilden die Sitelinks.
 Die Sitelinks von \verb|Q42| verlinken zum Beispiel unter anderem auf Artikel von Douglas Adams in den unterschiedlichen Sprachversionen von Wikipedia und in Wikiquote.
 
@@ -46,7 +46,7 @@ Es gibt drei Arten von Snaks:
 Der Claim eines Statements besteht aus einem \introterm{MainSnak} für die Hauptaussage und zusätzlichen \introterm{Qualifiern} zur Verfeinerung der Aussage.
 Eine Referenz ist einfach eine Liste von Snaks. 
 
-Ein MainSnak zu Douglas Adams (Q42) ist zum Beispiel \verb|P69| (educated at) - \verb|Q691283| (St John's College).
+Ein MainSnak zu Douglas Adams (Q42) ist \verb|P69| (educated at) - \verb|Q691283| (St John's College).
 Mit den Qualifier-Snaks wie \verb|P582| (end time) - \verb|1974| bildet dieser dann einen Claim.
 Das Statement setzt sich dann aus diesem Claim und der Liste von Referenzen zusammen.
 Alle Statements für die gleiche Property werden in einer \introterm{Statement Group} zusammengefasst.
@@ -132,26 +132,31 @@ Das Kernelement von RDF bilden Tripel. Die drei Komponenten jedes Tripel sind:
 \item[Objekt] eine IRI, Blank Node oder Literal
 \end{description}
 Blank Nodes sind lokale Bezeichner, die im Gegensatz zu IRIs nur innerhalb eines Dokuments eindeutig sein müssen.
-Verschiedene RDF Dokumente können daher die selben Blank Node Bezeichner verwenden, ohne dass damit die selbe Ressource beschrieben wird.
+Verschiedene RDF Dokumente können daher dieselben Blank Node Bezeichner verwenden, ohne dass damit dieselbe Ressource beschrieben wird.
 
 Literale in RDF bestehen aus einer Zeichenkette und optional noch einem Datentypen oder einem Language Tag.
 Mit dem Datentyp kann die Interpretation der Zeichenkette genauer spezifiziert werden.
 Datentypen werden über IRIs identifiziert.
 Language Tags geben die Sprache der Zeichenkette als Language Code nach BCP47\footnote{\url{https://tools.ietf.org/html/bcp47}} an.
-Die Angabe von Language Tags ist nur für Literale mit folgendem Datentyp erlaubt: \url{http://www.w3.org/1999/02/22-rdf-syntax-ns#langString} \cite{rdf-spec} .
+Die Angabe von Language Tags ist nur für Literale mit folgendem Datentyp erlaubt: \url{http://www.w3.org/1999/02/22-rdf-syntax-ns#langString}.\footnote{Siehe RDF Spezifikation \cite{rdf-spec}, Sektion 3.3 Literals} 
 
 RDF Dokumente sind eine ungeordnete Kollektion von Tripeln.
 Für die Serialisierung von RDF gibt es verschiedene Standards; ein einfacher und verbreiteter ist N-Triples \cite{rdf-ntriples}.
-Die Syntax von N-Triples ist in folgendem Beispiel dargestellt:
-\begin{lstlisting}[language=SPARQL, breaklines=true]
+Die Syntax von N-Triples ist in \cref{fig:rdf-sample} dargestellt.
+Jede Zeile entspricht einem Tripel und wird mit einem Punkt abgeschlossen.
+In N-Triples werden IRIs in \verb|<>| eingeschlossen und Blank Nodes durch das Präfix \verb|_:| markiert.
+Literale sind von doppelten Anführungszeichen umgeben, mit einem At-Zeichen (\verb|@|) bzw. doppeltem Zirkumflex (\verb|^^|) können Language Tag und Datentyp angegeben werden.
+
+\begin{figure}
+  \begin{lstlisting}[language=SPARQL, breaklines=true]
 <https://example.org> <http://schema.org/name> "Beispiel"@de .
 <https://example.org> <http://schema.org/name> "Example"@en .
 _:paper <https://example.org/about> <https://example.org> .
 _:paper <https://example.org/popularity> "42"^^<http://www.w3.org/2001/XMLSchema#integer> .
-\end{lstlisting}
-Jede Zeile entspricht einem Tripel und wird mit einem Punkt abgeschlossen.
-In N-Triples werden IRIs in \verb|<>| eingeschlossen und Blank Nodes durch das Präfix \verb|_:| markiert.
-Literale sind von doppelten Anführungszeichen umgeben, mit einem At-Zeichen (\verb|@|) bzw. doppeltem Zirkumflex (\verb|^^|) können Language Tag und Datentyp angegeben werden.
+  \end{lstlisting}
+  \caption{Beispiel für RDF in N-Triples Darstellung}
+  \label{fig:rdf-sample}
+\end{figure}
 
 In dieser Arbeit wird zur Übersichtlichkeit eine Erweiterung der Notation verwendet.
 Dabei werden IRIs durch die Einführung von den in \cref{tab:rdf-prefixes} aufgeführten Präfixen vereinfacht.
@@ -205,19 +210,21 @@ Außerdem erlaubt Wikidata mehrere Statements mit identischem Inhalt, was in RDF
 Erxleben, Günther, Krötzsch, Mendez und Vrandečić haben 2014 beschrieben wie trotzdem eine Darstellung als RDF möglich ist und ein System zur Erstellung regelmäßiger Exporte als RDF entwickelt \cite{wikidata-rdf-export}.
 Nach dem Prinzip der Reifikation werden Statements, Referenzen und komplexe Werte nicht direkt als Tripel exportiert, sondern als eigene Ressourcen. 
 Diese Ressourcen besitzen dann ein Tripel, das zu dem Objekt des Statements verlinkt und zusätzlich noch Tripel für Qualifier und Referenzen.
-Jedes Statement hat somit einen eindeutigen Namen, sodass auch zwei Statements mit dem selben Inhalt erfasst werden können.
+Jedes Statement hat somit einen eindeutigen Namen, sodass auch zwei Statements mit demselben Inhalt erfasst werden können.
 \begin{figure}
   \includegraphics[width=\linewidth]{pics/Rdf_mapping}
-  \caption{Mapping des Datenmodells auf RDF \\ Quelle für das Bild: \url{https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format\#/media/File:Rdf_mapping-vector.svg}}
+  \caption{Schema zur Übersetzung des Datenmodells nach RDF \\ Quelle für das Bild: \url{https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format\#/media/File:Rdf_mapping-vector.svg}}
   \label{fig:rdf-mapping}
 \end{figure}
 
 Das Schema für diese Übersetzung ist in \cref{fig:rdf-mapping} gezeigt.
 Jeder Pfeil beschreibt dabei Prädikatpräfix, welches für RDF-Tripel verwendet wird.
-An dieses Präfix wird der Bezeichner der Property angehangen.\TODO{besseres Bild, fix absätze}
+An dieses Präfix wird der Bezeichner der Property angehangen.
 
-Ein Beispiel zur Verdeutlichung (gekürzt, die Informationen zu den Reference und Value Nodes sind nicht abgebildet):
-\begin{lstlisting}[language=SPARQL]
+\begin{figure}
+  Als N-Triples:
+  
+  \begin{lstlisting}[language=SPARQL]
 wd:Q42 p:P26 wds:q42-xxxx .
 wds:q42-xxxx rdf:type wikibase:Statement .
 wds:q42-xxxx ps:P26 wd:Q14623681 .
@@ -228,17 +235,38 @@ wds:q42-xxxx pqv:P582 wdv:1c30ade7914d072877b2db404a683d7c .
 wds:q42-xxxx prov:wasDerivedFrom wdref:yyyyyyyy .
 wd:Q42 wdt:P26 wd:Q14623681 .
 \end{lstlisting}
+  \vspace{0.3cm}
+
+  graphische Darstellung:\vspace{0.15cm}
+
+  \begin{adjustwidth}{-1.5cm}{-0.5cm}
+    \input{./content/tikz/mapsample}
+  \end{adjustwidth}
+
+  \caption{Beispiel für die Übersetzung nach RDF}
+  \label{fig:rdf-mapping-sample}
+\end{figure}
+
+Ein Beispiel für die Übersetzung ist in \cref{fig:rdf-mapping-sample} dargestellt (gekürzt, die Informationen zu den Referenzen und Value Nodes sind nicht abgebildet).
 Das Beispiel zeigt, wie die Property \verb|P26| (spouse) zuerst mit dem Prädikat \verb|p:P26| auf das Statement verlinkt.
 Das Statement verlinkt über \verb|ps:P26| zum einfachen Wert der Property.
-Mit \verb|pq:P580| (start time) bzw. \verb|pqv:P580| wird auf die einfache und komplexe Darstellung des Wertes für diesen Qualifier verlinkt.
-Die komplexe Darstellung enthält noch weitere Informationen zu dem Datum, wie beispielsweise die Genauigkeit oder das verwendete Kalendermodell.
+Mit \verb|pq:P580| (start time) bzw. \verb|pqv:P580| wird auf die einfache und komplexe Darstellung (\introterm{Value Node}) des Wertes für diesen Qualifier verlinkt.
+Die Value Nodes werden für Werte verwendet, deren Typ mehrere Attribute hat (siehe \cref{tab:wd-datatypes}).
+Für Datumsangaben hat die Value Node zum Beispiel Tripel für die Genauigkeit oder das verwendete Kalendermodell.
 
 Eine spezielle Bedeutung hat der \verb|wdt:| Präfix.
 Tripel mit diesen Prädikaten verlinken Items direkt mit den einfachen Werten.
 Diese Tripel existieren allerdings nur dann, wenn das zugehörige Statement vom Typ \verb|BestRank| ist.
 Dieser Typ umfasst alle Statements, die den höchsten Rang für diese Property haben und nicht deprecrated sind.
-Solche Statements und Tripel werden auch als "`truthy"' bezeichnet.
+Solche Statements und Tripel werden auch als \introterm{truthy} bezeichnet.
 In vielen Fällen können Abfragen damit deutlich kürzer und zugleich lesbarer formuliert werden, da einfache Verbindungen oft unabhängig von Qualifiern oder Referenzen betrachtet werden.
+
+Eine zweite Vereinfachung sind normalisierte Werte.
+Diese werden über Prädikate mit dem Präfix \verb|wdtv:|, \verb|psn:|, \verb|pqn:| und \verb|prn:| verlinkt.
+Bei Werten, die den Typ Quantity haben und eine Einheit besitzen, ist der normalisierte Wert derselbe Wert umgrechnet in Grundeinheiten.
+Auch bei dem Typ ExternalID können normalisierte Werte auftreten.
+Für einige Properties, deren Werte den Typ ExternalID haben, speichert Wikidata ein Muster zur Umwandlung des externen Bezeichners in eine URL.
+Diese URL ist dann der normalisierte Wert.
 
 Auf Basis dieses Schemas hat Wikidata ein offizielles Format für Exporte als RDF entwickelt \footnote{\url{https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format}}.
 Analog zu den Exporten im JSON-Format werden wöchentlich Gesamtexporte aller Daten als RDF erzeugt und zum Download angeboten.

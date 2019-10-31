@@ -1,0 +1,29 @@
+\begin{tikzpicture}[
+  n/.style = {draw, rectangle, rounded corners=8pt, minimum height=1cm, font=\small},
+  nw/.style = {n, anchor=west},
+  e/.style = {->, line width=1pt},
+  ]
+
+  \node[n] (q42) at (-1, -1) { wd:Q42 };
+  \node[n] (s) at (4, 0) { wds:q42-xxxx };
+  \node[n] (ref) at (4, 3) { wdref:yyyyyyyy };
+  %\node[nw] at (7.2, -0.5) { wikibase:Statement };
+  \node[nw] (vn1) at (7, 1) { wdv:c8ae0d38443d4671d3f893d7000a859e };
+  \node[nw] (v1) at (6, 2.4) {\verb|"1991-11-25T00:00:00Z"^^xds:dateTime| };
+  \node[nw] (vn2) at (7, -1) { wdv:1c30ade7914d072877b2db404a683d7c };
+  \node[nw] (v2) at (6, -2.4) {\verb|"2001-05-11T00:00:00Z"^^xsd:dateTime| };
+
+  \node[n] (t) at (-1, 2) { wd:Q14623681 };
+  \node[n] (typ) at (2, -2) { wikibase:Statement };
+
+  \draw[e] (q42) to node[above] {p:P26} (s);
+  \draw[e] (q42) to node[right] {wdt:P26} (t);
+  \draw[e] (s) to node[left, outer sep=2pt] {rdf:type} (typ);
+  \draw[e] (s.south) to node[below, sloped, outer sep=2pt] {pq:P582} (v2.north west);
+  \draw[e] (s) to node [sloped, below, outer sep=1pt] {pqv:P582} (vn2.west);
+  \draw[e] (s) to node [sloped, above, outer sep=1pt] {pqv:P580} (vn1.west);
+  \draw[e] (s) to node [sloped, above, outer sep=1pt] {pq:P580} (v1.south west);
+  \draw[e] (s) to node [above left] {\small prov:wasDerivedFrom} (ref);
+  \draw[e] (s) to [bend left=8] node [sloped, above, outer sep=1pt] {ps:P26} (t);
+
+\end{tikzpicture}

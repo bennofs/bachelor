@@ -11,16 +11,16 @@ Um diese Differenzen zu finden und zu beheben wird in diesem Kapitel ein offizie
 
 \section{Vorgehen}
 Für den Vergleich werden die JSON- und RDF-Exporte von Wikidata vom 26. August 2019 verwendet.
-Die Daten und der Quellcode für den Vergleich sind über Zenodo verfügbar\cite{zenodo-diff-data}.
+Die Daten und der Quellcode für den Vergleich sind über Zenodo verfügbar \cite{zenodo-diff-data}.
 Da sich die Daten während der Generierung des Exports verändern, beschreiben die JSON- und RDF-Exporte nicht exakt dieselben Daten.
 Deswegen werden für den Vergleich zusätzlich noch die Wikidata incremental Dumps verwendet.
 Diese enthalten die JSON-Darstellung aller in einem Zeitraum geänderten Wikidata Dokumente, zusammen mit Revisionsnummer und Datum der Revision. 
 Damit können Dokumente des JSON-Dumps, deren Revisionsnummer nicht identisch zu dem entsprechenden Dokument in dem RDF-Export ist, durch die im RDF-Export enthaltene Version ersetzt werden.
 Um die Revisionsnummer eines Dokuments des RDF-Exports zu bestimmen wird das mit dem Prädikat \verb|schema:dateModified| angegebene Änderungsdatum verwendet.
 
-Nachdem beide Exporte so auf die selbe Version gebracht wurden, wird mit der Anwendung aus dem JSON-Export RDF erzeugt.
+Nachdem beide Exporte so auf dieselbe Version gebracht wurden, wird mit der Anwendung aus dem JSON-Export RDF erzeugt.
 Dazu werden keine Filter verwendet, entsprechend sollte die Anwendung in diesem Fall den RDF-Export komplett reproduzieren.
-Praktisch ist dabei, dass die Dokumente im JSON-Export und im RDF-Export in der selben Reihenfolge gespeichert sind.
+Praktisch ist dabei, dass die Dokumente im JSON-Export und im RDF-Export in derselben Reihenfolge gespeichert sind.
 Damit kann der Vergleich für jedes Paar von Dokumenten separat erfolgen.
 
 Ein Problem für den Vergleich stellen die Value Nodes dar.
@@ -85,11 +85,11 @@ Ein Großteil der Differenzen treten bei komplexen Literalwerten, wie Zeitdaten 
 Während die meisten Differenzen relativ harmlose Formfehler sind (wie das Verwenden falscher Literaltypen), sind auch drei inhaltliche Fehler aufgefallen.
 
 Der erste Fall ist die Vertauschung von Längen- und Breitengrad bei Koordinatenangaben.
-Statt \verb|"Point(4.6681 50.6411)"^^geo:wktLiteral| generiert Wikidata Toolkit \verb|"Point(50.641111111111 4.6680555555556)"^^geo:wktLiteral| (die Abweichung der Fließkommazahlen liegen an dem Rundungsproblem). Entsprechend der GeoSPARQL Spezifikation\cite{spec:geosparql} ist für den Datentyp \verb|geo:wktLiteral| die Reihenfolge der Koordinaten abhängig vom angegebenen Koordinatensystem.
-Für den Standardwert CRS84\footnote{\url{http://www.opengis.net/def/crs/OGC/1.3/CRS84}} ist die Reihenfolge \emph{Längengrad}-\emph{Breitengrad}, was entgegen der verbreiteten Darstellung 50°38'28"N, 4°40'5"E ist.
+Statt \verb|"Point(4.6681 50.6411)"^^geo:wktLiteral| generiert Wikidata Toolkit \verb|"Point(50.641111111111 4.6680555555556)"^^geo:wktLiteral| (die Abweichung der Fließkommazahlen liegen an dem Rundungsproblem). Entsprechend der GeoSPARQL Spezifikation \cite{spec:geosparql} ist für den Datentyp \verb|geo:wktLiteral| die Reihenfolge der Koordinaten abhängig vom angegebenen Koordinatensystem.
+Für den Standardwert CRS84\footnote{\url{http://www.opengis.net/def/crs/OGC/1.3/CRS84}} ist die Reihenfolge \emph{Längengrad}-\emph{Breitengrad}, was entgegen der verbreiteten Darstellung als \verb|50°38'28"N, 4°40'5"E| ist.
 
 Der zweite Fall hängt mit der Deduplizierung von Value Nodes zusammen.
-Um die Größe des Dumps zu reduzieren, werden für gleiche komplexe Werte die selben Value Nodes verwendet, sodass die Daten nicht zweimal abgespeichert werden müssen.
+Um die Größe des Dumps zu reduzieren, werden für gleiche komplexe Werte dieselben Value Nodes verwendet, sodass die Daten nicht zweimal abgespeichert werden müssen.
 Wikidata Toolkit verwendet dazu einfach den Hash, der auch in der IRI für die Value Node vorkommt.
 Falls schon ein Value Node für diesen Hash generiert wurde, werden die Daten nicht erneut geschrieben.
 Bei Daten und Zeitwerten berücksichtigt dieser Hash jedoch die Präzision des Wertes nicht.
