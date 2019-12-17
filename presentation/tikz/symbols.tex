@@ -1,0 +1,54 @@
+% gear symbol
+\begin{tikzcomponent}{gear}
+  \foreach \angle in {0, 60, ..., 360} {
+    \draw[fill=black] (0,0) -- (\angle-30:0.7cm) -- (\angle-30+8:0.7cm) -- (\angle-13:1cm) -- (\angle+13:1cm) -- (\angle+30-8:0.7cm) -- (\angle+30:0.7cm) -- cycle;
+  };
+  \draw[fill=white] (0,0) circle [radius=0.3];
+\end{tikzcomponent}
+
+% database symbol
+\begin{tikzcomponent}{database}
+  \pgfmathsetmacro{\radius}{0.8};
+  \begin{scope}[line width=1pt]
+    \draw (0,0) circle [x radius=\radius, y radius=0.3];
+    \draw (-\radius,0) -- (-\radius,-1.5);
+    \draw (\radius,0) -- (\radius,-1.5);
+    \draw (-\radius,-0.5) arc[start angle=180, delta angle=180, x radius=\radius, y radius=0.3];
+    \draw (-\radius,-1.0) arc[start angle=180, delta angle=180, x radius=\radius, y radius=0.3];
+    \draw (-\radius,-1.5) arc[start angle=180, delta angle=180, x radius=\radius, y radius=0.3];
+  \end{scope};
+\end{tikzcomponent}
+
+% web server symbol
+\begin{tikzcomponent}{webserver}
+  \begin{scope}[scale=1.2]
+    \pgfmathsetmacro{\frontwidth}{1};
+    \pgfmathsetmacro{\backwidth}{0.6};
+    \pgfmathsetmacro{\topheight}{0.5};
+    \draw[fill=black] (-\backwidth, 0) -- (\backwidth,0) -- (\frontwidth,-\topheight) -- (-\frontwidth,-\topheight) -- cycle;
+    \draw[fill=black] (-1.1\frontwidth, -\topheight-0.1) rectangle (1.05\frontwidth, -\topheight-0.6);
+    \foreach \i in {0,1,2} {
+      \draw[fill=white] (\frontwidth*\i/3+0.15\frontwidth, -\topheight-0.35) circle [radius=1mm];
+    }
+  \end{scope}
+\end{tikzcomponent}
+
+% archive symbol
+\begin{tikzcomponent}{archive}
+  \begin{scope}[line width=1pt]
+    \pgfmathsetmacro{\width}{1.8};
+    \pgfmathsetmacro{\shear}{0.8};
+    \pgfmathsetmacro{\topheight}{0.6};
+    \pgfmathsetmacro{\gap}{0.2};
+    \draw (0,0) rectangle (\width,-1);
+    \draw (0,0) rectangle (\width,\gap);
+    \draw (0,\gap) -- ({(1-\shear)*\width},\gap+\topheight) -- (\width*\shear,\gap+\topheight) -- (\width,0.2) -- cycle;
+    \node[rectangle, draw, rounded corners=4pt, inner xsep=8pt] at (0.5*\width,-0.5) {};
+  \end{scope}
+\end{tikzcomponent}
+
+% client pc symbol
+\begin{tikzcomponent}{client}
+  \draw [line width=3mm] (0,0) rectangle (2,1.3);
+  \draw [line width=2mm] (0,-0.4) -- (2, -0.4);
+\end{tikzcomponent}

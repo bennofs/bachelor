@@ -1,0 +1,34 @@
+\begin{tikzpicture}[
+  line width=2pt,
+  ]
+  \node (frontend) at (6.5,0) {\thewebserver};
+  \node[below of=frontend, node distance=1.05cm, outer ysep=0.15cm] (frontendtext) {Frontend};
+
+  \node (database) at (2.4,-3) {\thedatabase};
+  \node[below of=database, node distance=1.5cm] (databasetext) {Datenbank};
+  %\node[below of=databasetext, anchor=north, node distance=0.3cm] {\small Speicherung von Dump-Metadaten};
+
+  \draw[<->] (frontendtext) -- (database);
+
+  \node (backend) at (-2,0) {\thegear};
+  \node[drawalert=<4>, below of=backend, anchor=north, node distance=0.9cm,
+  align=center, outer ysep=0.2cm] (backendtitle) {Backend};
+  %\node[below of=backendtitle, anchor=north, align=left, node distance=0.3cm] (backenddesc) {{\small Verarbeitet regelmäßig Aufträge} \\ {\small aus der Warteschlange}};
+  
+  \node[line width=1pt, cylinder, draw, shape aspect=0.4, inner ysep=0.3cm, drawalert=<3>] at ($(backend)!0.47!(frontend)$) (queue) { Warteschlange };
+
+  \node (client) at (7,-4) {\theclient};
+  \node[below of=client, anchor=north, node distance=1.2cm] (clienttext) { Client };
+  \draw[<->,drawalert=<2>] (frontendtext) -- (client);
+
+  \draw[->] ($(frontend.west)+(0.05,0)$) -- ($(queue.east)-(0.25,0)$);
+  \draw[->] (queue) -- (backend);
+
+  \draw[->, drawalert=<4>] (backendtitle) to [bend right=10] (database);
+  %\draw[->] (backendtitle) to [bend right=10] node[anchor=north east, align=left]{{\small
+  %    Aktualisierung}\\ {\small der Dump-Metadaten}} (database);
+
+  \node (zenodo) at (-2,-4) {\thearchive};
+  \node[below of=zenodo, anchor=north, node distance=1.0cm] (zenodotext) {Zenodo};
+  \draw[drawalert=<5>, ->] (backendtitle) -- (zenodo);
+\end{tikzpicture}
