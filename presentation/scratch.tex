@@ -1,10 +1,15 @@
 \documentclass{standalone}
 
 \usepackage{xsavebox}
+\usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric}
+\usetikzlibrary{fit}
 \usetikzlibrary{calc}
 \usetikzlibrary{positioning}
+\usetikzlibrary{backgrounds}
+
+\input{tikz/colors}
 
 \newenvironment{tikzcomponent}[1]{%
   \begin{xlrbox}{#1}%
@@ -16,6 +21,6 @@
 
 \begin{document}
 
-\input{./content/tikz/mapsample}
+\input{./tikz/item-stmts}
 
 \end{document}

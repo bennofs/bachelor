@@ -1,4 +1,4 @@
-\documentclass[aspectratio=1610,xcolor=svgnames]{beamer}
+\documentclass[aspectratio=1609,xcolor=usenames,dvipsnames,svgnames]{beamer}
 
 \usepackage{fontspec}
 \usepackage{appendixnumberbeamer}
@@ -10,13 +10,16 @@
 \usepackage{csquotes}
 \usepackage{xsavebox}
 \usepackage{pifont}
+\usepackage{xurl}
 \usepackage[style=authoryear]{biblatex}
+\usepackage{pgfplots}
 %\usepackage[shortlabels]{enumitem}
 
 \setmainlanguage{german}
 \MakeOuterQuote{"}
 
-\usetheme{metropolis}
+\usetheme[numbering=fraction]{metropolis}
+\setsansfont[BoldFont={Fira Sans SemiBold}]{Fira Sans Book}
 \metroset{block=fill}
 
 \usetikzlibrary{patterns}
@@ -26,6 +29,9 @@
 \usetikzlibrary{fit}
 \usetikzlibrary{backgrounds}
 \usetikzlibrary{calc}
+
+\pgfplotsset{compat=1.16}
+\usepgfplotslibrary[dateplot]
 
 \newcommand{\tikzdbg}{%
   \draw[step=1,color=lightgray] (-7,0) grid (10,10);%
@@ -44,12 +50,18 @@
   drawalert/.style = {temporal=#1{}{color=alerted text.fg}{}}
 }
 
+\input{tikz/colors}
+
 \newenvironment{tikzcomponent}[1]{%
   \begin{xlrbox}{#1}%
     \begin{tikzpicture}%
     }{
     \end{tikzpicture}%
   \end{xlrbox}%
+}
+
+\newcommand{\TODO}[1]{
+  \red{TODO: #1}
 }
 
 \bibliography{./bib-refs.bib}
@@ -64,59 +76,68 @@
 
 \begin{document}
 
-% database symbol
-\begin{tikzcomponent}{database}
-  \pgfmathsetmacro{\radius}{0.8};
-  \begin{scope}[line width=2pt]
-    \draw (0,0) circle [x radius=\radius, y radius=0.3];
-    \draw (-\radius,0) -- (-\radius,-1.5);
-    \draw (\radius,0) -- (\radius,-1.5);
-    \draw (-\radius,-0.5) arc[start angle=180, delta angle=180, x radius=\radius, y radius=0.3];
-    \draw (-\radius,-1.0) arc[start angle=180, delta angle=180, x radius=\radius, y radius=0.3];
-    \draw (-\radius,-1.5) arc[start angle=180, delta angle=180, x radius=\radius, y radius=0.3];
-  \end{scope};
-\end{tikzcomponent}
+%\includeonlyframes{first,current}
+    
+\begin{frame}[label=first]
+  \input{./tikz/symbols}
+  \titlepage
+\end{frame}
 
-\input{./tikz/symbols}
+\setbeamertemplate{frame footer}[custom]{%
+  Bachelorverteidigung: \insertshortauthor
+}
 
 \begin{frame}
-\maketitle
+  \includegraphics[width=0.9\textwidth]{./pics/Wikidata-logo-en} \\
+  "Die freie Wissensdatenbank mit 74.018.298 Datensätzen, die jeder bearbeiten kann."
 \end{frame}
 
-\begin{frame}\frametitle{Wikidata}
-  \centering
-  \includegraphics[width=0.85\framewidth]{./pics/Datamodel_in_Wikidata}
+\begin{frame}\frametitle{Wikidata: Items}
+  \input{./tikz/item-head}
 \end{frame}
 
-\begin{frame}\frametitle{Wikidata: Größe}
-  \begin{columns}
-    \begin{column}{0.5\framewidth}
-      \includegraphics[width=0.9\textwidth]{./pics/Wikidata-logo-en} \\
-    \end{column}
-    \begin{column}{0.5\framewidth}
-      \large{70 Millionen Items} \\
-      \vspace{0.3cm}
-      \large{800 Millionen Statements} \\
-      \vspace{0.3cm}
-      \large{vollständige Datendumps: \\mehr als 42GiB komprimiert}
-    \end{column}
-  \end{columns}
+\begin{frame}\frametitle{Wikidata: Statements}
+  \input{./tikz/item-stmts}
+\end{frame}
+
+\begin{frame}[label=current]\frametitle{Wikidata: Größe}
+  \begin{tikzpicture}
+    \begin{axis}[
+      date coordinates in=x,
+      mlineplot,
+      ylabel={Statements in Millionen},
+      xticklabel style={rotate=30, anchor=near xticklabel},
+      ymin=0,
+      scaled y ticks=base 10:-6,
+      ytick scale label code/.code={},
+      ]
+      \addplot [blue] table [header=false, col sep=comma] {data/statements.csv} [yshift=-8pt]
+      coordinate [pos=1] (end);
+    \end{axis}
+    \node[uncover=<2>,drawalert=<2>, anchor=west] (alert) at (4.5,2) {Mehr als 42GiB komprimiert};
+    \draw[uncover=<2>, ->] (alert) -- (end);
+  \end{tikzpicture}
+      % \large{70 Millionen Items} \\
+      % \vspace{0.3cm}
+      % \large{800 Millionen Statements} \\
+      % \vspace{0.3cm}
+      % \large{vollständige Datendumps: \\mehr als 42GiB komprimiert}
 \end{frame}
 
 \section{Idee: Tool zum Filtern der Daten}
 
-\begin{frame}[fragile]\frametitle{Beispiele}
-  GraFa: Faceted Search \& Browsing for the Wikidata Knowledge Graph \\
-  (\cite{usage-grafa}) \\
-nur "truthy" Statements mit Entitäten als Objekt;
-  Labels/Descriptions nur in Englisch und Spanisch \\
-  \vspace{0.5cm}
+% \begin{frame}[fragile]\frametitle{Beispiele}
+%   GraFa: Faceted Search \& Browsing for the Wikidata Knowledge Graph \\
+%   (\cite{usage-grafa}) \\
+% nur "truthy" Statements mit Entitäten als Objekt;
+%   Labels/Descriptions nur in Englisch und Spanisch \\
+%   \vspace{0.5cm}
 
-  Populating Narratives Using Wikidata Events: An Initial Experiment \\
-  (\cite{usage-narratives}) \\
-  alle  Items mit einem Statement für mindestens eine von 50 festgelegten
-  Properties
-\end{frame}
+%   Populating Narratives Using Wikidata Events: An Initial Experiment \\
+%   (\cite{usage-narratives}) \\
+%   alle  Items mit einem Statement für mindestens eine von 50 festgelegten
+%   Properties
+% \end{frame}
 
 \begin{frame}{Anforderungen}
   \begin{itemize}
@@ -126,6 +147,12 @@ nur "truthy" Statements mit Entitäten als Objekt;
     \item Nachvollziehrbarkeit, Aktualität der Daten
   \end{itemize}
 \end{frame}
+
+\begin{frame}\frametitle{UI-Konzept}
+  \centering
+  \includegraphics[width=0.4\textwidth]{./pics/ui-layout}
+\end{frame}
+
 
 \section{Format der Dumps: RDF}
 
@@ -153,24 +180,24 @@ nur "truthy" Statements mit Entitäten als Objekt;
 
 \begin{frame}[t, fragile]\frametitle{Wikidata als RDF: Reifikation}
   \vspace{0.25cm}
-  \begin{block}{RDF}
-  \begin{verbatim}
- wd:Q42 p:P69 wds:q42-xxxx .
- wds:Q42-xxxx rdf:type wikibase:Statement .
- wds:Q42-xxxx ps:P69 wd:Q4961791 .
- wds:Q42-xxxx pq:P580 "1959-01-01T00:00:00Z"^^xds:dateTime .
- wds:Q42-xxxx pqv:P580 wdv:aaaaaaaa .
- wds:Q42-xxxx pq:P582 "1970-01-01T00:00:00Z"^^xsd:dateTime .
- wds:Q42-xxxx pqv:P582 wdv:bbbbbbbb .
- wd:Q42 wdt:P69 wd:Q4961791.
-  \end{verbatim}
-  \end{block}
-\end{frame}
-
-\begin{frame}[t, fragile]\frametitle{Wikidata als RDF: Reifikation}
-  \vspace{0.25cm}
   \input{tikz/reifikation}
 \end{frame}
+
+% \begin{frame}[t, fragile]\frametitle{Wikidata als RDF: Reifikation}
+%   \vspace{0.25cm}
+%   \begin{block}{RDF}
+%   \begin{verbatim}
+%  wd:Q42 p:P69 wds:q42-xxxx .
+%  wds:Q42-xxxx rdf:type wikibase:Statement .
+%  wds:Q42-xxxx ps:P69 wd:Q4961791 .
+%  wds:Q42-xxxx pq:P580 "1959-01-01T00:00:00Z"^^xds:dateTime .
+%  wds:Q42-xxxx pqv:P580 wdv:aaaaaaaa .
+%  wds:Q42-xxxx pq:P582 "1970-01-01T00:00:00Z"^^xsd:dateTime .
+%  wds:Q42-xxxx pqv:P582 wdv:bbbbbbbb .
+%  wd:Q42 wdt:P69 wd:Q4961791.
+%   \end{verbatim}
+%   \end{block}
+% \end{frame}
 
 \section{Umsetzung}
 
@@ -193,23 +220,16 @@ nur "truthy" Statements mit Entitäten als Objekt;
   \end{figure}
 \end{frame}
 
-\begin{frame}\frametitle{UI-Konzept}
-  \centering
-  \includegraphics[width=0.4\textwidth]{./pics/ui-layout}
-\end{frame}
-
 \section{Evaluation}
 
 \begin{frame}[plain]
   \centering
   \begin{columns}
-    \begin{column}{0.7\framewidth}
+    \begin{column}{0.65\framewidth}
       \includegraphics[width=0.65\framewidth]{./pics/screen-main}
     \end{column}
-    \begin{column}{0.3\framewidth}
+    \begin{column}{0.35\framewidth}
       Screenshot der Anwendung
-      \\ \vspace{1cm}
-      Live unter \url{https://tools.wmflabs.org/wdumps/}
     \end{column}
   \end{columns}
 \end{frame}
@@ -313,13 +333,13 @@ nur "truthy" Statements mit Entitäten als Objekt;
   \begin{tikzpicture}
     \node (header1) {\bfseries TimeValue 1};
     \node[below=of header1.west, anchor=west] (value1) {+1976-01-12T00:00:00Z};
-    \node[below=of value1.west, anchor=west] (precision1) {Präzision: 9 (Jahr)};
+    \node[below=of value1.west, anchor=west, onslide=<1>{red}] (precision1) {Präzision: 9 (Jahr)};
     \node[fit={(header1) (value1) (precision1)}, rectangle, draw] (tv1) {};
 
     \begin{scope}[temporal=<2->{}{color=gray}{}]
       \node[right=3cm of header1] (header2) {\bfseries TimeValue 2};
       \node[below=of header2.west, anchor=west] (value2) {+1976-01-12T00:00:00Z};
-      \node[below=of value2.west, anchor=west] (precision2) {Präzision: 11 (Tag)};
+      \node[below=of value2.west, anchor=west, onslide=<1>{red}] (precision2) {Präzision: 11 (Tag)};
       \node[temporal=<2->{}{dashed}{}, fit={(header2) (value2) (precision2)}, rectangle, draw] (tv2) {};
     \end{scope}
 

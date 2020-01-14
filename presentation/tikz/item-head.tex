@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+  \coordinate (base) at (1.5, 1.5);
+
+  \node[above=7pt of base, anchor=south west, inner sep=0pt] (label) {\Large{Douglas Adams}};
+  \node[color=black!70, right=5pt of label] (id) {(Q42)};
+
+  \draw (base) -- +(7, 0) coordinate (lineend);
+
+  \node[below=8pt of base, anchor=north west, inner sep=0pt] (description) {britischer Schriftsteller (1952-2001)};
+  \node[color=black!70, below=23pt of base, inner sep=0pt, anchor=north west] (aliases) {Douglas Noël Adams | Douglas Noel Adams};
+
+  \coordinate[below=45pt of base] (linkbase);
+
+  \draw[fill, color=blue] (linkbase) ++(5pt,0) -- ++(0,-6pt) -- ++(4pt, 3pt)
+  node[anchor=west] (link) {In weiteren Sprachen};
+
+  \node[below=65pt of base, anchor=north west] (statements) {\large{Statements}};
+  \node[below=85pt of base, anchor=north west] (statements) {\large{Sitelinks}};
+
+  \node[draw, fit=(label) (id) (link) (lineend) (aliases) (statements), inner sep=10pt] {};
+
+  % labels
+  \draw[dashed] (2,3.5) node[anchor=south] {label} -- (label);
+  \draw[dashed] (6,3.5) node[anchor=south] {item identifier} -- (id);
+  \draw[dashed] (10,0 |- description)  node[anchor=west] {description} -- (description);
+  \draw[dashed] (10,0  |- aliases) node[anchor=west] {aliases} -- (aliases);
+\end{tikzpicture}

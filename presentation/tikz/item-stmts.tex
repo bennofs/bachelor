@@ -1,0 +1,44 @@
+\begin{tikzpicture}
+  \node[anchor=west, color=pgreen] (snak1title) {St John's College \small (Q691283)};
+  \coordinate[below=13pt of snak1title.north west] (snak1bot);
+  \matrix[xshift=10pt, matrix anchor=north west, every cell={anchor=west}] (snak1quals) at (snak1bot) {
+    \node[anchor=west] {start time \small{(P580)}}; & \node (qual1) {1971}; \\
+    \node[anchor=west] {end time \small{(P582)}}; & \node (qual2) {1974}; \\
+  };
+  \coordinate (snak1end) at (snak1title.west |- snak1quals.south);
+  \node[fit=(snak1title) (snak1quals)] (snak1) {};
+
+  \coordinate[below=5pt of snak1end] (snak2corner);
+  \node[anchor=north west, color=pgreen] (snak2title) at (snak2corner) {Brentwood School \small (Q4961791)};
+  \coordinate[below=13pt of snak2title.north west] (snak2bot);
+  \matrix[xshift=10pt, matrix anchor=north west, every cell={anchor=west}] (snak2quals) at (snak2bot) {
+    \node[anchor=west, xshift=10pt] {start time \small{(P580)}}; & \node{1959}; \\
+    \node[anchor=west, xshift=10pt] {end time \small{(P582)}}; & \node{1970}; \\
+  };
+  \node[fit=(snak2title) (snak2quals)] (snak2) {};
+
+  \node[left=7pt of snak1.north west, color=pplum, anchor=north east, inner sep=5pt, align=left] (property) {educated at \\ \small{(P69)}};
+  \begin{scope}[on background layer]
+    \fill[color=pdim] (property.east |- snak1.north) rectangle (property.west |- snak2.south);
+  \end{scope}
+  \node[draw, very thick, fit=(property) (snak1) (snak2), inner sep=0pt] (frame) {};
+
+
+  % Labels
+  \begin{scope}[thick]
+    \node[above=15pt of property, color=pplum] (proplabel) {Property};
+    \draw[dashed, color=pplum] (proplabel) -- (property);
+
+    \node[right=25pt of snak1title.east, color=pgreen] (valuelabel) {Value};
+    \draw[dashed, color=pgreen] (valuelabel) -- (snak1title);
+
+    \coordinate (join) at ($(qual1.east)!0.5!(qual2.east)$);
+    \draw[dashed] (qual1.east) -- (qual2.east) (join) -- (valuelabel.west |- join) node[anchor=west] {Qualifier};
+
+    \node[below=2pt of frame] {\textbf{Statement Group}};
+  \end{scope}
+
+  %\node[anchor=west, color=pgreen, below=of snak1.south east]{};
+  % \matrix[anchor=west, every cell={width=20pt}] at (snak2pos) {
+  % };
+\end{tikzpicture}
