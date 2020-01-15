@@ -4,7 +4,6 @@
 \usepackage{appendixnumberbeamer}
 \usepackage{tikz}
 \usepackage{varwidth}
-\usepackage[absolute,overlay]{textpos}
 \usepackage{pstricks}
 \usepackage{polyglossia}
 \usepackage{csquotes}
@@ -76,7 +75,7 @@
 
 \begin{document}
 
-%\includeonlyframes{first,current}
+\includeonlyframes{first,current}
     
 \begin{frame}[label=first]
   \input{./tikz/symbols}
@@ -100,7 +99,7 @@
   \input{./tikz/item-stmts}
 \end{frame}
 
-\begin{frame}[label=current]\frametitle{Wikidata: Größe}
+\begin{frame}\frametitle{Wikidata: Größe}
   \begin{tikzpicture}
     \begin{axis}[
       date coordinates in=x,
@@ -166,7 +165,7 @@
   \end{verbatim}
   \end{block}
 
-  \begin{block}{einfache Darstellung: ein Tripel für jedes Statement}
+  \begin{block}{Einfache Darstellung: ein Tripel für jedes Statement}
   \begin{verbatim}
  wd:Q42 wdt:P69 wd:Q691283 .
  wd:Q42 wdt:P69 wd:Q4961791.
@@ -201,17 +200,44 @@
 
 \section{Umsetzung}
 
-\begin{frame}\frametitle{Architekturvarianten}
-  \begin{center}
-    {\renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{r | p{0.20\framewidth}p{0.20\framewidth}p{0.35\framewidth}}
-       & {\bfseries Eigener Index} & {\bfseries SPARQL basiert} & {\bfseries Batchverarbeitung} \\
-      Geschwindigkeit & schnell & schnell & langsam \\
-      Flexibilität & gering & mittel & hoch \\
-      Implementierung & aufwändig & mittel & einfach \\
-    \end{tabular}
-    }
-  \end{center}
+\begin{frame}\frametitle{Ansatz: Wikidata Query Service}
+  \emph{Wikidata Query Service} indiziert den RDF-Export von Wikidata und
+  beantwortet SPARQL-Abfragen über diesen Datensatz.
+
+  \textbf{Vorteile:}
+  \begin{itemize}
+    \item Kann einige Abfragen sehr schnell beantworten
+    \item Verwendet aktuelle Daten
+  \end{itemize}
+  \textbf{Nachteile:}
+  \begin{itemize}
+    \item Große Dumps führen zu Timeout
+    \item Formulierung der Filter in SPARQL umständlich
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ansatz: Wikidata Toolkit}
+  \emph{Wikidata Toolkit} ist eine Java-Bibliothek zum Verarbeiten der JSON-Exporte von Wikidata.
+  \begin{itemize}
+      \item Implementiert das RDF Dump Format
+      \item Wird aktiv entwickelt
+  \end{itemize}
+
+  \textbf{Vorteile:}
+  \begin{itemize}
+    \item Kann auch sehr große Dumps erzeugen
+    \item Filter können in Java geschrieben werden
+
+  \end{itemize}
+
+  \textbf{Nachteile:}
+  \begin{itemize}
+      \item Langsamer als index-basierte Methoden
+      \item Verwendet nicht den "offiziellen" RDF-Export von Wikidata
+  \end{itemize}
+
+
 \end{frame}
 
 \begin{frame}\frametitle{System}
@@ -220,18 +246,38 @@
   \end{figure}
 \end{frame}
 
-\section{Evaluation}
-
-\begin{frame}[plain]
+\begin{frame}[plain, fragile]
   \centering
   \begin{columns}
     \begin{column}{0.65\framewidth}
       \includegraphics[width=0.65\framewidth]{./pics/screen-main}
     \end{column}
     \begin{column}{0.35\framewidth}
-      Screenshot der Anwendung
+      Deployment auf Toolforge \\
+      \vspace{0.5cm}
+      Backend in Java \\
+      \vspace{0.5cm}
+      Frontend in Python/TypeScript \\
+      \vspace{0.5cm}
+      MariaDB als Datenbank \\
+      \vspace{0.5cm}
+      \hspace{-110pt}
+      \color{blue!80!black}{\url{https://tools.wmflabs.org/wdumps}}
     \end{column}
   \end{columns}
+\end{frame}
+
+\section{Evaluation}
+
+\begin{frame}[t, label=current]
+  \vspace{1cm}
+  \only<1>{\includegraphics[width=\framewidth]{./pics/uiwalk/1.png}}
+  \only<2>{\includegraphics[width=\framewidth]{./pics/uiwalk/2.png}}
+  \only<3>{\includegraphics[width=\framewidth]{./pics/uiwalk/3.png}}
+  \only<4>{\includegraphics[width=\framewidth]{./pics/uiwalk/5.png}}
+  \only<5>{\includegraphics[width=\framewidth]{./pics/uiwalk/6.png}}
+  \only<6>{\includegraphics[width=\framewidth]{./pics/uiwalk/7.png}}
+  \only<7>{\includegraphics[width=\framewidth]{./pics/uiwalk/8.png}}
 \end{frame}
 
 \begin{frame}\frametitle{Korrektheit}
