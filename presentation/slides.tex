@@ -69,7 +69,7 @@
 
 \title{Generierung angepasster RDF-Dumps von Wikidata}
 \subtitle{Bachelorverteidigung}
-\date{\today}
+\date{16. Januar 2020}
 \author{Benno Fünfstück}
 \institute{Betreuer: Prof. Dr. Markus Krötzsch \\ Wissensbasierte Systeme \\ TU Dresden}
 
@@ -79,7 +79,7 @@
     
 \begin{frame}[label=first]
   \input{./tikz/symbols}
-  \titlepage
+  \maketitle
 \end{frame}
 
 \setbeamertemplate{frame footer}[custom]{%
@@ -99,29 +99,6 @@
   \input{./tikz/item-stmts}
 \end{frame}
 
-\begin{frame}\frametitle{Wikidata: Größe}
-  \begin{tikzpicture}
-    \begin{axis}[
-      date coordinates in=x,
-      mlineplot,
-      ylabel={Statements in Millionen},
-      xticklabel style={rotate=30, anchor=near xticklabel},
-      ymin=0,
-      scaled y ticks=base 10:-6,
-      ytick scale label code/.code={},
-      ]
-      \addplot [blue] table [header=false, col sep=comma] {data/statements.csv} [yshift=-8pt]
-      coordinate [pos=1] (end);
-    \end{axis}
-    \node[uncover=<2>,drawalert=<2>, anchor=west] (alert) at (4.5,2) {Mehr als 42GiB komprimiert};
-    \draw[uncover=<2>, ->] (alert) -- (end);
-  \end{tikzpicture}
-      % \large{70 Millionen Items} \\
-      % \vspace{0.3cm}
-      % \large{800 Millionen Statements} \\
-      % \vspace{0.3cm}
-      % \large{vollständige Datendumps: \\mehr als 42GiB komprimiert}
-\end{frame}
 
 \section{Idee: Tool zum Filtern der Daten}
 
@@ -158,6 +135,19 @@
   Format der Dumps: \emph{RDF (Resource Description Framework)}
 \end{frame}
 
+
+\begin{frame}[label=current]\frametitle{Filterkriterien}
+  Konzeptionell drei Ebenen:
+  \begin{itemize}
+    \item Auswahl der Items
+    \item Auswahl der Statements
+    \item Export des Statements
+  \end{itemize}
+
+  Unabhängig davon: Labels, Descriptions, Aliases, Sitelinks, Sprache von Literalen
+\end{frame}
+
+
 \begin{frame}[t, fragile]\frametitle{Wikidata als RDF}
   \vspace{0.25cm}
 
@@ -175,17 +165,13 @@
   \end{verbatim}
   \end{block}
 
-  \textbf{Aber:} Ranks, Qualifier, komplexe Werte? \\
-  \vspace{0.5cm}
+  \textbf{Aber:} Ranks, Qualifier, Komplexe Werte?
   %\footnotesize{\verb|wd:Q42| ist kurz für \verb|<http://www.wikidata.org/entity/Q42>|}
 \end{frame}
 
 \begin{frame}[t, fragile]\frametitle{Wikidata als RDF: Reifikation}
   \vspace{0.25cm}
   \input{tikz/reifikation}
-\end{frame}
-
-\begin{frame}\frametitle{Kriterien für Filter}
 \end{frame}
 
 % \begin{frame}[t, fragile]\frametitle{Wikidata als RDF: Reifikation}
@@ -423,6 +409,32 @@
   % \vspace{1cm}
   % \centering
   % {\LARGE Fragen?}
+\end{frame}
+
+\appendix
+
+\begin{frame}\frametitle{Wikidata: Größe}
+  \begin{tikzpicture}
+    \begin{axis}[
+      date coordinates in=x,
+      mlineplot,
+      ylabel={Statements in Millionen},
+      xticklabel style={rotate=30, anchor=near xticklabel},
+      ymin=0,
+      scaled y ticks=base 10:-6,
+      ytick scale label code/.code={},
+      ]
+      \addplot [blue] table [header=false, col sep=comma] {data/statements.csv} [yshift=-8pt]
+      coordinate [pos=1] (end);
+    \end{axis}
+    \node[uncover=<2>,drawalert=<2>, anchor=west] (alert) at (4.5,2) {Mehr als 42GiB komprimiert};
+    \draw[uncover=<2>, ->] (alert) -- (end);
+  \end{tikzpicture}
+      % \large{70 Millionen Items} \\
+      % \vspace{0.3cm}
+      % \large{800 Millionen Statements} \\
+      % \vspace{0.3cm}
+      % \large{vollständige Datendumps: \\mehr als 42GiB komprimiert}
 \end{frame}
 
 \end{document}
