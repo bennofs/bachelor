@@ -75,7 +75,7 @@
 
 \begin{document}
 
-\includeonlyframes{first,current}
+%\includeonlyframes{first,current}
     
 \begin{frame}[label=first]
   \input{./tikz/symbols}
@@ -139,23 +139,26 @@
 % \end{frame}
 
 \begin{frame}{Anforderungen}
+  \alert{\textbf{Filterung:}} Einen Dump aus einer Teilmenge der Daten erzeugen, nach
+  nutzerdefinierten \emph{Kriterien}
+
+  Diese Dumps sollen \textbf{archiviert} werden und das Archiv \textbf{durchsuchbar} sein.
+
+  \pause
+
+  Anforderungen an das Interface:
   \begin{itemize}
-    \item Korrektheit, Vollständigkeit
-    \item Filterung, Archivierung, Suche
-    \item Statistiken, Fortschritt, Parallelverarbeitung
-    \item Nachvollziehrbarkeit, Aktualität der Daten
+      \item Prozess ist \textbf{nachvollziehbar}: Ursprung, Inhalt des Dumps
+      \item Feedback zu \textbf{Fortschritt}
+      \item mehrere Nutzer können parallel Dumps erzeugen (\textbf{Parallelverarbeitung})
   \end{itemize}
+
+  \pause
+
+  Format der Dumps: \emph{RDF (Resource Description Framework)}
 \end{frame}
 
-\begin{frame}\frametitle{UI-Konzept}
-  \centering
-  \includegraphics[width=0.4\textwidth]{./pics/ui-layout}
-\end{frame}
-
-
-\section{Format der Dumps: RDF}
-
-\begin{frame}[t, fragile]\frametitle{Wikidata als RDF (Resource Description Framework)}
+\begin{frame}[t, fragile]\frametitle{Wikidata als RDF}
   \vspace{0.25cm}
 
   \begin{block}{Beispiel}
@@ -174,12 +177,15 @@
 
   \textbf{Aber:} Ranks, Qualifier, komplexe Werte? \\
   \vspace{0.5cm}
-  \footnotesize{\verb|wd:Q42| ist kurz für \verb|<http://www.wikidata.org/entity/Q42>|}
+  %\footnotesize{\verb|wd:Q42| ist kurz für \verb|<http://www.wikidata.org/entity/Q42>|}
 \end{frame}
 
 \begin{frame}[t, fragile]\frametitle{Wikidata als RDF: Reifikation}
   \vspace{0.25cm}
   \input{tikz/reifikation}
+\end{frame}
+
+\begin{frame}\frametitle{Kriterien für Filter}
 \end{frame}
 
 % \begin{frame}[t, fragile]\frametitle{Wikidata als RDF: Reifikation}
@@ -269,7 +275,7 @@
 
 \section{Evaluation}
 
-\begin{frame}[t, label=current]
+\begin{frame}[t]
   \vspace{1cm}
   \only<1>{\includegraphics[width=\framewidth]{./pics/uiwalk/1.png}}
   \only<2>{\includegraphics[width=\framewidth]{./pics/uiwalk/2.png}}
@@ -282,7 +288,6 @@
 
 \begin{frame}\frametitle{Korrektheit}
   Die Anwendung verwendet Wikidata Toolkit zur Generierung der RDF-Daten \\
-  \vspace{0.5cm}
 
   \begin{center}
   \begin{tikzpicture}
@@ -352,25 +357,21 @@
     \draw[<->, very thick, alert] (8.5, -1.2) to node[above, anchor=west] {???} (8.5, -2.5);
   \end{tikzpicture}
   \end{center}
-
-  Zwei verschiedene Wege zum Erzeugen von RDF, gibt es Unterschiede?
 \end{frame}
 
 \begin{frame}{Ergebnis}
-  Viele unkritische Abweichungen:
+  Es wurden eine Reihe von Fehlern im RDF-Export von Wikidata Toolkit gefunden:
   \begin{itemize}
     \item andere Schreibweisen
     \item minimal andere Struktur
     \item besonders bei komplexen Typen (Zeitpunkte, Orte)
   \end{itemize}
 
-  Ein paar tatsächliche Fehler:
+  Beispiele für weniger offensichtliche Fehler sind:
   \begin{itemize}
       \item Vertauschung von Koordinaten bei Orten
       \item falsche Deduplizierung bei Value-Nodes
   \end{itemize}
-
-  Einige fehlende Features in Wikidata Toolkit
 \end{frame}
 
 \begin{frame}[fragile]{Ergebnis: falsche Deduplizierung bei Werten mit Präzisionsangabe}
@@ -393,36 +394,35 @@
     \node[below=2cm of tv2, ellipse, draw] (B) {B};
 
     \draw[->, thick] (A) -- (tv1);
-    \draw[->, thick, temporal=<2->{}{color=gray,dashed}{}] (B) -- (tv2);
+    \draw[->, thick, temporal=<2->{}{opacity=0,dashed}{}] (B) -- (tv2);
 
     \draw[->, thick, uncover=<2->, drawalert=<2->] (B) -- (tv1.south);
+    \node[uncover=<2->, drawalert=<2->, above=of B, node distance=0.5cm] {Präzision nicht beachtet};
 
   \end{tikzpicture}
   \end{center}
-
-  \onslide<2->{Präzision nicht beachtet!}
-
 \end{frame}
 
 \begin{frame}{Fazit}
   \setbeamertemplate{enumerate items}[circle]
+  \textbf{Ergebnis:}
   \begin{enumerate}
-      \item erste Version der Anwendung implementiert
+      \item Erfolgreiche Implementierung eines funktionsfähigen Prototyps
       \item RDF-Export von Wikidata Toolkit verbessert
-      \item viele weitere Features denkbar: Lexeme, Parallelisierung, mehr
-      Filter, \ldots
+      \item Gesamter Quellcode ist offen verfügbar: \url{https://github.com/bennofs/wdumper}
   \end{enumerate}
-  \pause
-  \vspace{1cm}
-  \centering
-  {\LARGE Fragen?}
+
+  \textbf{Ausblick:}
+  \setbeamertemplate{enumerate items}[default]
+  \begin{itemize}
+      \item Weitere Kriterien zum Filtern: SPARQL, zufällige Auswahl, Anzahl an
+      Sitelinks, \ldots
+      \item Verbesserung des UI: Vorschau, vorgeschlagene Dumps, bessere Suche
+  \end{itemize}
+  % \pause
+  % \vspace{1cm}
+  % \centering
+  % {\LARGE Fragen?}
 \end{frame}
-
-\appendix
-
-\begin{frame}[allowframebreaks]\frametitle{Referenzen}
-  \printbibliography[heading=none]
-\end{frame}
-
 
 \end{document}
