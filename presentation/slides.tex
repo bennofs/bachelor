@@ -1,4 +1,4 @@
-\documentclass[aspectratio=1609,xcolor=usenames,dvipsnames,svgnames]{beamer}
+\documentclass[aspectratio=169,xcolor=usenames,dvipsnames,svgnames]{beamer}
 
 \usepackage{fontspec}
 \usepackage{appendixnumberbeamer}
@@ -87,7 +87,8 @@
 }
 
 \begin{frame}
-  \includegraphics[width=0.9\textwidth]{./pics/Wikidata-logo-en} \\
+  \centering
+  \includegraphics[width=0.6\textwidth]{./pics/Wikidata-logo-en} \\
   "Die freie Wissensdatenbank mit 74.018.298 Datensätzen, die jeder bearbeiten kann."
 \end{frame}
 
@@ -149,13 +150,12 @@
 
 
 \begin{frame}[t, fragile]\frametitle{Wikidata als RDF}
-  \vspace{0.25cm}
-
   \begin{block}{Beispiel}
   \begin{verbatim}
  wd:Q42 rdfs:label "Douglas Adams"@en .
  wd:Q42 rdfs:label "Douglas Adams"@de .
   \end{verbatim}
+    \vspace{-0.2cm}
   \end{block}
 
   \begin{block}{Einfache Darstellung: ein Tripel für jedes Statement}
@@ -163,6 +163,7 @@
  wd:Q42 wdt:P69 wd:Q691283 .
  wd:Q42 wdt:P69 wd:Q4961791.
   \end{verbatim}
+    \vspace{-0.2cm}
   \end{block}
 
   \textbf{Aber:} Ranks, Qualifier, Komplexe Werte?
@@ -170,7 +171,7 @@
 \end{frame}
 
 \begin{frame}[t, fragile]\frametitle{Wikidata als RDF: Reifikation}
-  \vspace{0.25cm}
+  \vspace{-0.15cm}
   \input{tikz/reifikation}
 \end{frame}
 
@@ -262,7 +263,6 @@
 \section{Evaluation}
 
 \begin{frame}[t]
-  \vspace{1cm}
   \only<1>{\includegraphics[width=\framewidth]{./pics/uiwalk/1.png}}
   \only<2>{\includegraphics[width=\framewidth]{./pics/uiwalk/2.png}}
   \only<3>{\includegraphics[width=\framewidth]{./pics/uiwalk/3.png}}
