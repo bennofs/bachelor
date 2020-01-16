@@ -93,10 +93,12 @@
 \end{frame}
 
 \begin{frame}\frametitle{Wikidata: Items}
+  \centering
   \input{./tikz/item-head}
 \end{frame}
 
 \begin{frame}\frametitle{Wikidata: Statements}
+  \centering
   \input{./tikz/item-stmts}
 \end{frame}
 
@@ -142,7 +144,7 @@
   \begin{itemize}
     \item Auswahl der Items
     \item Auswahl der Statements
-    \item Export des Statements
+    \item Kodierung des Statements
   \end{itemize}
 
   Unabhängig davon: Labels, Descriptions, Aliases, Sitelinks, Sprache von Literalen
@@ -150,7 +152,7 @@
 
 
 \begin{frame}[t, fragile]\frametitle{Wikidata als RDF}
-  \begin{block}{Beispiel}
+  \begin{block}{Tripel für Labels}
   \begin{verbatim}
  wd:Q42 rdfs:label "Douglas Adams"@en .
  wd:Q42 rdfs:label "Douglas Adams"@de .
@@ -402,7 +404,7 @@
   \setbeamertemplate{enumerate items}[default]
   \begin{itemize}
       \item Weitere Kriterien zum Filtern: SPARQL, zufällige Auswahl, Anzahl an
-      Sitelinks, \ldots
+      Sitelinks
       \item Verbesserung des UI: Vorschau, vorgeschlagene Dumps, bessere Suche
   \end{itemize}
   % \pause
