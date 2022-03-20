@@ -1,0 +1,29 @@
+* DONE Background: Wikidata Datatypes
+  CLOSED: [2019-10-23 Mi 09:44]
+* DONE Req: Improve requirements (clarify, regroup)
+  CLOSED: [2019-10-27 So 14:30]
+* DONE Req: Improve related work section (restructure)
+  CLOSED: [2019-10-27 So 14:30]
+* DONE Move list of usages from design -> req
+  CLOSED: [2019-10-27 So 14:31]
+* DONE Design: review
+  CLOSED: [2019-10-27 So 23:29]
+* IDEA Design: mehr zum Interface (Gestaltung)
+* DONE Implementation: review
+  CLOSED: [2019-10-27 So 23:29]
+* DONE Evaluation: review
+  CLOSED: [2019-10-27 So 23:29]
+* DONE Fazit: review
+  CLOSED: [2019-10-30 Mi 17:06]
+* generell:
+** TODO Terminologie checken
+** DONE Zitationen checken (leerzeichen vor \cite, multiple cite)
+   CLOSED: [2019-10-30 Mi 17:10]
+** DONE footnotes checken (nach Punkt)
+   CLOSED: [2019-10-30 Mi 17:11]
+** DONE badboxes fixen
+   CLOSED: [2019-10-30 Mi 17:06]
+** DONE Anführungszeichen checken
+   CLOSED: [2019-10-30 Mi 17:11]
+** DONE das/der/die selbe checken
+   CLOSED: [2019-10-30 Mi 17:06]
